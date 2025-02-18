@@ -1,11 +1,5 @@
 name: JavaScript Unit Test
-on:
-  push:
-    paths:
-      - 'src/**'
-  pull_request:
-    paths:
-      - 'src/**'
+on: [push, pull_request]
 permissions:
   contents: read
 
