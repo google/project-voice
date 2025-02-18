@@ -15,5 +15,6 @@
  */
 
 module.exports = {
-  ...require('gts/.prettierrc.json')
+  ...require('gts/.prettierrc.json'),
+  endOfLine: 'auto',
 }
