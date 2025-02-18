@@ -37,7 +37,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@lit-labs/signals": "^0.1.1",
+    "@lit-labs/signals": "^0.1.2",
     "@lit/localize": "^0.12.1",
     "@material/web": "^2.2.0",
     "lit": "^3.2.1",
