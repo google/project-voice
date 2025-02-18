@@ -4,18 +4,18 @@
   "description": "Communication support tool powered by generative AI",
   "scripts": {
     "dev": "concurrently \"npm run watch\" \"npm run serve\"",
-    "serve": "./.venv/bin/python main.py",
-    "lint": "gts lint && ./.venv/bin/yapf --diff --style yapf *.py",
+    "serve": "python main.py",
+    "lint": "gts lint && python -m yapf --diff --style yapf main.py macro.py",
     "clean": "gts clean",
     "build": "npm run build:i18n && esbuild src/index.ts --bundle --minify --outfile=static/index.js",
     "build:i18n": "lit-localize build && esbuild src/locales/*.ts --outdir=static/locales",
     "watch": "npm run build:i18n && esbuild src/index.ts --bundle --watch --define:process.env.NODE_ENV=\\\"development\\\" --outfile=static/index.js",
-    "fix": "gts fix && ./.venv/bin/yapf -i --style yapf *.py",
+    "fix": "gts fix && python -m yapf -i --style yapf main.py macro.py",
     "pretest": "esbuild src/tests/test_index.ts --bundle --outfile=spec/test_bundle.js",
     "posttest": "npm run lint",
     "test": "jasmine-browser-runner runSpecs",
     "deploy": "npm run build && gcloud app deploy app.yaml --no-promote",
-    "postinstall": " python3 -m venv .venv || true && ./.venv/bin/pip install -r requirements.txt && ./.venv/bin/pip install -r requirements-dev.txt"
+    "postinstall": "python -m pip install -r requirements.txt && python -m pip install -r requirements-dev.txt"
   },
   "license": "Apache-2.0",
   "engines": {
