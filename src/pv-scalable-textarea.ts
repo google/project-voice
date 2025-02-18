@@ -73,24 +73,24 @@ export class PvScalableTextareaElement extends LitElement {
     const fontSizeFactor = 0.8;
     const boundingRect = this.getBoundingClientRect();
     this.hiddenTextArea.style.lineHeight = `${Math.round(
-      boundingRect.height / this.minRows
+      boundingRect.height / this.minRows,
     )}px`;
     this.hiddenTextArea.style.fontSize = `${Math.round(
-      (boundingRect.height / this.minRows) * fontSizeFactor
+      (boundingRect.height / this.minRows) * fontSizeFactor,
     )}px`;
     const contentHeight = this.hiddenTextArea.scrollHeight;
     const nRows = Math.min(
       this.maxRows,
       Math.max(
         this.minRows,
-        Math.floor(contentHeight / (boundingRect.height / this.minRows))
-      )
+        Math.floor(contentHeight / (boundingRect.height / this.minRows)),
+      ),
     );
     this.textArea.style.lineHeight = `${Math.round(
-      boundingRect.height / nRows
+      boundingRect.height / nRows,
     )}px`;
     this.textArea.style.fontSize = `${Math.round(
-      (boundingRect.height / nRows) * fontSizeFactor
+      (boundingRect.height / nRows) * fontSizeFactor,
     )}px`;
     this.textArea.value = this.value;
   }

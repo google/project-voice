@@ -101,7 +101,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
   constructor(
     state: State | null = null,
-    apiClient: MacroApiClient | null = null
+    apiClient: MacroApiClient | null = null,
   ) {
     super();
     this.stateInternal = state ?? new State();
@@ -154,12 +154,12 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has(URL_PARAMS.SENTENCE_MACRO_ID)) {
       this.stateInternal.features.sentenceMacroId = urlParams.get(
-        URL_PARAMS.SENTENCE_MACRO_ID
+        URL_PARAMS.SENTENCE_MACRO_ID,
       );
     }
     if (urlParams.has(URL_PARAMS.WORD_MACRO_ID)) {
       this.stateInternal.features.wordMacroId = urlParams.get(
-        URL_PARAMS.WORD_MACRO_ID
+        URL_PARAMS.WORD_MACRO_ID,
       );
     }
 
@@ -229,7 +229,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           wordMacroId:
             this.state.features.wordMacroId ?? this.stateInternal.wordMacroId,
           persona: this.stateInternal.persona,
-        }
+        },
       );
       this.inFlightRequests--;
       if (this.inFlightRequests === 0) {
@@ -266,7 +266,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       if (!textfield) return;
       const normalized = normalize(
         textfield.value + e.detail,
-        textfield.isLastInputSuggested()
+        textfield.isLastInputSuggested(),
       );
       textfield.setTextFieldValue(normalized, [InputSource.CHARACTER]);
     };
@@ -298,7 +298,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
                 @click="${onSuggestedWordClick(word)}"
               ></pv-button>
             </li>
-          `
+          `,
     );
 
     return html`

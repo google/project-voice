@@ -126,7 +126,7 @@ export class PvTextareaWrapper extends LitElement {
         detail: {callee: this},
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 }
