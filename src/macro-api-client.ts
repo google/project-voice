@@ -60,7 +60,7 @@ export class MacroApiClient {
       sentenceMacroId: string;
       wordMacroId: string;
       persona: string;
-    },
+    }
   ) {
     this.fetchAbortController?.abort();
     this.fetchAbortController = new AbortController();
@@ -81,7 +81,7 @@ export class MacroApiClient {
       userInputs,
       abortSignal,
       wordMacroId,
-      model,
+      model
     );
 
     const sentenceMacroId = context.sentenceMacroId;
@@ -90,7 +90,7 @@ export class MacroApiClient {
       userInputs,
       abortSignal,
       sentenceMacroId,
-      model,
+      model
     );
 
     const result = Promise.all([sentencesFetch, wordsFetch]).catch(err => {
@@ -110,14 +110,14 @@ export class MacroApiClient {
     abortSignal: AbortSignal,
     macroId: string,
     model: string,
-    temperature = 0.0,
+    temperature = 0.0
   ): Promise<string[]> {
     const text = await MacroApiClient.fetchMacro(
       userInputs,
       abortSignal,
       macroId,
       model,
-      temperature,
+      temperature
     );
     return parseResponse(text);
   }
@@ -136,7 +136,7 @@ export class MacroApiClient {
     abortSignal: AbortSignal | null,
     macroId: string,
     model: string,
-    temperature: number,
+    temperature: number
   ): Promise<string> {
     // TODO: Remove the following debug logging.
     console.log(`macroId: ${macroId}, model: ${model}`);

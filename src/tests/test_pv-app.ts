@@ -83,16 +83,16 @@ describe('PvAppElement', () => {
       expect(element.state.aiConfig).toBe(CONFIG_DEFAULT.aiConfig);
       expect(element.state.expandAtOrigin).toBe(CONFIG_DEFAULT.expandAtOrigin);
       expect(element.state.initialPhrases).toEqual(
-        CONFIG_DEFAULT.initialPhrases,
+        CONFIG_DEFAULT.initialPhrases
       );
       expect(element.state.persona).toBe(CONFIG_DEFAULT.persona);
       expect(element.state.sentenceSmallMargin).toBe(
-        CONFIG_DEFAULT.sentenceSmallMargin,
+        CONFIG_DEFAULT.sentenceSmallMargin
       );
       expect(element.state.voiceName).toBe(CONFIG_DEFAULT.ttsVoice);
       expect(element.state.voicePitch).toBe(CONFIG_DEFAULT.voicePitch);
       expect(element.state.voiceSpeakingRate).toBe(
-        CONFIG_DEFAULT.voiceSpeakingRate,
+        CONFIG_DEFAULT.voiceSpeakingRate
       );
       expect(element.state.lang).toBe('en');
     });
@@ -109,12 +109,12 @@ describe('PvAppElement', () => {
       expect(element.state.initialPhrases).toEqual(TEST_CONFIG.initialPhrases);
       expect(element.state.persona).toBe(TEST_CONFIG.persona);
       expect(element.state.sentenceSmallMargin).toBe(
-        TEST_CONFIG.sentenceSmallMargin,
+        TEST_CONFIG.sentenceSmallMargin
       );
       expect(element.state.voiceName).toBe(TEST_CONFIG.ttsVoice);
       expect(element.state.voicePitch).toBe(TEST_CONFIG.voicePitch);
       expect(element.state.voiceSpeakingRate).toBe(
-        TEST_CONFIG.voiceSpeakingRate,
+        TEST_CONFIG.voiceSpeakingRate
       );
       expect(element.state.lang).toBe('ja');
     });
