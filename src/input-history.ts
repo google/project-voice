@@ -28,7 +28,7 @@ export type InputSource = (typeof InputSource)[keyof typeof InputSource];
 export class HistoryElement {
   constructor(
     public value: string,
-    public sources: InputSource[],
+    public sources: InputSource[]
   ) {}
 }
 

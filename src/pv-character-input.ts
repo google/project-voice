@@ -99,7 +99,7 @@ export class PvCharacterInputElement extends SignalWatcher(LitElement) {
                 ?expandAtOrigin=${this.state.expandAtOrigin}
               ></pv-expand-keypad>
             </li>
-          `,
+          `
         )}
       </ul>
     `;

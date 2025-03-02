@@ -126,7 +126,7 @@ export class PvSuggestionStripeElement extends LitElement {
     const words = splitPunctuations(this.segment(this.suggestion));
     const leadingWords = getLeadingWords(
       words,
-      splitPunctuations(this.segment(this.offset)),
+      splitPunctuations(this.segment(this.offset))
     );
     return html`${leadingWords.length > 0
       ? html`<span class="ellipsis">… </span>`
@@ -147,10 +147,10 @@ export class PvSuggestionStripeElement extends LitElement {
               this.dispatchEvent(
                 new SuggestionSelectEvent('select', {
                   detail: this.join(words.slice(0, i + 1)),
-                }),
+                })
               );
             }}"
-          ></pv-button>`,
+          ></pv-button>`
     )}`;
   }
 }
