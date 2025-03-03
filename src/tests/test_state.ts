@@ -39,7 +39,7 @@ describe('State', () => {
     expect(state.aiConfig).toEqual(TEST_CONFIG.aiConfig);
     expect(state.model).toEqual(AI_CONFIGS[TEST_CONFIG.aiConfig].model);
     expect(state.sentenceMacroId).toEqual(
-      AI_CONFIGS[TEST_CONFIG.aiConfig].sentence
+      AI_CONFIGS[TEST_CONFIG.aiConfig].sentence,
     );
     expect(state.wordMacroId).toEqual(AI_CONFIGS[TEST_CONFIG.aiConfig].word);
     expect(state.expandAtOrigin).toEqual(TEST_CONFIG.expandAtOrigin);

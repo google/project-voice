@@ -31,7 +31,7 @@ describe('USA Suggestion Stripe', () => {
     it('should ignore unmatched words with punctuations.', () => {
       const result = TEST_ONLY.getLeadingWords(
         ['I', 'am', 'a', 'student', 'in'],
-        ['I', 'am', 'a', 'student.']
+        ['I', 'am', 'a', 'student.'],
       );
       expect(result).toEqual(['I', 'am', 'a']);
     });
