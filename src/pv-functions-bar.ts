@@ -169,7 +169,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
         detail: {callee: this},
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 

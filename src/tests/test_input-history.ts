@@ -139,7 +139,7 @@ describe('Input History', () => {
       for (let i = 0; i < 250; i++) {
         value += 'a';
         inputHistory.add(
-          new HistoryElement(value, [InputSource.SUGGESTED_WORD])
+          new HistoryElement(value, [InputSource.SUGGESTED_WORD]),
         );
       }
       for (let i = 0; i < 250; i++) {

@@ -188,7 +188,7 @@ export class PvExpandKeypadElement extends LitElement {
       new Event('keypad-open', {
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -254,16 +254,16 @@ export class PvExpandKeypadElement extends LitElement {
                               detail: characterToSend,
                               bubbles: true,
                               composed: true,
-                            })
+                            }),
                           );
                         }}"
                       >
                         ${c}
                       </button>
-                    </li>`
+                    </li>`,
                 )}
               </ul>
-            </li>`
+            </li>`,
         )}
       </ul>
       <div

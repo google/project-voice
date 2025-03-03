@@ -94,7 +94,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
         detail: {callee: this},
         bubbles: true,
         composed: true,
-      })
+      }),
     );
   }
 
@@ -229,7 +229,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
                   ?selected="${this.state.voiceName === voice.name}"
                 >
                   <div slot="headline">${voice.name}</div>
-                </md-select-option>`
+                </md-select-option>`,
             )}
         </md-outlined-select>
       </div>
@@ -243,7 +243,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
             value="${this.state.voiceSpeakingRate}"
             @change=${(e: Event) => {
               this.state.voiceSpeakingRate = Number(
-                (e.target as HTMLInputElement).value
+                (e.target as HTMLInputElement).value,
               );
             }}
           >
@@ -260,7 +260,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
             value="${this.state.voicePitch}"
             @change=${(e: Event) => {
               this.state.voicePitch = Number(
-                (e.target as HTMLInputElement).value
+                (e.target as HTMLInputElement).value,
               );
             }}
           >
