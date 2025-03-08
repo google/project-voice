@@ -10,14 +10,13 @@ This software uses generative AI to predict possible words and sentences that mi
 
 ## Before you begin
 
-Project VOICE is a web application built on Google Cloud APIs, such as Gemini API and Cloud Text-to-Speech API, and it’s designed to be run on Google App Engine primarily. Please set up a Google Cloud project with these APIs enabled. You will also need to install Python and Node.js to build and run the application.
+Project VOICE is a web application built on Gemini API, and it’s designed to be run on Google App Engine primarily. Please set up a Google Cloud project with these APIs enabled. You will also need to install Python and Node.js to build and run the application.
 
 1. In the Google Cloud console, on the project selector page, select or create a Google Cloud project.\
     [Go to project selector](https://console.cloud.google.com/projectselector2/home/dashboard)
 1. Make sure that billing is enabled for your Google Cloud project. See [this page](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project) for details.
-1. Enable Gemini API, Cloud Text-to-Speech API, and so on.\
-    [Gemini API](https://console.cloud.google.com/flows/enableapi?apiid=generativelanguage.googleapis.com)\
-    [Enable Cloud Text-to-Speech API](https://console.cloud.google.com/flows/enableapi?apiid=texttospeech.googleapis.com)
+1. Enable Gemini API.\
+    [Gemini API](https://console.cloud.google.com/flows/enableapi?apiid=generativelanguage.googleapis.com)
 1. [Install](https://cloud.google.com/sdk/docs/install) the Google Cloud CLI.
 1. To initialize the gcloud CLI, run the following command:
     ```
@@ -29,9 +28,6 @@ Project VOICE is a web application built on Google Cloud APIs, such as Gemini AP
     ```
     ```
     gcloud config set project <YOUR_PROJECT_ID>
-    ```
-    ```
-    gcloud auth application-default login
     ```
 1. If you wish to change the Google Cloud project for billing and quota, run:
     ```
