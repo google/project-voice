@@ -28,8 +28,9 @@ import {SignalWatcher} from '@lit-labs/signals';
 import {html, LitElement} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
 
-import {INITIAL_PHRASES, LARGE_MARGIN_LINE_LIMIT} from './constants.js';
+import {LARGE_MARGIN_LINE_LIMIT} from './constants.js';
 import {InputSource} from './input-history.js';
+import {LANGUAGES} from './language.js';
 import {sourceLocale, targetLocales} from './locale-codes.js';
 import {MacroApiClient} from './macro-api-client.js';
 import {pvAppStyle} from './pv-app-css.js';
@@ -130,14 +131,19 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   @query('pv-setting-panel')
   private settingPanel?: PvSettingPanel;
 
-  @property({type: String, attribute: 'feature-sentence-suggestion-lang'})
-  sentenceSuggestionLang = '';
-
   @property({type: String, attribute: 'feature-locale'})
   locale = 'ja';
 
   @property({type: String, attribute: 'feature-sentence-macro-id'})
   private sentenceMacroId: string | null = null;
+
+  // TODO: Make this configurable.
+  @property({type: String, attribute: 'feature-languages'})
+  private languageLabels = 'japaneseSingleRowKeyboard,englishSingleRowKeyboard';
+
+  private languageLabelList: string[] = [];
+  private languageIndex = 0;
+  private keyboardIndex = 0;
 
   static styles = pvAppStyle;
 
@@ -145,7 +151,11 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     super.connectedCallback();
 
     setLocale(this.locale ? this.locale : 'ja');
-    this.stateInternal.lang = this.locale ? this.locale : 'ja';
+
+    this.languageLabelList = this.languageLabels.split(',');
+    this.stateInternal.lang = LANGUAGES[this.languageLabelList[0]];
+    this.stateInternal.keyboard =
+      this.stateInternal.lang.keyboards[this.keyboardIndex];
 
     this.stateInternal.features = {
       sentenceMacroId: this.sentenceMacroId,
@@ -168,7 +178,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     // language.
     if (!this.stateInternal.initialPhrases.some(str => str)) {
       this.stateInternal.initialPhrases =
-        INITIAL_PHRASES[this.stateInternal.lang];
+        this.stateInternal.lang.initialPhrases;
     }
   }
 
@@ -220,7 +230,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       this.isLoading = true;
       const result = await this.apiClient.fetchSuggestions(
         this.textField!.value ?? '',
-        this.stateInternal.lang === 'en' ? 'English' : 'Japanese',
+        this.stateInternal.lang.promptName,
         this.stateInternal.model,
         {
           sentenceMacroId:
@@ -273,7 +283,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
     const onSuggestedWordClick = (word: string) => () => {
       this.playClickSound();
-      const separator = this.stateInternal.lang === 'en' ? ' ' : '';
+      const separator = this.stateInternal.lang.separetor;
       const body = word.startsWith('-') ? word.slice(1) : `${separator}${word}`;
 
       const concat = this.textField?.value + body + separator;
@@ -318,8 +328,19 @@ export class PvAppElement extends SignalWatcher(LitElement) {
         }}
         @language-change-click=${() => {
           this.playClickSound();
-          this.stateInternal.lang =
-            this.stateInternal.lang === 'en' ? 'ja' : 'en';
+          this.languageIndex =
+            (this.languageIndex + 1) % this.languageLabelList.length;
+          this.state.lang =
+            LANGUAGES[this.languageLabelList[this.languageIndex]];
+          this.keyboardIndex = 0;
+          this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
+          this.updateSuggestions();
+        }}
+        @keyboard-change-click=${() => {
+          this.playClickSound();
+          this.keyboardIndex =
+            (this.keyboardIndex + 1) % this.state.lang.keyboards.length;
+          this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
           this.updateSuggestions();
         }}
         @content-copy-click=${() => {
@@ -378,11 +399,9 @@ export class PvAppElement extends SignalWatcher(LitElement) {
         class="${this.stateInternal.sentenceSmallMargin ? 'tight' : ''}"
       >
         <pv-suggestion-stripe
+          .state=${this.stateInternal}
           .offset="${sharedOffset}"
           .suggestion="${suggestion}"
-          .lang="${this.sentenceSuggestionLang
-            ? this.sentenceSuggestionLang
-            : this.stateInternal.lang}"
           @select="${onSuggestionSelect}"
         ></pv-suggestion-stripe>
       </li>`;
