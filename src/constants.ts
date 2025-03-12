@@ -52,6 +52,7 @@ export const INITIAL_PHRASES: {[key: string]: string[]} = {
 
 export const CONFIG_DEFAULT: Config = {
   aiConfig: 'smart',
+  enableEarcons: false,
   expandAtOrigin: false,
   initialPhrases: [],
   persona: '',
