@@ -52,6 +52,19 @@ TEMPLATES = {
 
         回答:
         '''),
+    'SentenceGeneric20250311':
+        textwrap.dedent('''\
+        Please guess and generate a list of [[num]] different sentences that start with "[[text]]".
+        Please note the word I provide may not be complete, so use your best guess. Each answer must start with an index number, and each answer should start with different word to cover wider topics. The response should be in [[language]]. Those sentences should not be the same. Do not highlight answers with asterisk. Since your output will be used as the user's input, do not include any extra notes, labels or explanations in your output.
+        The answer should be in [[language]].
+        #ifdef persona
+
+        FYI: The user's profile is as follows:
+        [[persona]]
+        #endif
+
+        Answer:
+        '''),
     'WordGeneric20240628':
         textwrap.dedent('''\
         #ifdef lastInputSpeech

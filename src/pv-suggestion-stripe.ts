@@ -19,15 +19,7 @@ import './pv-button.js';
 import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
-declare class TinySegmenter {
-  segment(text: string): string[];
-}
-
-declare global {
-  interface Window {
-    TinySegmenter: typeof TinySegmenter;
-  }
-}
+import {State} from './state.js';
 
 export class SuggestionSelectEvent extends CustomEvent<string> {}
 
@@ -67,19 +59,17 @@ function splitPunctuations(words: string[]) {
 
 @customElement('pv-suggestion-stripe')
 export class PvSuggestionStripeElement extends LitElement {
+  @property({type: Object})
+  private state!: State;
+
   @property({type: String, reflect: true})
   suggestion = '';
 
   @property({type: String, reflect: true})
   offset = '';
 
-  @property({type: String, reflect: true})
-  lang = 'en';
-
   @property({type: Number})
   mouseoverIndex = -1;
-
-  private tinySegmenter = new window.TinySegmenter();
 
   static styles = css`
     :host {
@@ -104,29 +94,12 @@ export class PvSuggestionStripeElement extends LitElement {
     }
   `;
 
-  segment(sentence: string) {
-    return this.lang === 'ja'
-      ? this.tinySegmenter.segment(sentence)
-      : sentence.split(' ');
-  }
-
-  join(words: string[]) {
-    if (this.lang === 'ja') {
-      return words.join('');
-    }
-    // Remove extra space before punctuation caused by punctuation split, and add a trailing space.
-    // For example,
-    // 'Yes , I can .' => 'Yes, I can. '
-    // 'What is .NET framework ?' => 'What is .NET framework? '
-    return words.join(' ').replace(/ ([.,!?]+( |$))/g, '$1') + ' ';
-  }
-
   render() {
     // TODO when we accept other languages than English, update this segmenter.
-    const words = splitPunctuations(this.segment(this.suggestion));
+    const words = splitPunctuations(this.state.lang.segment(this.suggestion));
     const leadingWords = getLeadingWords(
       words,
-      splitPunctuations(this.segment(this.offset)),
+      splitPunctuations(this.state.lang.segment(this.offset)),
     );
     return html`${leadingWords.length > 0
       ? html`<span class="ellipsis">… </span>`
@@ -146,7 +119,7 @@ export class PvSuggestionStripeElement extends LitElement {
             @click="${() => {
               this.dispatchEvent(
                 new SuggestionSelectEvent('select', {
-                  detail: this.join(words.slice(0, i + 1)),
+                  detail: this.state.lang.join(words.slice(0, i + 1)),
                 }),
               );
             }}"

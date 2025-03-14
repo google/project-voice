@@ -20,40 +20,9 @@ import {SignalWatcher} from '@lit-labs/signals';
 import {css, html, LitElement} from 'lit';
 import {customElement, property, queryAll} from 'lit/decorators.js';
 
+import {Key} from './keyboard.js';
 import type {PvExpandKeypadElement} from './pv-expand-keypad.js';
 import {State} from './state.js';
-
-type Keypads = {
-  label: string;
-  value: string[];
-}[];
-
-const KEYPADS_EN: Keypads = [
-  {label: 'abc', value: ['abc']},
-  {label: 'def', value: ['def']},
-  {label: 'ghi', value: ['ghi']},
-  {label: 'jkl', value: ['jkl']},
-  {label: 'mno', value: ['mno']},
-  {label: 'pqrs', value: ['pqrs']},
-  {label: 'tuv', value: ['tuv']},
-  {label: 'wxyz', value: ['wxyz']},
-  {label: '0~9', value: ['01234', '56789']},
-  {label: '.,!?', value: ['␣.,!?']},
-];
-
-const KEYPADS_JA: Keypads = [
-  {label: 'あ', value: ['あいうえお', 'ぁぃぅぇぉ']},
-  {label: 'か', value: ['かきくけこ', 'がぎぐげご']},
-  {label: 'さ', value: ['さしすせそ', 'ざじずぜぞ']},
-  {label: 'た', value: ['たちつてとっ', 'だぢづでど']},
-  {label: 'な', value: ['なにぬねの']},
-  {label: 'は', value: ['はひふへほ', 'ばびぶべぼ', 'ぱぴぷぺぽ']},
-  {label: 'ま', value: ['まみむめも']},
-  {label: 'や', value: ['やゆよ', 'ゃゅょ']},
-  {label: 'ら', value: ['らりるれろ']},
-  {label: 'わ', value: ['わをん']},
-  {label: '゛゜', value: ['。、ー？！', '␣゛゜']},
-];
 
 @customElement('pv-character-input')
 export class PvCharacterInputElement extends SignalWatcher(LitElement) {
@@ -87,9 +56,9 @@ export class PvCharacterInputElement extends SignalWatcher(LitElement) {
   }
 
   render() {
-    const keypadsTemplate = (keypads: Keypads) => html`
+    const keypadsTemplate = (keys: Key[]) => html`
       <ul>
-        ${keypads.map(
+        ${keys.map(
           keypad => html`
             <li>
               <pv-expand-keypad
@@ -103,8 +72,6 @@ export class PvCharacterInputElement extends SignalWatcher(LitElement) {
         )}
       </ul>
     `;
-    return this.state.lang === 'en'
-      ? keypadsTemplate(KEYPADS_EN)
-      : keypadsTemplate(KEYPADS_JA);
+    return keypadsTemplate(this.state.keyboard.keys[0]);
   }
 }

@@ -221,7 +221,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
           </md-select-option>
           ${window.speechSynthesis
             .getVoices()
-            .filter(voice => voice.lang.startsWith(this.state.lang))
+            .filter(voice => voice.lang.startsWith(this.state.lang.code))
             .map(
               voice =>
                 html`<md-select-option

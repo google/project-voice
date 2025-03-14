@@ -16,6 +16,7 @@
 
 import {ConfigStorage} from '../config-storage.js';
 import {CONFIG_DEFAULT} from '../constants.js';
+import {LANGUAGES} from '../language.js';
 import {TEST_ONLY} from '../pv-app.js';
 import {State} from '../state.js';
 import {TEST_CONFIG} from './test_config-storage.js';
@@ -94,13 +95,13 @@ describe('PvAppElement', () => {
       expect(element.state.voiceSpeakingRate).toBe(
         CONFIG_DEFAULT.voiceSpeakingRate,
       );
-      expect(element.state.lang).toBe('en');
+      expect(element.state.lang.code).toBe('ja-JP');
     });
 
     it('should use provided state', () => {
       const storage = new ConfigStorage('test', TEST_CONFIG);
       const state = new State(storage);
-      state.lang = 'ja';
+      state.lang = LANGUAGES['japaneseWithSingleRowKeyboard'];
       const element = new TEST_ONLY.PvAppElement(state);
 
       // Compare all state members with TEST_CONFIG
@@ -116,7 +117,7 @@ describe('PvAppElement', () => {
       expect(element.state.voiceSpeakingRate).toBe(
         TEST_CONFIG.voiceSpeakingRate,
       );
-      expect(element.state.lang).toBe('ja');
+      expect(element.state.lang.code).toBe('ja-JP');
     });
   });
 });

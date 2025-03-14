@@ -31,6 +31,7 @@ const EVENT_KEY = {
   contentCopyClick: 'content-copy-click',
   deleteClick: 'delete-click',
   firstUpdated: 'first-updated',
+  keyboardChangeClick: 'keyboard-change-click',
   languageChangeClick: 'language-change-click',
   settingClick: 'setting-click',
   undoClick: 'undo-click',
@@ -175,6 +176,8 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
 
   render() {
     const isTextEmpty = this.state.text === '';
+    const isKeyboardSwitchable = this.state.lang.keyboards.length > 1;
+    // TODO: Hide the language button when there is only one language.
     return html`
       <div class="functions">
         <div class="functions-bar">
@@ -210,9 +213,21 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
               this.fireEvent(EVENT_KEY.languageChangeClick);
             }}"
           >
-            <md-icon>language_japanese_kana</md-icon>
+            <md-icon>language</md-icon>
             <span>${msg('Language')}</span>
           </button>
+          ${isKeyboardSwitchable
+            ? html`
+                <button
+                  @click="${() => {
+                    this.fireEvent(EVENT_KEY.keyboardChangeClick);
+                  }}"
+                >
+                  <md-icon>language_japanese_kana</md-icon>
+                  <span>${msg('Keyboard')}</span>
+                </button>
+              `
+            : ''}
           <hr />
           <button
             @click="${() => {
@@ -244,10 +259,6 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
     `;
   }
 
-  private ttsLang() {
-    return this.state.lang === 'ja' ? 'ja-JP' : 'en-US';
-  }
-
   private async onTtsButtonClick() {
     const tts = window.speechSynthesis;
     tts.cancel();
@@ -267,7 +278,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
 
   private startTts() {
     const utterance = new SpeechSynthesisUtterance(this.state.text);
-    utterance.lang = this.ttsLang();
+    utterance.lang = this.state.lang.code;
     utterance.rate = Math.pow(2, this.state.voiceSpeakingRate / 10);
     utterance.pitch = (this.state.voicePitch + 20) / 20;
     const tts = window.speechSynthesis;

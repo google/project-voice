@@ -16,6 +16,7 @@
 
 import {ConfigStorage} from '../config-storage.js';
 import {AI_CONFIGS} from '../constants.js';
+import {LANGUAGES} from '../language.js';
 import {State} from '../state.js';
 import {TEST_CONFIG} from './test_config-storage.js';
 
@@ -34,7 +35,7 @@ describe('State', () => {
   });
 
   it('initializes with default values', () => {
-    expect(state.lang).toEqual('en');
+    expect(state.lang.code).toEqual('ja-JP');
     expect(state.text).toEqual('');
     expect(state.aiConfig).toEqual(TEST_CONFIG.aiConfig);
     expect(state.model).toEqual(AI_CONFIGS[TEST_CONFIG.aiConfig].model);
@@ -52,7 +53,7 @@ describe('State', () => {
   });
 
   it('updates language correctly', () => {
-    const newLang = 'ja';
+    const newLang = LANGUAGES['englishWithSingleRowKeyboard'];
     state.lang = newLang;
     expect(state.lang).toEqual(newLang);
   });

@@ -17,7 +17,9 @@
 import {signal} from '@lit-labs/signals';
 
 import {ConfigStorage} from './config-storage.js';
-import {AI_CONFIGS, CONFIG_DEFAULT} from './constants.js';
+import {CONFIG_DEFAULT} from './constants.js';
+import {ALPHANUMERIC_SINGLE_ROW, Keyboard} from './keyboard.js';
+import {Language, LANGUAGES} from './language.js';
 
 interface Features {
   sentenceMacroId: string | null;
@@ -31,14 +33,24 @@ class State {
   // for this app. For now, we use hand wrtten getters / setters for accessing
   // state.
 
-  private langSignal = signal('en');
+  private langSignal = signal(LANGUAGES['japaneseWithSingleRowKeyboard']);
 
   get lang() {
     return this.langSignal.get();
   }
 
-  set lang(newLang: string) {
+  set lang(newLang: Language) {
     this.langSignal.set(newLang);
+  }
+
+  private keyboardSignal = signal(ALPHANUMERIC_SINGLE_ROW);
+
+  get keyboard() {
+    return this.keyboardSignal.get();
+  }
+
+  set keyboard(newKeyboard: Keyboard) {
+    this.keyboardSignal.set(newKeyboard);
   }
 
   private textSignal = signal('');
@@ -63,15 +75,15 @@ class State {
   }
 
   get model() {
-    return AI_CONFIGS[this.aiConfig]?.model;
+    return this.lang.aiConfigs[this.aiConfig]?.model;
   }
 
   get sentenceMacroId() {
-    return AI_CONFIGS[this.aiConfig]?.sentence;
+    return this.lang.aiConfigs[this.aiConfig]?.sentence;
   }
 
   get wordMacroId() {
-    return AI_CONFIGS[this.aiConfig]?.word;
+    return this.lang.aiConfigs[this.aiConfig]?.word;
   }
 
   private expandAtOriginSignal = signal(false);
