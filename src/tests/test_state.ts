@@ -53,7 +53,7 @@ describe('State', () => {
   });
 
   it('updates language correctly', () => {
-    const newLang = LANGUAGES['englishSingleRowKeyboard'];
+    const newLang = LANGUAGES['englishWithSingleRowKeyboard'];
     state.lang = newLang;
     expect(state.lang).toEqual(newLang);
   });

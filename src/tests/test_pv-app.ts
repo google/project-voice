@@ -101,7 +101,7 @@ describe('PvAppElement', () => {
     it('should use provided state', () => {
       const storage = new ConfigStorage('test', TEST_CONFIG);
       const state = new State(storage);
-      state.lang = LANGUAGES['japaneseSingleRowKeyboard'];
+      state.lang = LANGUAGES['japaneseWithSingleRowKeyboard'];
       const element = new TEST_ONLY.PvAppElement(state);
 
       // Compare all state members with TEST_CONFIG
