@@ -177,7 +177,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
   render() {
     const isTextEmpty = this.state.text === '';
     const isKeyboardSwitchable = this.state.lang.keyboards.length > 1;
-    // TODO: Hide the language button when there is only one language.
+    const isLanguageSwitchable = this.state.features.languages.length > 1;
     return html`
       <div class="functions">
         <div class="functions-bar">
@@ -208,14 +208,18 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
             <span>${msg('Clear')}</span>
           </button>
           <hr />
-          <button
-            @click="${() => {
-              this.fireEvent(EVENT_KEY.languageChangeClick);
-            }}"
-          >
-            <md-icon>language</md-icon>
-            <span>${msg('Language')}</span>
-          </button>
+          ${isLanguageSwitchable
+            ? html`
+                <button
+                  @click="${() => {
+                    this.fireEvent(EVENT_KEY.languageChangeClick);
+                  }}"
+                >
+                  <md-icon>language</md-icon>
+                  <span>${msg('Language')}</span>
+                </button>
+              `
+            : ''}
           ${isKeyboardSwitchable
             ? html`
                 <button

@@ -141,7 +141,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   @property({type: String, attribute: 'feature-languages'})
   languageLabels = 'japaneseWithSingleRowKeyboard,englishWithSingleRowKeyboard';
 
-  private languageLabelList: string[] = [];
   private languageIndex = 0;
   private keyboardIndex = 0;
 
@@ -152,15 +151,17 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
     setLocale(this.locale ? this.locale : 'ja');
 
-    this.languageLabelList = this.languageLabels.split(',');
-    this.stateInternal.lang = LANGUAGES[this.languageLabelList[0]];
-    this.stateInternal.keyboard =
-      this.stateInternal.lang.keyboards[this.keyboardIndex];
-
     this.stateInternal.features = {
+      languages: this.languageLabels.split(','),
       sentenceMacroId: this.sentenceMacroId,
       wordMacroId: null,
     };
+
+    this.stateInternal.lang =
+      LANGUAGES[this.stateInternal.features.languages[0]];
+    this.stateInternal.keyboard =
+      this.stateInternal.lang.keyboards[this.keyboardIndex];
+
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has(URL_PARAMS.SENTENCE_MACRO_ID)) {
       this.stateInternal.features.sentenceMacroId = urlParams.get(
@@ -329,9 +330,12 @@ export class PvAppElement extends SignalWatcher(LitElement) {
         @language-change-click=${() => {
           this.playClickSound();
           this.languageIndex =
-            (this.languageIndex + 1) % this.languageLabelList.length;
+            (this.languageIndex + 1) %
+            this.stateInternal.features.languages.length;
           this.state.lang =
-            LANGUAGES[this.languageLabelList[this.languageIndex]];
+            LANGUAGES[
+              this.stateInternal.features.languages[this.languageIndex]
+            ];
           this.keyboardIndex = 0;
           this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
           this.updateSuggestions();
