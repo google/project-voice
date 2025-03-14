@@ -139,7 +139,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
   // TODO: Make this configurable.
   @property({type: String, attribute: 'feature-languages'})
-  private languageLabels = 'japaneseSingleRowKeyboard,englishSingleRowKeyboard';
+  languageLabels = 'japaneseWithSingleRowKeyboard,englishWithSingleRowKeyboard';
 
   private languageLabelList: string[] = [];
   private languageIndex = 0;

@@ -15,6 +15,7 @@
  */
 
 import {msg} from '@lit/localize';
+import {html, TemplateResult} from 'lit';
 
 import {
   ALPHANUMERIC_SINGLE_ROW,
@@ -33,39 +34,48 @@ declare global {
 }
 
 export interface Language {
-  // The locale code of the language, e.g. 'en-US'. Used for speech synthesis,
-  // etc.
+  /**
+   * The locale code of the language, e.g. 'en-US'. Used for speech synthesis,
+   * etc.
+   */
   readonly code: string;
 
-  // The name of the language in English, e.g. 'Japanese'. Used to fill the
-  // [[language]] placeholder of prompts.
+  /**
+   * The name of the language in English, e.g. 'Japanese'. Used to fill the
+   * [[language]] placeholder of prompts.
+   */
   readonly promptName: string;
 
-  // List of the available keyboards for this language.
+  /** List of the available keyboards for this language. */
   readonly keyboards: Keyboard[];
 
-  // Word separator of this language.
+  /** Word separator of this language. */
   readonly separetor: string;
 
-  // Default initial phrases.
+  /** Default initial phrases. */
   readonly initialPhrases: string[];
 
-  // AI configs for this language.
+  /** AI configs for this language. */
   readonly aiConfigs: {
     [key: string]: {model: string; sentence: string; word: string};
   };
 
   // Renders the language name in a human readable way.
-  render(): void;
+  render(): TemplateResult;
 
-  // Segments a sentence in the language into words.
+  /**
+   * Segments a sentence in the language into words.
+   *
+   * For example, Japanese doesn't separate words with spaces. We need a
+   * specific segment / join logic for such languages.
+   */
   segment(sentence: string): string[];
 
-  // Joins words in the language into a sentence.
+  /** Joins words in the language into a sentence. */
   join(words: string[]): string;
 }
 
-abstract class GenericLanguage implements Language {
+abstract class LatinScriptLanguage implements Language {
   code = '';
   promptName = '';
   keyboards: Keyboard[] = [];
@@ -89,7 +99,7 @@ abstract class GenericLanguage implements Language {
     },
   };
 
-  abstract render(): void;
+  abstract render(): TemplateResult;
 
   segment(sentence: string) {
     return sentence.split(' ');
@@ -104,7 +114,7 @@ abstract class GenericLanguage implements Language {
   }
 }
 
-abstract class English extends GenericLanguage {
+abstract class English extends LatinScriptLanguage {
   code = 'en-US';
   promptName = 'English';
   initialPhrases = [
@@ -124,10 +134,10 @@ abstract class English extends GenericLanguage {
   ];
 }
 
-class EnglishSingleRowKeyboard extends English {
+class EnglishWithSingleRowKeyboard extends English {
   keyboards = [ALPHANUMERIC_SINGLE_ROW];
   override render() {
-    return msg('English (single-row keyboard)');
+    return html`${msg('English (single-row keyboard)')}`;
   }
 }
 
@@ -168,7 +178,7 @@ abstract class Japanese implements Language {
     },
   };
 
-  abstract render(): void;
+  abstract render(): TemplateResult;
 
   private tinySegmenter = window.TinySegmenter
     ? new window.TinySegmenter()
@@ -185,14 +195,14 @@ abstract class Japanese implements Language {
   }
 }
 
-class JapaneseSingleRowKeyboard extends Japanese {
+class JapaneseWithSingleRowKeyboard extends Japanese {
   keyboards = [HIRAGANA_SINGLE_ROW, ALPHANUMERIC_SINGLE_ROW];
   render() {
-    return msg('Japanese (single-row keyboard)');
+    return html`${msg('Japanese (single-row keyboard)')}`;
   }
 }
 
 export const LANGUAGES: {[name: string]: Language} = {
-  englishSingleRowKeyboard: new EnglishSingleRowKeyboard(),
-  japaneseSingleRowKeyboard: new JapaneseSingleRowKeyboard(),
+  englishWithSingleRowKeyboard: new EnglishWithSingleRowKeyboard(),
+  japaneseWithSingleRowKeyboard: new JapaneseWithSingleRowKeyboard(),
 };
