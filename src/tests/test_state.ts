@@ -15,7 +15,6 @@
  */
 
 import {ConfigStorage} from '../config-storage.js';
-import {AI_CONFIGS} from '../constants.js';
 import {LANGUAGES} from '../language.js';
 import {State} from '../state.js';
 import {TEST_CONFIG} from './test_config-storage.js';
@@ -38,11 +37,12 @@ describe('State', () => {
     expect(state.lang.code).toEqual('ja-JP');
     expect(state.text).toEqual('');
     expect(state.aiConfig).toEqual(TEST_CONFIG.aiConfig);
-    expect(state.model).toEqual(AI_CONFIGS[TEST_CONFIG.aiConfig].model);
+    const aiConfigs = state.lang.aiConfigs;
+    expect(state.model).toEqual(aiConfigs[TEST_CONFIG.aiConfig].model);
     expect(state.sentenceMacroId).toEqual(
-      AI_CONFIGS[TEST_CONFIG.aiConfig].sentence,
+      aiConfigs[TEST_CONFIG.aiConfig].sentence,
     );
-    expect(state.wordMacroId).toEqual(AI_CONFIGS[TEST_CONFIG.aiConfig].word);
+    expect(state.wordMacroId).toEqual(aiConfigs[TEST_CONFIG.aiConfig].word);
     expect(state.expandAtOrigin).toEqual(TEST_CONFIG.expandAtOrigin);
     expect(state.sentenceSmallMargin).toEqual(TEST_CONFIG.sentenceSmallMargin);
     expect(state.persona).toEqual(TEST_CONFIG.persona);
@@ -67,10 +67,11 @@ describe('State', () => {
   it('handles AI config changes', () => {
     const newConfig = 'fast';
     state.aiConfig = newConfig;
+    const aiConfigs = state.lang.aiConfigs;
     expect(state.aiConfig).toEqual(newConfig);
-    expect(state.model).toEqual(AI_CONFIGS[newConfig].model);
-    expect(state.sentenceMacroId).toEqual(AI_CONFIGS[newConfig].sentence);
-    expect(state.wordMacroId).toEqual(AI_CONFIGS[newConfig].word);
+    expect(state.model).toEqual(aiConfigs[newConfig].model);
+    expect(state.sentenceMacroId).toEqual(aiConfigs[newConfig].sentence);
+    expect(state.wordMacroId).toEqual(aiConfigs[newConfig].word);
     expect(storage.read('aiConfig')).toEqual(newConfig);
   });
 
