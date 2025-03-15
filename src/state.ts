@@ -22,6 +22,7 @@ import {ALPHANUMERIC_SINGLE_ROW, Keyboard} from './keyboard.js';
 import {Language, LANGUAGES} from './language.js';
 
 interface Features {
+  languages: string[];
   sentenceMacroId: string | null;
   wordMacroId: string | null;
 }
@@ -174,6 +175,7 @@ class State {
 
   // TODO: This is a little hacky... Consider a better way.
   features: Features = {
+    languages: [],
     sentenceMacroId: null,
     wordMacroId: null,
   };
