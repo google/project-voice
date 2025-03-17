@@ -25,7 +25,7 @@ export const TEST_CONFIG: Config = {
   ttsVoice: 'ja-JP-ExampleVoice-X',
   voicePitch: 5,
   voiceSpeakingRate: 3,
-  enableEarcons: false
+  enableEarcons: false,
 };
 
 describe('UsaStorage', () => {
