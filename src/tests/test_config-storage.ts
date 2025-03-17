@@ -18,6 +18,7 @@ import {Config, ConfigStorage} from '../config-storage.js';
 
 export const TEST_CONFIG: Config = {
   aiConfig: 'smart',
+  enableEarcons: false,
   expandAtOrigin: true,
   initialPhrases: ['Yes', 'No'],
   persona: "I'm an example model smarter than example model 1.0",
@@ -25,7 +26,6 @@ export const TEST_CONFIG: Config = {
   ttsVoice: 'ja-JP-ExampleVoice-X',
   voicePitch: 5,
   voiceSpeakingRate: 3,
-  enableEarcons: false,
 };
 
 describe('UsaStorage', () => {
