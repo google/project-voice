@@ -83,17 +83,17 @@ abstract class LatinScriptLanguage implements Language {
   initialPhrases: string[] = [];
   aiConfigs = {
     classic: {
-      model: 'gemini-1.5-flash-001',
+      model: 'gemini-2.0-flash-001',
       sentence: 'SentenceGeneric20250311',
       word: 'WordGeneric20240628',
     },
     fast: {
-      model: 'gemini-1.5-flash-002',
+      model: 'gemini-2.0-flash-lite-001',
       sentence: 'SentenceGeneric20250311',
       word: 'WordGeneric20240628',
     },
     smart: {
-      model: 'gemini-1.5-pro-002',
+      model: 'gemini-2.0-pro-exp',
       sentence: 'SentenceGeneric20250311',
       word: 'WordGeneric20240628',
     },
