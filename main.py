@@ -46,4 +46,4 @@ def RunMacro():
 
 
 if __name__ == '__main__':
-  app.run(debug=True, host='127.0.0.1')
+  app.run(debug=True, host=os.environ.get('FLASK_HOST', '127.0.0.1'))
