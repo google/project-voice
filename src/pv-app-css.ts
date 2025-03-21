@@ -115,17 +115,18 @@ export const pvAppStyle = css`
   }
 
   .language-name {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--app-background-color);
     background: var(--app-color);
-    padding: 1rem;
     border-radius: 1rem;
+    color: var(--app-background-color);
+    display: none;
     font-size: 2rem;
+    left: 50%;
+    padding: 1rem;
+    pointer-events: none;
+    position: fixed;
     opacity: 0.8;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .language-name[active] {
