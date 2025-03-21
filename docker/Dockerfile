@@ -8,9 +8,10 @@ ENV FLASK_HOST=0.0.0.0
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install necessary packages
+# Install necessary packages, also install some network utilities for debugging purpose
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3 python3-venv python3-pip
+    apt-get install -y --no-install-recommends python3 \
+    python3-venv python3-pip net-tools iproute2 iputils-ping curl
 
 # Copy all files into container
 COPY . /app
