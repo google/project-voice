@@ -196,9 +196,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       );
     }
 
-    // This behavior is a bit tricky. The default initial phrases are stored
-    // to local storage. So initial phrases won't be changed by switching input
-    // language.
     if (!this.stateInternal.initialPhrases.some(str => str)) {
       this.stateInternal.initialPhrases =
         this.stateInternal.lang.initialPhrases;
@@ -333,6 +330,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       LANGUAGES[this.stateInternal.features.languages[this.languageIndex]];
     this.keyboardIndex = 0;
     this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
+    this.state.initialPhrases = this.state.lang.initialPhrases;
     this.updateSuggestions();
     if (this.languageName) {
       this.languageName.setAttribute('active', 'true');
