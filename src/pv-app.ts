@@ -144,6 +144,9 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   private languageIndex = 0;
   private keyboardIndex = 0;
 
+  @query('.language-name')
+  private languageName?: HTMLElement;
+
   static styles = pvAppStyle;
 
   connectedCallback() {
@@ -339,6 +342,12 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           this.keyboardIndex = 0;
           this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
           this.updateSuggestions();
+          if (this.languageName) {
+            this.languageName.setAttribute('active', 'true');
+            setTimeout(() => {
+              this.languageName?.removeAttribute('active');
+            }, 750);
+          }
         }}
         @keyboard-change-click=${() => {
           this.playClickSound();
@@ -379,6 +388,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
             }}
           ></pv-textarea-wrapper>
         </div>
+        <div class="language-name">${this.stateInternal.lang.render()}</div>
       </div>
       <pv-setting-panel .state=${this.stateInternal}></pv-setting-panel>
     `;
