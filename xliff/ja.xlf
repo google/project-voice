@@ -90,6 +90,14 @@
   <source>Enable earcons</source>
   <target>効果音を再生</target>
 </trans-unit>
+<trans-unit id="s54f4fb35b3a04e2a">
+  <source>English (single-row keyboard)</source>
+  <target>English (一行キーボード)</target>
+</trans-unit>
+<trans-unit id="s9c2aff542563e783">
+  <source>Japanese (single-row keyboard)</source>
+  <target>日本語 (一行キーボード)</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

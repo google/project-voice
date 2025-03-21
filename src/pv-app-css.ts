@@ -113,4 +113,23 @@ export const pvAppStyle = css`
       margin: 1rem 1rem 1rem 0;
     }
   }
+
+  .language-name {
+    background: var(--app-color);
+    border-radius: 1rem;
+    color: var(--app-background-color);
+    display: none;
+    font-size: 2rem;
+    left: 50%;
+    padding: 1rem;
+    pointer-events: none;
+    position: fixed;
+    opacity: 0.8;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .language-name[active] {
+    display: block;
+  }
 `;
