@@ -94,6 +94,27 @@ function normalize(sentence: string, isLastInputFromSuggestion?: boolean) {
   return result;
 }
 
+/**
+ * Decorator that plays a click sound when a method is called.
+ */
+function playClickSound() {
+  return function (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor,
+  ) {
+    const originalMethod = descriptor.value;
+    descriptor.value = function (this: PvAppElement, ...args: unknown[]) {
+      if (this.state.enableEarcons) {
+        const audio = new Audio('/static/click2.wav');
+        audio.play();
+      }
+      return originalMethod.apply(this, args);
+    };
+    return descriptor;
+  };
+}
+
 @customElement('pv-app')
 @localized()
 export class PvAppElement extends SignalWatcher(LitElement) {
@@ -259,52 +280,83 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     }, this.delayBeforeFetchMs());
   }
 
-  private playClickSound() {
-    if (!this.state.enableEarcons) {
-      return;
-    }
-    const audio = new Audio('/static/click2.wav');
-    audio.addEventListener('canplaythrough', () => {
-      audio.play();
-    });
+  onCharacterSelect(e: CharacterSelectEvent) {
+    const textfield = this.textField;
+    if (!textfield) return;
+    const normalized = normalize(
+      textfield.value + e.detail,
+      textfield.isLastInputSuggested(),
+    );
+    textfield.setTextFieldValue(normalized, [InputSource.CHARACTER]);
   }
 
+  @playClickSound()
+  onSuggestionSelect(e: SuggestionSelectEvent) {
+    this.textField?.setTextFieldValue(e.detail, [
+      InputSource.SUGGESTED_SENTENCE,
+    ]);
+  }
+
+  @playClickSound()
+  onSuggestedWordClick(word: string) {
+    const separator = this.stateInternal.lang.separetor;
+    const body = word.startsWith('-') ? word.slice(1) : `${separator}${word}`;
+    const concat = this.textField?.value + body + separator;
+    const normalized = normalize(concat);
+    this.textField?.setTextFieldValue(normalized, [InputSource.SUGGESTED_WORD]);
+  }
+
+  @playClickSound()
   onSettingClick() {
-    this.playClickSound();
     this.settingPanel!.show();
   }
 
+  @playClickSound()
+  onUndoClick() {
+    this.textField?.textUndo();
+  }
+
+  @playClickSound()
+  onBackspaceClick() {
+    this.textField?.textBackspace();
+  }
+
+  @playClickSound()
+  onDeleteClick() {
+    this.textField?.textDelete();
+  }
+
+  @playClickSound()
+  onLanguageChangeClick() {
+    this.languageIndex =
+      (this.languageIndex + 1) % this.stateInternal.features.languages.length;
+    this.state.lang =
+      LANGUAGES[this.stateInternal.features.languages[this.languageIndex]];
+    this.keyboardIndex = 0;
+    this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
+    this.updateSuggestions();
+    if (this.languageName) {
+      this.languageName.setAttribute('active', 'true');
+      setTimeout(() => {
+        this.languageName?.removeAttribute('active');
+      }, 750);
+    }
+  }
+
+  @playClickSound()
+  onKeyboardChangeClick() {
+    this.keyboardIndex =
+      (this.keyboardIndex + 1) % this.state.lang.keyboards.length;
+    this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
+    this.updateSuggestions();
+  }
+
+  @playClickSound()
+  onContentCopyClick() {
+    this.textField?.contentCopy();
+  }
+
   protected render() {
-    const onCharacterSelect = (e: CharacterSelectEvent) => {
-      const textfield = this.textField;
-      if (!textfield) return;
-      const normalized = normalize(
-        textfield.value + e.detail,
-        textfield.isLastInputSuggested(),
-      );
-      textfield.setTextFieldValue(normalized, [InputSource.CHARACTER]);
-    };
-
-    const onSuggestionSelect = (e: SuggestionSelectEvent) => {
-      this.playClickSound();
-      this.textField?.setTextFieldValue(e.detail, [
-        InputSource.SUGGESTED_SENTENCE,
-      ]);
-    };
-
-    const onSuggestedWordClick = (word: string) => () => {
-      this.playClickSound();
-      const separator = this.stateInternal.lang.separetor;
-      const body = word.startsWith('-') ? word.slice(1) : `${separator}${word}`;
-
-      const concat = this.textField?.value + body + separator;
-      const normalized = normalize(concat);
-
-      this.textField?.setTextFieldValue(normalized, [
-        InputSource.SUGGESTED_WORD,
-      ]);
-    };
-
     const words = this.isBlank()
       ? this.stateInternal.initialPhrases
       : this.words;
@@ -316,7 +368,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
               <pv-button
                 label="${word}"
                 rounded
-                @click="${onSuggestedWordClick(word)}"
+                @click="${() => this.onSuggestedWordClick(word)}"
               ></pv-button>
             </li>
           `,
@@ -333,7 +385,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           .state=${this.stateInternal}
           .offset="${sharedOffset}"
           .suggestion="${suggestion}"
-          @select="${onSuggestionSelect}"
+          @select="${this.onSuggestionSelect}"
         ></pv-suggestion-stripe>
       </li>`;
     });
@@ -341,55 +393,19 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     return html`
       <pv-functions-bar
         .state=${this.stateInternal}
-        @undo-click=${() => {
-          this.playClickSound();
-          this.textField?.textUndo();
-        }}
-        @backspace-click=${() => {
-          this.playClickSound();
-          this.textField?.textBackspace();
-        }}
-        @delete-click=${() => {
-          this.playClickSound();
-          this.textField?.textDelete();
-        }}
-        @language-change-click=${() => {
-          this.playClickSound();
-          this.languageIndex =
-            (this.languageIndex + 1) %
-            this.stateInternal.features.languages.length;
-          this.state.lang =
-            LANGUAGES[
-              this.stateInternal.features.languages[this.languageIndex]
-            ];
-          this.keyboardIndex = 0;
-          this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
-          this.updateSuggestions();
-          if (this.languageName) {
-            this.languageName.setAttribute('active', 'true');
-            setTimeout(() => {
-              this.languageName?.removeAttribute('active');
-            }, 750);
-          }
-        }}
-        @keyboard-change-click=${() => {
-          this.playClickSound();
-          this.keyboardIndex =
-            (this.keyboardIndex + 1) % this.state.lang.keyboards.length;
-          this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
-          this.updateSuggestions();
-        }}
-        @content-copy-click=${() => {
-          this.playClickSound();
-          this.textField?.contentCopy();
-        }}
+        @undo-click=${this.onUndoClick}
+        @backspace-click=${this.onBackspaceClick}
+        @delete-click=${this.onDeleteClick}
+        @language-change-click=${this.onLanguageChangeClick}
+        @keyboard-change-click=${this.onKeyboardChangeClick}
+        @content-copy-click=${this.onContentCopyClick}
         @setting-click=${this.onSettingClick}
       ></pv-functions-bar>
       <div class="main">
         <div class="keypad">
           <pv-character-input
             .state=${this.stateInternal}
-            @character-select="${onCharacterSelect}"
+            @character-select="${this.onCharacterSelect}"
           ></pv-character-input>
           <div class="suggestions">
             <ul class="word-suggestions">
