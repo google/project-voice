@@ -280,6 +280,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     }, this.delayBeforeFetchMs());
   }
 
+  @playClickSound()
   private onCharacterSelect(e: CharacterSelectEvent) {
     const textfield = this.textField;
     if (!textfield) return;
