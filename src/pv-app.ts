@@ -285,6 +285,13 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       textfield.setTextFieldValue(normalized, [InputSource.CHARACTER]);
     };
 
+    const onSuggestionSelect = (e: SuggestionSelectEvent) => {
+      this.playClickSound();
+      this.textField?.setTextFieldValue(e.detail, [
+        InputSource.SUGGESTED_SENTENCE,
+      ]);
+    };
+
     const onSuggestedWordClick = (word: string) => () => {
       this.playClickSound();
       const separator = this.stateInternal.lang.separetor;
@@ -314,6 +321,22 @@ export class PvAppElement extends SignalWatcher(LitElement) {
             </li>
           `,
     );
+
+    const bodyOfSentenceSuggestions = this.suggestions.map(suggestion => {
+      if (!this.textField?.value) return '';
+      const text = normalize(this.textField.value);
+      const sharedOffset = getSharedPrefix([suggestion, text]);
+      return html` <li
+        class="${this.stateInternal.sentenceSmallMargin ? 'tight' : ''}"
+      >
+        <pv-suggestion-stripe
+          .state=${this.stateInternal}
+          .offset="${sharedOffset}"
+          .suggestion="${suggestion}"
+          @select="${onSuggestionSelect}"
+        ></pv-suggestion-stripe>
+      </li>`;
+    });
 
     return html`
       <pv-functions-bar
@@ -373,7 +396,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
               ${bodyOfWordSuggestions}
             </ul>
             <ul class="sentence-suggestions">
-              ${this.makeSentenceListItems()}
+              ${bodyOfSentenceSuggestions}
             </ul>
             <div class="loader ${this.isLoading ? 'loading' : ''}">
               <md-circular-progress indeterminate></md-circular-progress>
@@ -392,36 +415,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       </div>
       <pv-setting-panel .state=${this.stateInternal}></pv-setting-panel>
     `;
-  }
-
-  private makeSentenceListItems() {
-    if (!this.textField || this.textField.value === '') {
-      return html``;
-    }
-    const text = normalize(this.textField.value);
-
-    const onSuggestionSelect = (e: SuggestionSelectEvent) => {
-      this.playClickSound();
-      this.textField?.setTextFieldValue(e.detail, [
-        InputSource.SUGGESTED_SENTENCE,
-      ]);
-    };
-
-    const toListItem = (suggestion: string) => {
-      const sharedOffset = getSharedPrefix([suggestion, text]);
-      return html` <li
-        class="${this.stateInternal.sentenceSmallMargin ? 'tight' : ''}"
-      >
-        <pv-suggestion-stripe
-          .state=${this.stateInternal}
-          .offset="${sharedOffset}"
-          .suggestion="${suggestion}"
-          @select="${onSuggestionSelect}"
-        ></pv-suggestion-stripe>
-      </li>`;
-    };
-
-    return this.suggestions.map(toListItem);
   }
 }
 
