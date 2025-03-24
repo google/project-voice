@@ -24,6 +24,7 @@ import {SignalWatcher} from '@lit-labs/signals';
 import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
+import {AudioManager} from './audio-manager.js';
 import {State} from './state.js';
 
 const EVENT_KEY = {
@@ -268,11 +269,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
     tts.cancel();
 
     if (this.state.enableEarcons) {
-      const audio = new Audio('/static/chime.wav');
-      audio.addEventListener('canplaythrough', () => {
-        audio.play();
-      });
-      audio.addEventListener('ended', () => {
+      AudioManager.playChime().then(() => {
         this.startTts();
       });
     } else {
