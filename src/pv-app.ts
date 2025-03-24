@@ -28,6 +28,7 @@ import {SignalWatcher} from '@lit-labs/signals';
 import {html, LitElement} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
 
+import {AudioManager} from './audio-manager.js';
 import {LARGE_MARGIN_LINE_LIMIT} from './constants.js';
 import {InputSource} from './input-history.js';
 import {LANGUAGES} from './language.js';
@@ -105,10 +106,7 @@ function playClickSound() {
   ) {
     const originalMethod = descriptor.value;
     descriptor.value = function (this: PvAppElement, ...args: unknown[]) {
-      if (this.state.enableEarcons) {
-        const audio = new Audio('/static/click2.wav');
-        audio.play();
-      }
+      if (this.state.enableEarcons) AudioManager.playClick();
       return originalMethod.apply(this, args);
     };
     return descriptor;
