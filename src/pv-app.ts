@@ -356,6 +356,9 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     this.textField?.contentCopy();
   }
 
+  @playClickSound()
+  private onKeypadHandlerClick() {}
+
   protected render() {
     const words = this.isBlank()
       ? this.stateInternal.initialPhrases
@@ -405,7 +408,8 @@ export class PvAppElement extends SignalWatcher(LitElement) {
         <div class="keypad">
           <pv-character-input
             .state=${this.stateInternal}
-            @character-select="${this.onCharacterSelect}"
+            @character-select=${this.onCharacterSelect}
+            @keypad-handler-click=${this.onKeypadHandlerClick}
           ></pv-character-input>
           <div class="suggestions">
             <ul class="word-suggestions">
@@ -422,9 +426,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
         <div>
           <pv-textarea-wrapper
             .state=${this.stateInternal}
-            @text-update=${() => {
-              this.updateSuggestions();
-            }}
+            @text-update=${this.updateSuggestions}
           ></pv-textarea-wrapper>
         </div>
         <div class="language-name">${this.stateInternal.lang.render()}</div>
