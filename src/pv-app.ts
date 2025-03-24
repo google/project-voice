@@ -280,7 +280,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     }, this.delayBeforeFetchMs());
   }
 
-  onCharacterSelect(e: CharacterSelectEvent) {
+  private onCharacterSelect(e: CharacterSelectEvent) {
     const textfield = this.textField;
     if (!textfield) return;
     const normalized = normalize(
@@ -291,14 +291,14 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   }
 
   @playClickSound()
-  onSuggestionSelect(e: SuggestionSelectEvent) {
+  private onSuggestionSelect(e: SuggestionSelectEvent) {
     this.textField?.setTextFieldValue(e.detail, [
       InputSource.SUGGESTED_SENTENCE,
     ]);
   }
 
   @playClickSound()
-  onSuggestedWordClick(word: string) {
+  private onSuggestedWordClick(word: string) {
     const separator = this.stateInternal.lang.separetor;
     const body = word.startsWith('-') ? word.slice(1) : `${separator}${word}`;
     const concat = this.textField?.value + body + separator;
@@ -307,27 +307,27 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   }
 
   @playClickSound()
-  onSettingClick() {
+  private onSettingClick() {
     this.settingPanel!.show();
   }
 
   @playClickSound()
-  onUndoClick() {
+  private onUndoClick() {
     this.textField?.textUndo();
   }
 
   @playClickSound()
-  onBackspaceClick() {
+  private onBackspaceClick() {
     this.textField?.textBackspace();
   }
 
   @playClickSound()
-  onDeleteClick() {
+  private onDeleteClick() {
     this.textField?.textDelete();
   }
 
   @playClickSound()
-  onLanguageChangeClick() {
+  private onLanguageChangeClick() {
     this.languageIndex =
       (this.languageIndex + 1) % this.stateInternal.features.languages.length;
     this.state.lang =
@@ -344,7 +344,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   }
 
   @playClickSound()
-  onKeyboardChangeClick() {
+  private onKeyboardChangeClick() {
     this.keyboardIndex =
       (this.keyboardIndex + 1) % this.state.lang.keyboards.length;
     this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
@@ -352,7 +352,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   }
 
   @playClickSound()
-  onContentCopyClick() {
+  private onContentCopyClick() {
     this.textField?.contentCopy();
   }
 
