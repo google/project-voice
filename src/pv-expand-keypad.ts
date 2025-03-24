@@ -208,22 +208,18 @@ export class PvExpandKeypadElement extends LitElement {
     }
   }
 
-  private playClickSound() {
-    if (!this.state.enableEarcons) {
-      return;
-    }
-    const audio = new Audio('/static/click2.wav');
-    audio.addEventListener('canplaythrough', () => {
-      audio.play();
-    });
-  }
-
   protected render() {
     return html`<button
         class="handler"
         @click="${() => {
           this.open = true;
-          this.playClickSound();
+          this.dispatchEvent(
+            new CharacterSelectEvent('keypad-handler-click', {
+              detail: 'open',
+              bubbles: true,
+              composed: true,
+            }),
+          );
         }}"
       >
         ${this.label}
@@ -233,6 +229,13 @@ export class PvExpandKeypadElement extends LitElement {
           class="close"
           @click="${() => {
             this.open = false;
+            this.dispatchEvent(
+              new CharacterSelectEvent('keypad-handler-click', {
+                detail: 'close',
+                bubbles: true,
+                composed: true,
+              }),
+            );
           }}"
         >
           <md-icon>close</md-icon>
@@ -248,7 +251,6 @@ export class PvExpandKeypadElement extends LitElement {
                         @click="${() => {
                           this.open = false;
                           const characterToSend = c.replace('␣', ' ');
-                          this.playClickSound();
                           this.dispatchEvent(
                             new CharacterSelectEvent('character-select', {
                               detail: characterToSend,
