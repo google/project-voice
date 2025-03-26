@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+import './keyboards/pv-single-row-keyboard.js';
+
 import {msg} from '@lit/localize';
 import {html, TemplateResult} from 'lit';
-import './keyboards/pv-single-row-keyboard.js';
-import {type State} from './state.js';
+import {literal, StaticValue} from 'lit/static-html.js';
 
 declare class TinySegmenter {
   segment(text: string): string[];
@@ -42,8 +43,8 @@ export interface Language {
    */
   readonly promptName: string;
 
-  /** List of the available keyboards for this language. */
-  readonly keyboards: ((state: State) => TemplateResult<1>)[];
+  /** List of the available keyboards for this language in tag name. */
+  readonly keyboards: StaticValue[];
 
   /** Word separator of this language. */
   readonly separetor: string;
@@ -74,7 +75,7 @@ export interface Language {
 abstract class LatinScriptLanguage implements Language {
   code = '';
   promptName = '';
-  keyboards: ((state: State) => TemplateResult<1>)[] = [];
+  keyboards: StaticValue[] = [];
   separetor = ' ';
   initialPhrases: string[] = [];
   aiConfigs = {
@@ -131,10 +132,7 @@ abstract class English extends LatinScriptLanguage {
 }
 
 class EnglishWithSingleRowKeyboard extends English {
-  keyboards = [
-    (state: State) =>
-      html`<pv-alphanumeric-single-row-keyboard .state=${state} />`,
-  ];
+  keyboards = [literal`pv-alphanumeric-single-row-keyboard`];
   override render() {
     return html`${msg('English (single-row keyboard)')}`;
   }
@@ -143,7 +141,7 @@ class EnglishWithSingleRowKeyboard extends English {
 abstract class Japanese implements Language {
   code = 'ja-JP';
   promptName = 'Japanese';
-  keyboards: ((state: State) => TemplateResult<1>)[] = [];
+  keyboards: StaticValue[] = [];
   separetor = '';
   initialPhrases = [
     'はい',
@@ -196,9 +194,8 @@ abstract class Japanese implements Language {
 
 class JapaneseWithSingleRowKeyboard extends Japanese {
   keyboards = [
-    (state: State) => html`<pv-hiragana-single-row-keyboard .state=${state} />`,
-    (state: State) =>
-      html`<pv-alphanumeric-single-row-keyboard .state=${state} />`,
+    literal`pv-hiragana-single-row-keyboard`,
+    literal`pv-alphanumeric-single-row-keyboard`,
   ];
   render() {
     return html`${msg('Japanese (single-row keyboard)')}`;

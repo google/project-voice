@@ -15,7 +15,7 @@
  */
 
 import {signal} from '@lit-labs/signals';
-import {html, TemplateResult} from 'lit';
+import {literal} from 'lit/static-html.js';
 
 import {ConfigStorage} from './config-storage.js';
 import {CONFIG_DEFAULT} from './constants.js';
@@ -44,16 +44,13 @@ class State {
     this.langSignal.set(newLang);
   }
 
-  private keyboardSignal = signal(
-    (state: State) =>
-      html`<pv-alphanumeric-single-row-keyboard state=${state} />`,
-  );
+  private keyboardSignal = signal(literal`pv-alphanumeric-single-row-keyboard`);
 
   get keyboard() {
     return this.keyboardSignal.get();
   }
 
-  set keyboard(newKeyboard: (state: State) => TemplateResult<1>) {
+  set keyboard(newKeyboard) {
     this.keyboardSignal.set(newKeyboard);
   }
 

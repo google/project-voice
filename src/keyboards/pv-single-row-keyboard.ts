@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import '../pv-expand-keypad.js';
+
 import {css, html, LitElement} from 'lit';
 import {customElement, property, queryAll} from 'lit/decorators.js';
-import '../pv-expand-keypad.js';
 
 import type {PvExpandKeypadElement} from '../pv-expand-keypad.js';
 import {State} from '../state.js';
@@ -59,7 +60,7 @@ export class PvSingleRowKeyboard extends LitElement {
   }
 
   @property({type: Object})
-  private state!: State;
+  private state?: State;
 
   @queryAll('pv-expand-keypad')
   keypads?: PvExpandKeypadElement[];
@@ -97,7 +98,7 @@ export class PvSingleRowKeyboard extends LitElement {
                 <pv-expand-keypad
                   .label=${keypad.label}
                   .value=${keypad.value}
-                  ?expandAtOrigin=${this.state.expandAtOrigin}
+                  ?expandAtOrigin=${this.state?.expandAtOrigin || false}
                 ></pv-expand-keypad>
               </li>
             `,

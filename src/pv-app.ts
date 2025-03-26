@@ -17,6 +17,7 @@
 import '@material/web/progress/circular-progress.js';
 import './macro-api-client.js';
 import './pv-button.js';
+import './pv-character-input.js';
 import './pv-functions-bar.js';
 import './pv-setting-panel.js';
 import './pv-suggestion-stripe.js';
@@ -404,7 +405,11 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       ></pv-functions-bar>
       <div class="main">
         <div class="keypad">
-          ${this.stateInternal.keyboard(this.stateInternal)}
+          <pv-character-input
+            .state=${this.stateInternal}
+            @character-select=${this.onCharacterSelect}
+            @keypad-handler-click=${this.onKeypadHandlerClick}
+          ></pv-character-input>
           <div class="suggestions">
             <ul class="word-suggestions">
               ${bodyOfWordSuggestions}
