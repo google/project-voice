@@ -20,9 +20,9 @@ import {css, html, LitElement} from 'lit';
 import {customElement, property, queryAll} from 'lit/decorators.js';
 
 import type {PvExpandKeypadElement} from '../pv-expand-keypad.js';
+import {Key} from '../pv-expand-keypad.js';
 import {State} from '../state.js';
 
-export type Key = {label: string; value: string[]};
 export const ALPHANUMERIC_SINGLE_ROW_KEYGRID: Key[][] = [
   [
     {label: 'abc', value: ['abc']},
