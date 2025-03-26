@@ -19,15 +19,10 @@ import '@material/web/icon/icon.js';
 import {css, html, LitElement} from 'lit';
 import {customElement, property, query, queryAll} from 'lit/decorators.js';
 
-import {State} from './state.js';
-
 export class CharacterSelectEvent extends CustomEvent<string> {}
 
 @customElement('pv-expand-keypad')
 export class PvExpandKeypadElement extends LitElement {
-  @property({type: Object})
-  private state!: State;
-
   @property({type: String, reflect: true})
   label = '';
 
@@ -94,11 +89,11 @@ export class PvExpandKeypadElement extends LitElement {
     }
 
     ul.container {
-      position: absolute;
-      z-index: 1000;
-      top: 0;
-      left: 0;
       display: none;
+      left: 0;
+      position: absolute;
+      top: 0;
+      z-index: 1000;
     }
 
     :host([open]) ul.container {
@@ -115,13 +110,13 @@ export class PvExpandKeypadElement extends LitElement {
     }
 
     .backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
       background: rgba(0, 0, 0, 0.5);
       display: none;
+      height: 100%;
+      left: 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
       z-index: 100;
     }
 

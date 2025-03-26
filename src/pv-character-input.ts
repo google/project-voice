@@ -14,64 +14,24 @@
  * limitations under the License.
  */
 
-import './pv-expand-keypad.js';
-
 import {SignalWatcher} from '@lit-labs/signals';
-import {css, html, LitElement} from 'lit';
-import {customElement, property, queryAll} from 'lit/decorators.js';
+import {LitElement} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {html} from 'lit/static-html.js';
 
-import {Key} from './keyboard.js';
-import type {PvExpandKeypadElement} from './pv-expand-keypad.js';
 import {State} from './state.js';
 
+/**
+ * Dynamically renders a keyboard custom element based on the provided state.
+ *
+ * ref. https://lit.dev/docs/templates/expressions/#static-expressions
+ */
 @customElement('pv-character-input')
 export class PvCharacterInputElement extends SignalWatcher(LitElement) {
   @property({type: Object})
   private state!: State;
 
-  @queryAll('pv-expand-keypad')
-  keypads?: PvExpandKeypadElement[];
-
-  static styles = css`
-    :host {
-      position: relative;
-    }
-
-    ul {
-      display: flex;
-      gap: 0.5rem;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-  `;
-
-  protected firstUpdated() {
-    this.addEventListener('keypad-open', (e: Event) => {
-      const target = e.composedPath()[0];
-      this.keypads?.forEach(keypad => {
-        keypad.open = keypad === target;
-      });
-    });
-  }
-
   render() {
-    const keypadsTemplate = (keys: Key[]) => html`
-      <ul>
-        ${keys.map(
-          keypad => html`
-            <li>
-              <pv-expand-keypad
-                .label=${keypad.label}
-                .value=${keypad.value}
-                .state=${this.state}
-                ?expandAtOrigin=${this.state.expandAtOrigin}
-              ></pv-expand-keypad>
-            </li>
-          `,
-        )}
-      </ul>
-    `;
-    return keypadsTemplate(this.state.keyboard.keys[0]);
+    return html`<${this.state.keyboard} .state=${this.state}></${this.state.keyboard}>`;
   }
 }

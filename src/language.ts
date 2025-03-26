@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
+import './keyboards/pv-single-row-keyboard.js';
+
 import {msg} from '@lit/localize';
 import {html, TemplateResult} from 'lit';
-
-import {
-  ALPHANUMERIC_SINGLE_ROW,
-  HIRAGANA_SINGLE_ROW,
-  Keyboard,
-} from './keyboard';
+import {literal, StaticValue} from 'lit/static-html.js';
 
 declare class TinySegmenter {
   segment(text: string): string[];
@@ -46,8 +43,8 @@ export interface Language {
    */
   readonly promptName: string;
 
-  /** List of the available keyboards for this language. */
-  readonly keyboards: Keyboard[];
+  /** List of the available keyboards for this language in tag name. */
+  readonly keyboards: StaticValue[];
 
   /** Word separator of this language. */
   readonly separetor: string;
@@ -78,7 +75,7 @@ export interface Language {
 abstract class LatinScriptLanguage implements Language {
   code = '';
   promptName = '';
-  keyboards: Keyboard[] = [];
+  keyboards: StaticValue[] = [];
   separetor = ' ';
   initialPhrases: string[] = [];
   aiConfigs = {
@@ -135,7 +132,7 @@ abstract class English extends LatinScriptLanguage {
 }
 
 class EnglishWithSingleRowKeyboard extends English {
-  keyboards = [ALPHANUMERIC_SINGLE_ROW];
+  keyboards = [literal`pv-alphanumeric-single-row-keyboard`];
   override render() {
     return html`${msg('English (single-row keyboard)')}`;
   }
@@ -144,7 +141,7 @@ class EnglishWithSingleRowKeyboard extends English {
 abstract class Japanese implements Language {
   code = 'ja-JP';
   promptName = 'Japanese';
-  keyboards: Keyboard[] = [];
+  keyboards: StaticValue[] = [];
   separetor = '';
   initialPhrases = [
     'はい',
@@ -196,7 +193,10 @@ abstract class Japanese implements Language {
 }
 
 class JapaneseWithSingleRowKeyboard extends Japanese {
-  keyboards = [HIRAGANA_SINGLE_ROW, ALPHANUMERIC_SINGLE_ROW];
+  keyboards = [
+    literal`pv-hiragana-single-row-keyboard`,
+    literal`pv-alphanumeric-single-row-keyboard`,
+  ];
   render() {
     return html`${msg('Japanese (single-row keyboard)')}`;
   }
