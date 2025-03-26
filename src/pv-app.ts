@@ -405,11 +405,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       <div class="main">
         <div class="keypad">
           ${this.stateInternal.keyboard(this.stateInternal)}
-          <pv-character-input
-            .state=${this.stateInternal}
-            @character-select=${this.onCharacterSelect}
-            @keypad-handler-click=${this.onKeypadHandlerClick}
-          ></pv-character-input>
           <div class="suggestions">
             <ul class="word-suggestions">
               ${bodyOfWordSuggestions}

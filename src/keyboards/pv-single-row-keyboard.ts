@@ -15,7 +15,8 @@
  */
 
 import {css, html, LitElement} from 'lit';
-import {customElement, property, queryAll} from 'lit/decorators';
+import {customElement, property, queryAll} from 'lit/decorators.js';
+import '../pv-expand-keypad.js';
 
 import type {PvExpandKeypadElement} from '../pv-expand-keypad.js';
 import {State} from '../state.js';

@@ -16,7 +16,7 @@
 
 import {msg} from '@lit/localize';
 import {html, TemplateResult} from 'lit';
-
+import './keyboards/pv-single-row-keyboard.js';
 import {type State} from './state.js';
 
 declare class TinySegmenter {
@@ -133,7 +133,7 @@ abstract class English extends LatinScriptLanguage {
 class EnglishWithSingleRowKeyboard extends English {
   keyboards = [
     (state: State) =>
-      html`<pv-alphanumeric-single-row-keyboard state=${state} />`,
+      html`<pv-alphanumeric-single-row-keyboard .state=${state} />`,
   ];
   override render() {
     return html`${msg('English (single-row keyboard)')}`;
@@ -196,9 +196,9 @@ abstract class Japanese implements Language {
 
 class JapaneseWithSingleRowKeyboard extends Japanese {
   keyboards = [
-    (state: State) => html`<pv-hiragana-single-row-keyboard state=${state} />`,
+    (state: State) => html`<pv-hiragana-single-row-keyboard .state=${state} />`,
     (state: State) =>
-      html`<pv-alphanumeric-single-row-keyboard state=${state} />`,
+      html`<pv-alphanumeric-single-row-keyboard .state=${state} />`,
   ];
   render() {
     return html`${msg('Japanese (single-row keyboard)')}`;
