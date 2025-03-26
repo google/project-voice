@@ -19,15 +19,11 @@ import '@material/web/icon/icon.js';
 import {css, html, LitElement} from 'lit';
 import {customElement, property, query, queryAll} from 'lit/decorators.js';
 
-import {State} from './state.js';
-
+export type Key = {label: string; value: string[]};
 export class CharacterSelectEvent extends CustomEvent<string> {}
 
 @customElement('pv-expand-keypad')
 export class PvExpandKeypadElement extends LitElement {
-  @property({type: Object})
-  private state!: State;
-
   @property({type: String, reflect: true})
   label = '';
 

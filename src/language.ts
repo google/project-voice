@@ -17,11 +17,7 @@
 import {msg} from '@lit/localize';
 import {html, TemplateResult} from 'lit';
 
-import {
-  ALPHANUMERIC_SINGLE_ROW,
-  HIRAGANA_SINGLE_ROW,
-  Keyboard,
-} from './keyboard';
+import {type State} from './state.js';
 
 declare class TinySegmenter {
   segment(text: string): string[];
@@ -47,7 +43,7 @@ export interface Language {
   readonly promptName: string;
 
   /** List of the available keyboards for this language. */
-  readonly keyboards: Keyboard[];
+  readonly keyboards: ((state: State) => TemplateResult<1>)[];
 
   /** Word separator of this language. */
   readonly separetor: string;
@@ -78,7 +74,7 @@ export interface Language {
 abstract class LatinScriptLanguage implements Language {
   code = '';
   promptName = '';
-  keyboards: Keyboard[] = [];
+  keyboards: ((state: State) => TemplateResult<1>)[] = [];
   separetor = ' ';
   initialPhrases: string[] = [];
   aiConfigs = {
@@ -135,7 +131,10 @@ abstract class English extends LatinScriptLanguage {
 }
 
 class EnglishWithSingleRowKeyboard extends English {
-  keyboards = [ALPHANUMERIC_SINGLE_ROW];
+  keyboards = [
+    (state: State) =>
+      html`<pv-alphanumeric-single-row-keyboard state=${state} />`,
+  ];
   override render() {
     return html`${msg('English (single-row keyboard)')}`;
   }
@@ -144,7 +143,7 @@ class EnglishWithSingleRowKeyboard extends English {
 abstract class Japanese implements Language {
   code = 'ja-JP';
   promptName = 'Japanese';
-  keyboards: Keyboard[] = [];
+  keyboards: ((state: State) => TemplateResult<1>)[] = [];
   separetor = '';
   initialPhrases = [
     'はい',
@@ -196,7 +195,11 @@ abstract class Japanese implements Language {
 }
 
 class JapaneseWithSingleRowKeyboard extends Japanese {
-  keyboards = [HIRAGANA_SINGLE_ROW, ALPHANUMERIC_SINGLE_ROW];
+  keyboards = [
+    (state: State) => html`<pv-hiragana-single-row-keyboard state=${state} />`,
+    (state: State) =>
+      html`<pv-alphanumeric-single-row-keyboard state=${state} />`,
+  ];
   render() {
     return html`${msg('Japanese (single-row keyboard)')}`;
   }

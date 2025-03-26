@@ -15,10 +15,10 @@
  */
 
 import {signal} from '@lit-labs/signals';
+import {html, TemplateResult} from 'lit';
 
 import {ConfigStorage} from './config-storage.js';
 import {CONFIG_DEFAULT} from './constants.js';
-import {ALPHANUMERIC_SINGLE_ROW, Keyboard} from './keyboard.js';
 import {Language, LANGUAGES} from './language.js';
 
 interface Features {
@@ -44,13 +44,16 @@ class State {
     this.langSignal.set(newLang);
   }
 
-  private keyboardSignal = signal(ALPHANUMERIC_SINGLE_ROW);
+  private keyboardSignal = signal(
+    (state: State) =>
+      html`<pv-alphanumeric-single-row-keyboard state=${state} />`,
+  );
 
   get keyboard() {
     return this.keyboardSignal.get();
   }
 
-  set keyboard(newKeyboard: Keyboard) {
+  set keyboard(newKeyboard: (state: State) => TemplateResult<1>) {
     this.keyboardSignal.set(newKeyboard);
   }
 
