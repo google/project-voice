@@ -7,3 +7,6 @@ src/locale-codes.ts
 src/locales/
 static/index.js
 static/locales/
+
+*storybook.log
+/storybook-static
