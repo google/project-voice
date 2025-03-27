@@ -29,7 +29,8 @@ const KEYS = [
   ['ま', 'み', 'む', 'め', 'も'],
   ['や', 'ゆ', 'よ'],
   ['ら', 'り', 'る', 'れ', 'ろ'],
-  ['わ', 'を', 'ん'],
+  ['わ', 'を', 'ん', '、', '。'],
+  ['゛', '゜', 'ー', '？', '！'],
 ];
 
 @customElement('pv-fifty-key-keyboard')
@@ -44,7 +45,7 @@ export class PvFiftyKeyKeyboard extends LitElement {
       flex: 1;
       gap: 0.5rem;
       justify-content: space-between;
-      writing-mode: vertical-rl;
+      flex-direction: column;
     }
   `;
   render() {
