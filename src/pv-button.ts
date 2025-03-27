@@ -31,29 +31,25 @@ export class PvButtonElement extends LitElement {
     }
 
     :host([active]) button,
+    button:focus,
     button:hover {
       background: var(--app-highlight-background-color);
     }
 
     :host([rounded]) button {
-      border-radius: 5vh;
       border-color: #f28b82;
+      border-radius: 5vh;
     }
 
     button {
-      color: var(--app-color);
-      font-size: min(5vh, 3rem);
-      font-family: 'Roboto Mono', 'Noto Sans JP', monospace;
-      padding: 0 1rem;
-      border-radius: 0.5vh;
       background: var(--app-background-color);
+      border-radius: 0.5vh;
       border: solid 3px #8ab4f8;
+      color: var(--app-color);
       cursor: pointer;
-    }
-
-    button:focus,
-    button:hover {
-      background: var(--app-highlight-background-color);
+      font-family: 'Roboto Mono', 'Noto Sans JP', monospace;
+      font-size: min(5vh, 3rem);
+      padding: 0 1rem;
     }
   `;
   render() {
