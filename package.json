@@ -27,7 +27,7 @@
     "@types/jasmine": "^5.1.7",
     "@types/node": "^22.13.13",
     "concurrently": "^9.1.2",
-    "esbuild": "^0.25.1",
+    "esbuild": "^0.25.2",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "gts": "^6.0.2",
     "http-server": "^14.1.1",
