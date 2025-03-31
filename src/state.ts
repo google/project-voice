@@ -64,7 +64,7 @@ class State {
     this.textSignal.set(newText);
   }
 
-  private aiConfigInternal = 'classic';
+  private aiConfigInternal = 'smart';
 
   get aiConfig() {
     return this.aiConfigInternal;

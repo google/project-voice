@@ -19,7 +19,7 @@ import {Config} from './config-storage.js';
 export const RUN_MACRO_ENDPOINT_URL = '/run-macro';
 
 export const CONFIG_DEFAULT: Config = {
-  aiConfig: 'classic',
+  aiConfig: 'smart',
   enableEarcons: false,
   expandAtOrigin: false,
   initialPhrases: [],
