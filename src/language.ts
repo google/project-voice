@@ -80,7 +80,7 @@ abstract class LatinScriptLanguage implements Language {
   initialPhrases: string[] = [];
   aiConfigs = {
     classic: {
-      model: 'gemini-2.0-flash-001',
+      model: 'gemini-1.5-pro-002',
       sentence: 'SentenceGeneric20250311',
       word: 'WordGeneric20240628',
     },
@@ -90,7 +90,7 @@ abstract class LatinScriptLanguage implements Language {
       word: 'WordGeneric20240628',
     },
     smart: {
-      model: 'gemini-2.5-pro-exp-03-25',
+      model: 'gemini-2.0-flash-001',
       sentence: 'SentenceGeneric20250311',
       word: 'WordGeneric20240628',
     },
@@ -159,7 +159,7 @@ abstract class Japanese implements Language {
   ];
   aiConfigs = {
     classic: {
-      model: 'gemini-2.0-flash-001',
+      model: 'gemini-1.5-pro-002',
       sentence: 'SentenceJapanese20240628',
       word: 'WordGeneric20240628',
     },
@@ -169,7 +169,7 @@ abstract class Japanese implements Language {
       word: 'WordGeneric20240628',
     },
     smart: {
-      model: 'gemini-2.5-pro-exp-03-25',
+      model: 'gemini-2.0-flash-001',
       sentence: 'SentenceJapaneseLong20241002',
       word: 'WordGeneric20240628',
     },
