@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@lit/localize-tools": "^0.8.0",
-    "@types/dom-speech-recognition": "^0.0.5",
+    "@types/dom-speech-recognition": "^0.0.6",
     "@types/jasmine": "^5.1.7",
     "@types/node": "^22.13.14",
     "concurrently": "^9.1.2",
