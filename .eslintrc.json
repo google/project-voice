@@ -1,9 +1,17 @@
 {
-  "extends": "./node_modules/gts/",
-  "plugins": ["simple-import-sort"],
+  "extends": [
+    "./node_modules/gts/",
+    "plugin:storybook/recommended"
+  ],
+  "plugins": [
+    "simple-import-sort"
+  ],
   "rules": {
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "@typescript-eslint/no-floating-promises": "off"
+    "@typescript-eslint/no-floating-promises": "off",
+    "n/no-unpublished-import": ["error", {
+      "allowModules": ["@storybook/web-components"]
+    }]
   }
 }
