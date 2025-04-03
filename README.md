@@ -61,6 +61,11 @@ Keep the following in mind when you deploy the app to your own Google Cloud proj
     ```
 1. Run `npm run deploy`.
 
+## Storybook
+
+You can spin up the [Storybook](https://storybook.js.org/) server by running `npm run storybook`.
+This is helpful for UI component development by providing isolation from the app context.
+
 ## Notice
 Please avoid entering potentially sensitive or personally identifiable information (PII) into this application.
 
