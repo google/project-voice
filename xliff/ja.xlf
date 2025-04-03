@@ -90,6 +90,10 @@
   <source>Enable earcons</source>
   <target>効果音を再生</target>
 </trans-unit>
+<trans-unit id="s868a566fb9603774">
+  <source>Keyboard</source>
+  <target>キーボード</target>
+</trans-unit>
 <trans-unit id="s54f4fb35b3a04e2a">
   <source>English (single-row keyboard)</source>
   <target>English (一行キーボード)</target>
