@@ -23,7 +23,7 @@ import './pv-setting-panel.js';
 import './pv-suggestion-stripe.js';
 import './pv-textarea-wrapper.js';
 
-import {configureLocalization, localized} from '@lit/localize';
+import {configureLocalization, LocaleModule, localized} from '@lit/localize';
 import {SignalWatcher} from '@lit-labs/signals';
 import {html, LitElement} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
@@ -33,6 +33,7 @@ import {LARGE_MARGIN_LINE_LIMIT} from './constants.js';
 import {InputSource} from './input-history.js';
 import {LANGUAGES} from './language.js';
 import {sourceLocale, targetLocales} from './locale-codes.js';
+import * as jaModule from './locales/ja.js';
 import {MacroApiClient} from './macro-api-client.js';
 import {pvAppStyle} from './pv-app-css.js';
 import type {CharacterSelectEvent} from './pv-expand-keypad.js';
@@ -50,7 +51,17 @@ const URL_PARAMS = {
 const {setLocale} = configureLocalization({
   sourceLocale,
   targetLocales,
-  loadLocale: locale => import(`/static/locales/${locale}.js`),
+  loadLocale: async locale => {
+    return new Promise(resolve => {
+      switch (locale) {
+        case 'ja':
+          resolve(jaModule);
+          break;
+        default:
+          resolve({} as LocaleModule);
+      }
+    });
+  },
 });
 
 /**

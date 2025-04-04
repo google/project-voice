@@ -8,7 +8,7 @@
     "lint": "tsc --noEmit && gts lint && python -m yapf --diff --style yapf main.py macro.py",
     "clean": "gts clean",
     "build": "npm run build:i18n && npm run build:storybook && esbuild src/index.ts --bundle --minify --outfile=static/index.js",
-    "build:i18n": "lit-localize build && esbuild src/locales/*.ts --outdir=static/locales",
+    "build:i18n": "lit-localize build",
     "build:storybook": "storybook build",
     "watch": "npm run build:i18n && esbuild src/index.ts --bundle --watch --define:process.env.NODE_ENV=\\\"development\\\" --outfile=static/index.js",
     "fix": "gts fix && python -m yapf -i --style yapf main.py macro.py",
