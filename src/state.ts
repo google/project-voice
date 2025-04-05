@@ -44,6 +44,17 @@ class State {
     this.langSignal.set(newLang);
   }
 
+  private checkedLanguagesSignal = signal([] as string[]);
+
+  get checkedLanguages() {
+    return this.checkedLanguagesSignal.get();
+  }
+
+  set checkedLanguages(newCheckedLanguages: string[]) {
+    this.storage.write('checkedLanguages', newCheckedLanguages);
+    this.checkedLanguagesSignal.set(newCheckedLanguages);
+  }
+
   private keyboardSignal = signal(literal`pv-alphanumeric-single-row-keyboard`);
 
   get keyboard() {
@@ -186,6 +197,7 @@ class State {
     this.storage =
       storage ?? new ConfigStorage('com.google.pv', CONFIG_DEFAULT);
     this.aiConfigInternal = this.storage.read('aiConfig');
+    this.checkedLanguages = this.storage.read('checkedLanguages');
     this.enableEarconsInternal = this.storage.read('enableEarcons');
     this.expandAtOrigin = this.storage.read('expandAtOrigin');
     this.initialPhrases = this.storage.read('initialPhrases');

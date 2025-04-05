@@ -178,7 +178,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
   render() {
     const isTextEmpty = this.state.text === '';
     const isKeyboardSwitchable = this.state.lang.keyboards.length > 1;
-    const isLanguageSwitchable = this.state.features.languages.length > 1;
+    const isLanguageSwitchable = this.state.checkedLanguages.length > 1;
     return html`
       <div class="functions">
         <div class="functions-bar">

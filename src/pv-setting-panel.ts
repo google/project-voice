@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import '@material/web/checkbox/checkbox.js';
 import '@material/web/select/select-option.js';
 import '@material/web/button/text-button.js';
 import '@material/web/switch/switch.js';
@@ -30,6 +31,7 @@ import {MdTabs} from '@material/web/tabs/tabs.js';
 import {css, html, LitElement} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
 
+import {LANGUAGES} from './language.js';
 import {State} from './state.js';
 
 const EVENT_KEY = {
@@ -70,6 +72,30 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
 
     .form-section {
       margin: 1rem 0;
+    }
+
+    .language-select {
+      border: 1px solid var(--md-sys-color-outline, #79747e);
+      border-radius: var(--md-sys-shape-corner-extra-small, 4px);
+      display: inline-flex;
+      height: 5rem;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+
+    .language-option {
+      border-color: black;
+      display: flex;
+      margin: 0.75rem 8px;
+    }
+
+    .language-option-label {
+      flex: 1;
+    }
+
+    .language-option-checkbox {
+      flex: 0;
+      margin: 0 0 0 0.75rem;
     }
 
     .pv-persona-text-field,
@@ -201,6 +227,43 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
             }}
           ></md-switch>
         </label>
+      </div>
+      <div class="form-section">
+        <div>
+          <label>${msg('Language')}</label>
+        </div>
+        <div class="language-select">
+          <div>
+            ${Object.entries(LANGUAGES).map(
+              ([label, lang]) =>
+                html`<div class="language-option">
+                  <div class="language-option-label">
+                    <label>${lang.render()}</label>
+                  </div>
+                  <div class="language-option-checkbox">
+                    <md-checkbox
+                      ?checked="${this.state.checkedLanguages.includes(label)}"
+                      ?disabled="${this.state.checkedLanguages.length === 1 &&
+                      this.state.checkedLanguages.includes(label)}"
+                      @change=${() => {
+                        if (this.state.checkedLanguages.includes(label)) {
+                          this.state.checkedLanguages =
+                            this.state.checkedLanguages.filter(
+                              lang => lang !== label,
+                            );
+                        } else {
+                          this.state.checkedLanguages = [
+                            ...this.state.checkedLanguages,
+                            label,
+                          ];
+                        }
+                      }}
+                    ></md-checkbox>
+                  </div>
+                </div>`,
+            )}
+          </div>
+        </div>
       </div>
     `;
 
