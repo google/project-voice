@@ -21,6 +21,7 @@
 
 export interface Config {
   aiConfig: string;
+  checkedLanguages: string[];
   enableEarcons: boolean;
   expandAtOrigin: boolean;
   initialPhrases: string[];

@@ -167,7 +167,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   @property({type: String, attribute: 'feature-sentence-macro-id'})
   private sentenceMacroId: string | null = null;
 
-  // TODO: Make this configurable.
   @property({type: String, attribute: 'feature-languages'})
   languageLabels = 'japaneseWithSingleRowKeyboard,englishWithSingleRowKeyboard';
 
@@ -190,8 +189,11 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       wordMacroId: null,
     };
 
-    this.stateInternal.lang =
-      LANGUAGES[this.stateInternal.features.languages[0]];
+    if (this.stateInternal.checkedLanguages.length === 0) {
+      this.stateInternal.checkedLanguages =
+        this.stateInternal.features.languages;
+    }
+    this.stateInternal.lang = LANGUAGES[this.stateInternal.checkedLanguages[0]];
     this.stateInternal.keyboard =
       this.stateInternal.lang.keyboards[this.keyboardIndex];
 
@@ -336,12 +338,9 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     this.textField?.textDelete();
   }
 
-  @playClickSound()
-  private onLanguageChangeClick() {
-    this.languageIndex =
-      (this.languageIndex + 1) % this.stateInternal.features.languages.length;
+  private switchLanguage() {
     this.state.lang =
-      LANGUAGES[this.stateInternal.features.languages[this.languageIndex]];
+      LANGUAGES[this.state.checkedLanguages[this.languageIndex]];
     this.keyboardIndex = 0;
     this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
     this.updateSuggestions();
@@ -351,6 +350,13 @@ export class PvAppElement extends SignalWatcher(LitElement) {
         this.languageName?.removeAttribute('active');
       }, 750);
     }
+  }
+
+  @playClickSound()
+  private onLanguageChangeClick() {
+    this.languageIndex =
+      (this.languageIndex + 1) % this.state.checkedLanguages.length;
+    this.switchLanguage();
   }
 
   @playClickSound()
@@ -368,6 +374,17 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
   @playClickSound()
   private onKeypadHandlerClick() {}
+
+  // TODO: Call this event handler whenever the dialog is closed.
+  private onOkClick() {
+    const index = this.state.checkedLanguages.findIndex(
+      label => LANGUAGES[label] === this.state.lang,
+    );
+    if (index === -1) {
+      this.languageIndex = 0;
+      this.switchLanguage();
+    }
+  }
 
   protected render() {
     const words = this.isBlank()
@@ -441,7 +458,10 @@ export class PvAppElement extends SignalWatcher(LitElement) {
         </div>
         <div class="language-name">${this.stateInternal.lang.render()}</div>
       </div>
-      <pv-setting-panel .state=${this.stateInternal}></pv-setting-panel>
+      <pv-setting-panel
+        .state=${this.stateInternal}
+        @ok-click=${this.onOkClick}
+      ></pv-setting-panel>
     `;
   }
 }
