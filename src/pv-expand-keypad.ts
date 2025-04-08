@@ -60,7 +60,7 @@ export class PvExpandKeypadElement extends LitElement {
 
     button {
       aspect-ratio: 1;
-      background: var(--app-background-color);
+      background: var(--app-background-color, white);
       border-radius: min(1vw, 1rem);
       border: solid 3px #81c995;
       color: var(--app-color);
@@ -74,7 +74,7 @@ export class PvExpandKeypadElement extends LitElement {
 
     button:hover,
     button:focus {
-      background: var(--app-highlight-background-color);
+      background: var(--app-highlight-background-color, yellow);
     }
 
     .close md-icon {
