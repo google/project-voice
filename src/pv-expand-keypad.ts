@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import '@material/web/icon/icon.js';
-
 import {css, html, LitElement} from 'lit';
 import {customElement, property, query, queryAll} from 'lit/decorators.js';
 
@@ -23,17 +21,47 @@ export class CharacterSelectEvent extends CustomEvent<string> {}
 
 @customElement('pv-expand-keypad')
 export class PvExpandKeypadElement extends LitElement {
+  /**
+   * A label for the handler button.
+   */
   @property({type: String, reflect: true})
   label = '';
 
+  /**
+   * A list of characters to select. Each list item corresponds to a row, and
+   * each character in a list item corresponds to a keypad.
+   *
+   * e.g. `['abc', 'def']` becomes:
+   * ```
+   * [a] [b] [c]
+   * [d] [e] [f]
+   * ```
+   */
   @property({type: Array})
   value: string[] = [];
 
+  /**
+   * Whether the keypad is open.
+   */
   @property({type: Boolean, reflect: true})
   open = false;
 
+  /**
+   * Whether to expand the keypad from the left edge of the container.
+   */
   @property({type: Boolean, reflect: true})
   expandAtOrigin = false;
+
+  /**
+   * Approximate number of characters to show on the handler.
+   *
+   * This value is used to scale the font size of the button label.
+   */
+  @property({type: Number})
+  numCharsOnHandler = 3;
+
+  @queryAll('button')
+  allButtons?: HTMLButtonElement[];
 
   @query('button.handler')
   handlerButton?: HTMLButtonElement;
@@ -51,25 +79,24 @@ export class PvExpandKeypadElement extends LitElement {
   expandedKeypadRows?: HTMLUListElement[];
 
   private onKeydownWhileOpenWithThis = this.onKeydownWhileOpen.bind(this);
+  private resizeObserver?: ResizeObserver;
 
   static styles = css`
-    :host {
-      display: block;
-      height: 100%;
-    }
-
     button {
+      align-items: center;
       aspect-ratio: 1;
       background: var(--app-background-color, white);
-      border-radius: min(1vw, 1rem);
+      border-radius: 20%;
       border: solid 3px #81c995;
       color: var(--app-color);
       cursor: pointer;
+      display: flex;
       font-family: 'Roboto Mono', 'Noto Sans JP', monospace;
-      font-size: min(2.5vw, 3rem);
-      max-width: 128px;
+      justify-content: center;
+      max-width: 8rem;
+      min-width: 2rem;
       padding: 0;
-      width: 7vw;
+      width: 100%;
     }
 
     button:hover,
@@ -77,9 +104,8 @@ export class PvExpandKeypadElement extends LitElement {
       background: var(--app-highlight-background-color, yellow);
     }
 
-    .close md-icon {
-      --md-icon-size: 3vw;
-      margin-top: 0.5vw;
+    .close {
+      font-family: 'Material Symbols Outlined';
     }
 
     ul {
@@ -138,14 +164,13 @@ export class PvExpandKeypadElement extends LitElement {
       const activeElement = this.shadowRoot.activeElement;
       if (e.shiftKey && activeElement === this.focusibleButtons[0]) {
         this.focusibleButtons[this.focusibleButtons.length - 1].focus();
-        console.log('trapping! backward');
         e.preventDefault();
       } else if (
+        !e.shiftKey &&
         activeElement ===
-        this.focusibleButtons[this.focusibleButtons.length - 1]
+          this.focusibleButtons[this.focusibleButtons.length - 1]
       ) {
         this.focusibleButtons[0].focus();
-        console.log('trapping! forward');
         e.preventDefault();
       }
     }
@@ -168,7 +193,9 @@ export class PvExpandKeypadElement extends LitElement {
       this.container.style.top = `${handlerBBox?.top}px`;
       this.container.style.left = `${handlerBBox?.left}px`;
 
+      // Shift the keypad to the left if it overflows the right edge of the screen.
       this.expandedKeypadRows.forEach(row => {
+        row.style.transform = '';
         const rowBBox = row.getBoundingClientRect();
         if (rowBBox.right > window.innerWidth) {
           row.style.transform = `translateX(${
@@ -192,15 +219,30 @@ export class PvExpandKeypadElement extends LitElement {
     this.handlerButton?.focus();
   }
 
+  protected firstUpdated() {
+    this.resizeObserver = new ResizeObserver(() => {
+      if (!this.handlerButton) return;
+      const width = this.handlerButton.getBoundingClientRect().width;
+      this.allButtons?.forEach(button => {
+        if (button !== this.handlerButton) button.style.width = `${width}px`;
+        button.style.fontSize = `${width / this.numCharsOnHandler}px`;
+      });
+    });
+    this.resizeObserver.observe(this.handlerButton!);
+  }
+
   protected updated(changedProperties: Map<string, string | number | boolean>) {
     const oldOpenValue = changedProperties.get('open');
     if (oldOpenValue === true) {
       this.onKeypadClose();
     } else if (oldOpenValue === false) {
-      window.requestAnimationFrame(() => {
-        this.onKeypadOpen();
-      });
+      this.onKeypadOpen();
     }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.resizeObserver?.disconnect();
   }
 
   protected render() {
@@ -233,7 +275,7 @@ export class PvExpandKeypadElement extends LitElement {
             );
           }}"
         >
-          <md-icon>close</md-icon>
+          close
         </button>
         ${this.value.map(
           row =>
