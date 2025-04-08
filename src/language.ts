@@ -46,9 +46,6 @@ export interface Language {
   /** List of the available keyboards for this language in tag name. */
   readonly keyboards: StaticValue[];
 
-  /** Word separator of this language. */
-  readonly separetor: string;
-
   /** Default initial phrases. */
   readonly initialPhrases: string[];
 
@@ -70,13 +67,21 @@ export interface Language {
 
   /** Joins words in the language into a sentence. */
   join(words: string[]): string;
+
+  /**
+   * Appends a word to the input text in a language specific manner.
+   *
+   * For example, we insert a space before the appended word in English.
+   * Language specific append logic for such languages will be implemented
+   * in this method.
+   */
+  appendWord(text: string, word: string): string;
 }
 
 abstract class LatinScriptLanguage implements Language {
   code = '';
   promptName = '';
   keyboards: StaticValue[] = [];
-  separetor = ' ';
   initialPhrases: string[] = [];
   aiConfigs = {
     classic: {
@@ -108,6 +113,13 @@ abstract class LatinScriptLanguage implements Language {
     // 'Yes , I can .' => 'Yes, I can. '
     // 'What is .NET framework ?' => 'What is .NET framework? '
     return words.join(' ').replace(/ ([.,!?]+( |$))/g, '$1') + ' ';
+  }
+
+  appendWord(text: string, word: string) {
+    if (word.startsWith('-')) {
+      return text + word.slice(1) + ' ';
+    }
+    return text + ' ' + word + ' ';
   }
 }
 
@@ -142,7 +154,6 @@ abstract class Japanese implements Language {
   code = 'ja-JP';
   promptName = 'Japanese';
   keyboards: StaticValue[] = [];
-  separetor = '';
   initialPhrases = [
     'はい',
     'いいえ',
@@ -189,6 +200,13 @@ abstract class Japanese implements Language {
 
   join(words: string[]) {
     return words.join('');
+  }
+
+  appendWord(text: string, word: string) {
+    if (word.startsWith('-')) {
+      return text + word.slice(1);
+    }
+    return text + word;
   }
 }
 

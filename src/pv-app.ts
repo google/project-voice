@@ -311,9 +311,8 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
   @playClickSound()
   private onSuggestedWordClick(word: string) {
-    const separator = this.stateInternal.lang.separetor;
-    const body = word.startsWith('-') ? word.slice(1) : `${separator}${word}`;
-    const concat = this.textField?.value + body + separator;
+    const text = this.textField?.value ?? '';
+    const concat = this.stateInternal.lang.appendWord(text, word);
     const normalized = normalize(concat);
     this.textField?.setTextFieldValue(normalized, [InputSource.SUGGESTED_WORD]);
   }
