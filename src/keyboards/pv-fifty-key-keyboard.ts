@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import '../pv-button.js';
-
 import {css, html, LitElement} from 'lit';
 import {customElement} from 'lit/decorators.js';
 
@@ -39,24 +37,45 @@ export class PvFiftyKeyKeyboard extends LitElement {
     .container {
       display: flex;
       flex-direction: row-reverse;
+      gap: 0.5rem;
     }
+
+    button {
+      background: var(--app-background-color, white);
+      border-radius: 0.5vh;
+      border: solid 3px #8ab4f8;
+      color: var(--app-color);
+      cursor: pointer;
+      font-family: 'Roboto Mono', 'Noto Sans JP', monospace;
+      font-size: min(5vh, 2rem);
+      padding: 0 1rem;
+    }
+
     .row {
       display: flex;
+      flex-direction: column;
       flex: 1;
       gap: 0.5rem;
       justify-content: space-between;
-      flex-direction: column;
+    }
+
+    .row.odd button {
+      background: #e8f0fe;
+    }
+
+    .row button:focus,
+    .row button:hover {
+      background: var(--app-highlight-background-color, yellow);
     }
   `;
   render() {
     return html`<div class="container">
       ${KEYS.map(
-        row =>
-          html`<div class="row">
+        (row, i) =>
+          html`<div class="row ${i % 2 === 0 ? 'even' : 'odd'}">
             ${row.map(
               key =>
-                html`<pv-button
-                  label=${key}
+                html`<button
                   @click=${() => {
                     this.dispatchEvent(
                       new CustomEvent('character-select', {
@@ -66,7 +85,9 @@ export class PvFiftyKeyKeyboard extends LitElement {
                       }),
                     );
                   }}
-                ></pv-button>`,
+                >
+                  ${key}
+                </button>`,
             )}
           </div>`,
       )}
