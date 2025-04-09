@@ -76,6 +76,7 @@ export const pvAppStyle = css`
 
   .suggestions {
     position: relative;
+    min-height: 5rem;
   }
 
   ul.word-suggestions,
