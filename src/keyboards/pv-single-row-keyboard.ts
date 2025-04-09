@@ -78,6 +78,10 @@ export class PvSingleRowKeyboard extends LitElement {
       margin: 0;
       padding: 0;
     }
+
+    li {
+      flex: 1;
+    }
   `;
 
   protected firstUpdated() {
