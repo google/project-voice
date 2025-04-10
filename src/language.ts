@@ -220,7 +220,146 @@ class JapaneseWithSingleRowKeyboard extends Japanese {
   }
 }
 
+abstract class French extends LatinScriptLanguage {
+  code = 'fr-FR';
+  promptName = 'French';
+  // TODO: Revise default initial phrases.
+  initialPhrases = [
+    'Je',
+    'Tu',
+    'Ils',
+    'Que',
+    'Pourquoi',
+    'Quand',
+    'Où',
+    'Quelle',
+    'Qui',
+    'Peux-tu',
+    'Pourrais-tu',
+    'Ferais-tu',
+    'Fais-tu',
+  ];
+}
+
+class FrenchExperimental extends French {
+  keyboards = [literal`pv-french-single-row-keyboard`];
+  override render() {
+    return html`${msg('French (experimental)')}`;
+  }
+}
+
+abstract class German extends LatinScriptLanguage {
+  code = 'de-DE';
+  promptName = 'German';
+  // TODO: Revise default initial phrases.
+  initialPhrases = [
+    'Ich',
+    'Du',
+    'Sie',
+    'Was',
+    'Warum',
+    'Wann',
+    'Wo',
+    'Wie',
+    'Wer',
+    'Kannst',
+    'Könntest du',
+    'Würdest du',
+    'Tust du',
+  ];
+}
+
+class GermanExperimental extends German {
+  keyboards = [literal`pv-german-single-row-keyboard`];
+  override render() {
+    return html`${msg('German (experimental)')}`;
+  }
+}
+
+abstract class Swedish extends LatinScriptLanguage {
+  code = 'sv-SE';
+  promptName = 'Swedish';
+  initialPhrases = [
+    'Jag',
+    'Du',
+    'De',
+    'Vad',
+    'Varför',
+    'När',
+    'Var',
+    'Hur',
+    'Vem',
+    'Burk',
+    'Kan',
+    'Skulle du',
+    'Gör du',
+  ];
+}
+
+class SwedishExperimental extends Swedish {
+  keyboards = [literal`pv-swedish-single-row-keyboard`];
+  override render() {
+    return html`${msg('Swedish (experimental)')}`;
+  }
+}
+
+abstract class Mandarin implements Language {
+  code = 'zh-CN';
+  promptName = 'Mandarin';
+  keyboards: StaticValue[] = [];
+  separetor = '';
+  initialPhrases = ['你', '我', '他', '她', '它', '好', '今天', '昨天', '明天'];
+  aiConfigs = {
+    classic: {
+      model: 'gemini-1.5-flash-001',
+      sentence: 'SentenceGeneric20250311',
+      word: 'WordMandarin20250326',
+    },
+    fast: {
+      model: 'gemini-1.5-flash-002',
+      sentence: 'SentenceGeneric20250311',
+      word: 'WordMandarin20250326',
+    },
+    smart: {
+      model: 'gemini-1.5-pro-002',
+      sentence: 'SentenceGeneric20250311',
+      word: 'WordMandarin20250326',
+    },
+  };
+  abstract render(): TemplateResult;
+  segment(sentence: string) {
+    const result = [];
+    for (let i = 0; i < sentence.length; i++) {
+      result.push(sentence[i]);
+    }
+    return result;
+  }
+  join(words: string[]) {
+    return words.join('');
+  }
+  appendWord(text: string, word: string) {
+    // Remove pinyin part if any.
+    // TODO: This is way too hacky. Please use a more reliable way.
+    text = text.replace(/[a-z]+$/, '');
+    if (word.startsWith('-')) {
+      return text + word.slice(1);
+    }
+    return text + word;
+  }
+}
+
+class MandarinWithSingleRowKeyboard extends Mandarin {
+  keyboards = [literal`pv-alphanumeric-single-row-keyboard`];
+  render() {
+    return html`${msg('Mandarin (single-row keyboard)')}`;
+  }
+}
+
 export const LANGUAGES: {[name: string]: Language} = {
   englishWithSingleRowKeyboard: new EnglishWithSingleRowKeyboard(),
   japaneseWithSingleRowKeyboard: new JapaneseWithSingleRowKeyboard(),
+  frenchExperimental: new FrenchExperimental(),
+  germanExperimental: new GermanExperimental(),
+  mandarinWithSingleRowKeyboard: new MandarinWithSingleRowKeyboard(),
+  swedishExperimental: new SwedishExperimental(),
 };

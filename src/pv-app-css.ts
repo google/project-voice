@@ -76,7 +76,6 @@ export const pvAppStyle = css`
 
   .suggestions {
     position: relative;
-    min-height: 5rem;
   }
 
   ul.word-suggestions,
@@ -112,6 +111,25 @@ export const pvAppStyle = css`
   @media screen and (min-height: 45rem) {
     ul.word-suggestions li {
       margin: 1rem 1rem 1rem 0;
+    }
+  }
+
+  .stats {
+    background-color: rgba(1, 1, 1, 0.0);
+    border: solid rgba(96, 96, 96, 0.5);
+    bottom: 4px;
+    color: rgba(96, 96, 96, 0.5);
+    cursor: pointer;"
+    padding: 4px;
+    position: absolute;
+    right: 4px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .stats {
+      background-color: rgba(1, 1, 1, 0.0);
+      border: solid rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.5);
     }
   }
 

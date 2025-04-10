@@ -165,10 +165,10 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
   @property({type: Boolean, reflect: true})
   isTtsReading = false;
 
-  fireEvent(key: EventKey) {
+  fireEvent(key: EventKey, detail?: unknown) {
     this.dispatchEvent(
       new CustomEvent(key, {
-        detail: {callee: this},
+        detail: detail ? {callee: this, ...detail} : {callee: this},
         bubbles: true,
         composed: true,
       }),
@@ -243,6 +243,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
             <md-icon>content_copy</md-icon>
             <span>${msg('Copy')}</span>
           </button>
+
           <button
             @click="${this.onTtsButtonClick}"
             ?disabled=${this.isTtsReading || isTextEmpty}
@@ -250,6 +251,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
             <md-icon>text_to_speech</md-icon>
             <span>${msg('Read aloud')}</span>
           </button>
+
           <hr />
           <button
             @click="${() => {
@@ -278,6 +280,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
   }
 
   private startTts() {
+
     const utterance = new SpeechSynthesisUtterance(this.state.text);
     utterance.lang = this.state.lang.code;
     utterance.rate = Math.pow(2, this.state.voiceSpeakingRate / 10);

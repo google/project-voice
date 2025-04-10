@@ -41,6 +41,10 @@ export class PvButtonElement extends LitElement {
       border-radius: 5vh;
     }
 
+    :host([emotion]) button {
+      border-color: #f98ec9;
+    }
+
     button {
       background: var(--app-background-color, white);
       border-radius: 0.5vh;

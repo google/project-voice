@@ -16,7 +16,7 @@
     "posttest": "npm run lint",
     "test": "jasmine-browser-runner runSpecs",
     "deploy": "npm run build && gcloud app deploy app.yaml --no-promote",
-    "postinstall": "python -m pip install -r requirements.txt && python -m pip install -r requirements-dev.txt",
+    "postinstall": "sh postinstall.sh",
     "storybook": "storybook dev -p 6006"
   },
   "license": "Apache-2.0",
