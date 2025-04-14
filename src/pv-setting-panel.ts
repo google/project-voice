@@ -294,6 +294,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
                   <div slot="headline">${voice.name}</div>
                 </md-select-option>`,
             )}
+
         </md-outlined-select>
       </div>
       <div class="form-section">

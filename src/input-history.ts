@@ -41,6 +41,7 @@ export class InputHistory {
     // Discard undone elements.
     this.history = this.history.slice(this.currentIndex);
     this.history.unshift(element);
+
     this.currentIndex = 0;
     this.history = this.history.slice(0, InputHistory.SIZE);
   }

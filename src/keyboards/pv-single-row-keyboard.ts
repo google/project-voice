@@ -55,6 +55,51 @@ export const HIRAGANA_SINGLE_ROW_KEYGRID: Key[][] = [
   ],
 ];
 
+export const FRENCH_SINGLE_ROW_KEYGRID: Key[][] = [
+  [
+    {label: 'abc', value: ['abc', 'àâç']},
+    {label: 'def', value: ['def', 'èéêë']},
+    {label: 'ghi', value: ['ghi', 'îï']},
+    {label: 'jkl', value: ['jkl']},
+    {label: 'mno', value: ['mno', 'ôœ']},
+    {label: 'pqrs', value: ['pqrs']},
+    {label: 'tuv', value: ['tuv', 'ùûü']},
+    {label: 'wxyz', value: ['wxyz', 'ÿ']},
+    {label: '0~9', value: ['01234', '56789']},
+    {label: '.,!?', value: ['␣.,!?']},
+  ],
+];
+
+export const GERMAN_SINGLE_ROW_KEYGRID: Key[][] = [
+  [
+    {label: 'abc', value: ['abc', 'ä']},
+    {label: 'def', value: ['def']},
+    {label: 'ghi', value: ['ghi']},
+    {label: 'jkl', value: ['jkl']},
+    {label: 'mno', value: ['mno', 'ö']},
+    {label: 'pqrs', value: ['pqrs']},
+    {label: 'tuv', value: ['tuv', 'ü']},
+    {label: 'wxyz', value: ['wxyz']},
+    {label: '0~9', value: ['01234', '56789']},
+    {label: '.,!?', value: ['␣.,!?']},
+  ],
+];
+
+export const SWEDISH_SINGLE_ROW_KEYGRID: Key[][] = [
+  [
+    {label: 'abc', value: ['abc', 'åä']},
+    {label: 'def', value: ['def']},
+    {label: 'ghi', value: ['ghi']},
+    {label: 'jkl', value: ['jkl']},
+    {label: 'mno', value: ['mno', 'ö']},
+    {label: 'pqrs', value: ['pqrs']},
+    {label: 'tuv', value: ['tuv', 'ü']},
+    {label: 'wxyz', value: ['wxyz']},
+    {label: '0~9', value: ['01234', '56789']},
+    {label: '.,!?', value: ['␣.,!?']},
+  ],
+];
+
 export class PvSingleRowKeyboard extends LitElement {
   constructor(public keygrid: Key[][]) {
     super();
@@ -125,5 +170,26 @@ export class PvAlphanumericSingleRowKeyboard extends PvSingleRowKeyboard {
 export class PvHiraganaSingleRowKeyboard extends PvSingleRowKeyboard {
   constructor() {
     super(HIRAGANA_SINGLE_ROW_KEYGRID);
+  }
+}
+
+@customElement('pv-french-single-row-keyboard')
+export class PvFrenchSingleRowKeyboard extends PvSingleRowKeyboard {
+  constructor() {
+    super(FRENCH_SINGLE_ROW_KEYGRID);
+  }
+}
+
+@customElement('pv-german-single-row-keyboard')
+export class PvGermanSingleRowKeyboard extends PvSingleRowKeyboard {
+  constructor() {
+    super(GERMAN_SINGLE_ROW_KEYGRID);
+  }
+}
+
+@customElement('pv-swedish-single-row-keyboard')
+export class PvSwedishSingleRowKeyboard extends PvSingleRowKeyboard {
+  constructor() {
+    super(SWEDISH_SINGLE_ROW_KEYGRID);
   }
 }
