@@ -33,7 +33,7 @@
     "@storybook/web-components": "^8.6.10",
     "@storybook/web-components-vite": "^8.6.12",
     "@types/jasmine": "^5.1.7",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "concurrently": "^9.1.2",
     "esbuild": "^0.25.2",
     "eslint-plugin-simple-import-sort": "^12.1.1",
@@ -50,7 +50,7 @@
     "@lit-labs/signals": "^0.1.2",
     "@lit/localize": "^0.12.1",
     "@material/web": "^2.3.0",
-    "lit": "^3.2.1",
+    "lit": "^3.3.0",
     "signal-polyfill": "^0.2.2"
   }
 }
