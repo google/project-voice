@@ -51,7 +51,7 @@
     "@lit-labs/signals": "^0.1.2",
     "@lit/localize": "^0.12.1",
     "@material/web": "^2.3.0",
-    "lit": "^3.2.1",
+    "lit": "^3.3.0",
     "signal-polyfill": "^0.2.2"
   }
 }
