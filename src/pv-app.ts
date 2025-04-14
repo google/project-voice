@@ -23,7 +23,13 @@ import './pv-setting-panel.js';
 import './pv-suggestion-stripe.js';
 import './pv-textarea-wrapper.js';
 
-import {configureLocalization, LocaleModule, localized} from '@lit/localize';
+import {
+  configureLocalization,
+  LocaleModule,
+  localized,
+  msg,
+  str,
+} from '@lit/localize';
 import {SignalWatcher} from '@lit-labs/signals';
 import {html, LitElement} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
@@ -104,6 +110,23 @@ function normalize(sentence: string, isLastInputFromSuggestion?: boolean) {
     result = result.replace(/ ([,.?!])$/, '$1');
   }
   return result;
+}
+
+/**
+ * Returns the last sentence from the given string.
+ * @param text The whole text.
+ * @returns The sentence.
+ */
+function getLastSentence(text: string) {
+  // TODO: Use more robust way to get the sentence that the user is editing.
+  const sentences = text
+    .split(/[.?。？]/)
+    .map(str => str.trim())
+    .filter(str => str);
+  if (sentences.length === 0) {
+    return '';
+  }
+  return sentences[sentences.length - 1];
 }
 
 /**
@@ -429,6 +452,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
         @keyboard-change-click=${this.onKeyboardChangeClick}
         @content-copy-click=${this.onContentCopyClick}
         @setting-click=${this.onSettingClick}
+
       ></pv-functions-bar>
       <div class="main">
         <div class="keypad">
@@ -448,15 +472,20 @@ export class PvAppElement extends SignalWatcher(LitElement) {
               <md-circular-progress indeterminate></md-circular-progress>
             </div>
           </div>
+
         </div>
         <div>
           <pv-textarea-wrapper
             .state=${this.stateInternal}
-            @text-update=${this.updateSuggestions}
+            @text-update=${() => {
+              this.updateSuggestions();
+            }}
           ></pv-textarea-wrapper>
         </div>
         <div class="language-name">${this.stateInternal.lang.render()}</div>
+
       </div>
+
       <pv-setting-panel
         .state=${this.stateInternal}
         @ok-click=${this.onOkClick}

@@ -15,6 +15,7 @@
 """
 
 import json
+import logging
 import os
 import re
 import textwrap
@@ -38,6 +39,11 @@ TEMPLATES = {
         参考までに、このユーザのプロフィールは以下のとおりです:
         [[persona]]
         #endif
+        #ifdef conversationHistory
+
+        以下はユーザとその相手との会話の履歴です:
+        [[conversationHistory]]
+        #endif
 
         回答:
         '''),
@@ -49,12 +55,34 @@ TEMPLATES = {
         参考までに、このユーザのプロフィールは以下のとおりです:
         [[persona]]
         #endif
+        #ifdef conversationHistory
+
+        以下はユーザとその相手との会話の履歴です:
+        [[conversationHistory]]
+        #endif
 
         回答:
         '''),
     'SentenceGeneric20250311':
         textwrap.dedent('''\
-        Please guess and generate a list of [[num]] different sentences that start with "[[text]]".
+        #ifdef lastInputSpeech
+        You are talking with your partner. The conversation is as follows:
+        #ifdef lastOutputSpeech
+        You:
+        [[lastOutputSpeech]]
+        #endif
+        Partner:
+        [[lastInputSpeech]]
+
+        #ifdef conversationHistory
+        Here is the conversation history:
+        [[conversationHistory]]
+        #endif
+
+        Considering this context, please guess and generate a list of [[num]] different sentences that start with "[[text]]". \\
+        #else
+        Please guess and generate a list of [[num]] different sentences that start with "[[text]]". \\
+        #endif
         Please note the word I provide may not be complete, so use your best guess. Each answer must start with an index number, and each answer should start with different word to cover wider topics. The response should be in [[language]]. Those sentences should not be the same. Do not highlight answers with asterisk. Since your output will be used as the user's input, do not include any extra notes, labels or explanations in your output.
         The answer should be in [[language]].
         #ifdef persona
@@ -75,6 +103,11 @@ TEMPLATES = {
         #endif
         Partner:
         [[lastInputSpeech]]
+
+        #ifdef conversationHistory
+        Here is the conversation history:
+        [[conversationHistory]]
+        #endif
 
         Considering this context, please guess and generate a list of [[num]] single words that come right after the sentence "[[text]]". \\
         #else
@@ -103,8 +136,10 @@ TEMPLATES = {
 
         sentence: "[[text]]"
         answers:
-        ''')
+        '''),
 }
+
+logger = logging.getLogger(__name__)
 
 
 def RunGeminiMacro(model_id, prompt, temperature, language):
@@ -169,6 +204,7 @@ def RunMacro(macro_id, user_inputs, temperature, model_id):
     The result of the macro call.
   """
 
+  logger.debug(f"user_inputs: {user_inputs}")
   lines = []
   include_block = []
   for line in TEMPLATES[macro_id].split('\n'):
@@ -199,5 +235,7 @@ def RunMacro(macro_id, user_inputs, temperature, model_id):
     if key == 'text' and macro_id == 'WordGeneric20240628':
       user_input = re.sub(r'§$', ' ', user_input.replace(' ', '§'))
     prompt = prompt.replace(f'[[{key}]]', user_input)
+
+  logger.debug(f'Final prompt: {prompt}')
 
   return RunGeminiMacro(model_id, prompt, temperature, language)
