@@ -82,6 +82,10 @@ This project exists thanks to all the people who have contributed.
 - Adriana Guevara Rukoz
 - Atsuko Yamagami
 - Atsushi Yamashita
+- Ayush Agarwal
+- Daisuke Chijiwa
+- Jason Zhang
+- Johnny Huang
 - Kevin Chang
 - Satoru Arao
 - Shuhei Iitsuka
