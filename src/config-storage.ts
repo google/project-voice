@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * ConfigStorage class provides methods to read and write configurations to
- * local storage.
- */
-
 export interface Config {
   aiConfig: string;
   checkedLanguages: string[];
@@ -32,8 +27,9 @@ export interface Config {
   voiceSpeakingRate: number;
 }
 
+/** Provides methods to read and write configurations to local storage. */
 export class ConfigStorage {
-  private domainHead: string;
+  domainHead: string;
   private defaultValues: Config;
 
   /**

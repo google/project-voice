@@ -35,7 +35,8 @@ import {html, LitElement} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
 
 import {AudioManager} from './audio-manager.js';
-import {LARGE_MARGIN_LINE_LIMIT} from './constants.js';
+import {ConfigStorage} from './config-storage.js';
+import {CONFIG_DEFAULT, LARGE_MARGIN_LINE_LIMIT} from './constants.js';
 import {InputSource} from './input-history.js';
 import {LANGUAGES} from './language.js';
 import {sourceLocale, targetLocales} from './locale-codes.js';
@@ -203,6 +204,10 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
+
+    this.stateInternal.setStorage(
+      new ConfigStorage(this.featureStorageDomain, CONFIG_DEFAULT),
+    );
 
     setLocale(this.locale ? this.locale : 'ja');
 

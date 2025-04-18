@@ -142,9 +142,9 @@ class State {
     this.initialPhrasesSignal.set(newInitialPhrases);
   }
 
-  private voiceSpeakingRateInternal: number;
-  private voicePitchInternal: number;
-  private voiceNameInternal: string;
+  private voiceSpeakingRateInternal!: number;
+  private voicePitchInternal!: number;
+  private voiceNameInternal!: string;
 
   get voiceSpeakingRate() {
     return this.voiceSpeakingRateInternal;
@@ -193,9 +193,7 @@ class State {
 
   private storage: ConfigStorage;
 
-  constructor(storage: ConfigStorage | null = null) {
-    this.storage =
-      storage ?? new ConfigStorage('com.google.pv', CONFIG_DEFAULT);
+  loadState() {
     this.aiConfigInternal = this.storage.read('aiConfig');
     this.checkedLanguages = this.storage.read('checkedLanguages');
     this.enableEarconsInternal = this.storage.read('enableEarcons');
@@ -206,6 +204,24 @@ class State {
     this.voiceNameInternal = this.storage.read('ttsVoice');
     this.voicePitchInternal = this.storage.read('voicePitch');
     this.voiceSpeakingRateInternal = this.storage.read('voiceSpeakingRate');
+  }
+
+  /**
+   * Sets the storage to a new instance, and reloads the state. The new storage
+   * needs to have a different domainHead.
+   */
+  setStorage(storage: ConfigStorage) {
+    if (this.storage.domainHead === storage.domainHead) {
+      return;
+    }
+    this.storage = storage;
+    this.loadState();
+  }
+
+  constructor(storage: ConfigStorage | null = null) {
+    this.storage =
+      storage ?? new ConfigStorage('com.google.pv', CONFIG_DEFAULT);
+    this.loadState();
   }
 }
 
