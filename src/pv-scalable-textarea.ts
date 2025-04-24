@@ -44,11 +44,11 @@ export class PvScalableTextareaElement extends LitElement {
     }
 
     textarea {
-      background: var(--app-background-color);
+      background: var(--color-surface);
       border-radius: 0.5rem;
-      border: solid 1px var(--app-color);
+      border: solid 1px var(--color-outline);
       box-sizing: border-box;
-      color: var(--app-color);
+      color: var(--color-on-surface);
       font-family: Roboto, 'Noto Sans JP', sans-serif;
       height: 100%;
       width: 100%;

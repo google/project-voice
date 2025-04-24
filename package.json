@@ -15,7 +15,7 @@
     "pretest": "esbuild src/tests/test_index.ts --bundle --outfile=spec/test_bundle.js",
     "test": "jasmine-browser-runner runSpecs",
     "deploy": "npm run build && gcloud app deploy app.yaml --no-promote",
-    "postinstall": "sh postinstall.sh",
+    "postinstall": "python -m pip install -r requirements.txt && python -m pip install -r requirements-dev.txt",
     "storybook": "storybook dev -p 6006"
   },
   "license": "Apache-2.0",
@@ -25,13 +25,13 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.6",
     "@lit/localize-tools": "^0.8.0",
-    "@types/dom-speech-recognition": "^0.0.6",
     "@storybook/addon-essentials": "^8.6.12",
     "@storybook/blocks": "^8.6.12",
     "@storybook/experimental-addon-test": "^8.6.12",
     "@storybook/test": "^8.6.10",
     "@storybook/web-components": "^8.6.10",
     "@storybook/web-components-vite": "^8.6.12",
+    "@types/dom-speech-recognition": "^0.0.6",
     "@types/jasmine": "^5.1.7",
     "@types/node": "^22.14.1",
     "concurrently": "^9.1.2",
@@ -48,9 +48,11 @@
   },
   "dependencies": {
     "@lit-labs/signals": "^0.1.2",
+    "@lit/context": "^1.1.5",
     "@lit/localize": "^0.12.1",
     "@material/web": "^2.3.0",
     "lit": "^3.3.0",
-    "signal-polyfill": "^0.2.2"
+    "signal-polyfill": "^0.2.2",
+    "simhash-js": "github:beketa/simhash-js"
   }
 }

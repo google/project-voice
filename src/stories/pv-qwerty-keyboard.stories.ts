@@ -14,28 +14,22 @@
  * limitations under the License.
  */
 
-import '../keyboards/pv-fifty-key-keyboard.js';
+import '../keyboards/pv-qwerty-keyboard.js';
 
 import {Meta, StoryObj} from '@storybook/web-components';
 import {html} from 'lit';
 
-import {PvFiftyKeyKeyboard} from '../keyboards/pv-fifty-key-keyboard.js';
+import {PvQwertyKeyboard} from '../keyboards/pv-qwerty-keyboard.js';
 
-const meta: Meta<PvFiftyKeyKeyboard> = {
-  title: 'Components/pv-fifty-key-keyboard',
-  component: 'pv-fifty-key-keyboard',
+const meta: Meta<PvQwertyKeyboard> = {
+  title: 'Components/pv-qwerty-keyboard',
+  component: 'pv-qwerty-keyboard',
   argTypes: {}, // No specific arg types needed for this component
 };
 
 export default meta;
-type Story = StoryObj<PvFiftyKeyKeyboard>;
+type Story = StoryObj<PvQwertyKeyboard>;
 
 export const Default: Story = {
-  render: () => html`
-    <pv-fifty-key-keyboard
-      @character-select=${(e: Event) => {
-        console.log(e);
-      }}
-    ></pv-fifty-key-keyboard>
-  `,
+  render: () => html` <pv-qwerty-keyboard></pv-qwerty-keyboard> `,
 };

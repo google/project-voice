@@ -126,6 +126,7 @@ export class PvSingleRowKeyboard extends LitElement {
 
     li {
       flex: 1;
+      max-width: 9rem;
     }
   `;
 

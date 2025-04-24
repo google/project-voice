@@ -48,7 +48,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
 
   static styles = css`
     :host {
-      background: var(--app-background-color);
+      background: var(--color-background);
       display: flex;
 
       --md-icon-button-icon-size: 3rem;
@@ -358,6 +358,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
             <md-primary-tab ?active="${this.activeSettingsTabIndex === 2}">
               ${msg('VOICE')}
             </md-primary-tab>
+
           </md-tabs>
           ${settingsPanels[this.activeSettingsTabIndex]}
         </form>
