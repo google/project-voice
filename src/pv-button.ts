@@ -33,7 +33,7 @@ export class PvButtonElement extends LitElement {
     :host([active]) button,
     button:focus,
     button:hover {
-      background: var(--app-highlight-background-color, yellow);
+      background: var(--color-primary, yellow);
     }
 
     :host([rounded]) button {
@@ -46,10 +46,10 @@ export class PvButtonElement extends LitElement {
     }
 
     button {
-      background: var(--app-background-color, white);
+      background: var(--color-surface, white);
       border-radius: 0.5vh;
       border: solid 3px #8ab4f8;
-      color: var(--app-color);
+      color: var(--color-on-surface);
       cursor: pointer;
       font-family: 'Roboto Mono', 'Noto Sans JP', monospace;
       font-size: min(5vh, 3rem);

@@ -15,6 +15,8 @@
  */
 
 import './keyboards/pv-single-row-keyboard.js';
+import './keyboards/pv-qwerty-keyboard.js';
+import './keyboards/pv-fifty-key-keyboard.js';
 
 import {msg} from '@lit/localize';
 import {html, TemplateResult} from 'lit';
@@ -150,6 +152,13 @@ class EnglishWithSingleRowKeyboard extends English {
   }
 }
 
+class EnglishWithQWERYKeyboard extends English {
+  keyboards = [literal`pv-qwerty-keyboard`];
+  override render() {
+    return html`${msg('English (QWERTY keyboard)')}`;
+  }
+}
+
 abstract class Japanese implements Language {
   code = 'ja-JP';
   promptName = 'Japanese';
@@ -217,6 +226,13 @@ class JapaneseWithSingleRowKeyboard extends Japanese {
   ];
   render() {
     return html`${msg('Japanese (single-row keyboard)')}`;
+  }
+}
+
+class JapaneseWithFullKeyboard extends Japanese {
+  keyboards = [literal`pv-fifty-key-keyboard`, literal`pv-qwerty-keyboard`];
+  render() {
+    return html`${msg('Japanese (Gojūon keyboard)')}`;
   }
 }
 
@@ -357,7 +373,9 @@ class MandarinWithSingleRowKeyboard extends Mandarin {
 
 export const LANGUAGES: {[name: string]: Language} = {
   englishWithSingleRowKeyboard: new EnglishWithSingleRowKeyboard(),
+  englishWithQWERYKeyboard: new EnglishWithQWERYKeyboard(),
   japaneseWithSingleRowKeyboard: new JapaneseWithSingleRowKeyboard(),
+  japaneseWithFullkeyboard: new JapaneseWithFullKeyboard(),
   frenchExperimental: new FrenchExperimental(),
   germanExperimental: new GermanExperimental(),
   mandarinWithSingleRowKeyboard: new MandarinWithSingleRowKeyboard(),

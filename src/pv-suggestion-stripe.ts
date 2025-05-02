@@ -21,7 +21,7 @@ import {customElement, property} from 'lit/decorators.js';
 
 import {State} from './state.js';
 
-export class SuggestionSelectEvent extends CustomEvent<string> {}
+export class SuggestionSelectEvent extends CustomEvent<[string, number]> {}
 
 /**
  * Returns the leading words covered by the offset string.
@@ -95,7 +95,6 @@ export class PvSuggestionStripeElement extends LitElement {
   `;
 
   render() {
-    // TODO when we accept other languages than English, update this segmenter.
     const words = splitPunctuations(this.state.lang.segment(this.suggestion));
     const leadingWords = getLeadingWords(
       words,
@@ -119,7 +118,10 @@ export class PvSuggestionStripeElement extends LitElement {
             @click="${() => {
               this.dispatchEvent(
                 new SuggestionSelectEvent('select', {
-                  detail: this.state.lang.join(words.slice(0, i + 1)),
+                  detail: [
+                    this.state.lang.join(words.slice(0, i + 1)),
+                    i - leadingWords.length,
+                  ],
                 }),
               );
             }}"

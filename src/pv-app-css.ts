@@ -18,7 +18,7 @@ import {css} from 'lit';
 
 export const pvAppStyle = css`
   :host {
-    background: var(--app-background-color);
+    background: var(--color-background);
     display: flex;
     padding: 0.5rem;
   }
@@ -45,7 +45,7 @@ export const pvAppStyle = css`
     align-items: center;
     background: color-mix(
       in srgb,
-      var(--app-background-color) 80%,
+      var(--color-background) 80%,
       transparent 20%
     );
     display: flex;
@@ -134,9 +134,9 @@ export const pvAppStyle = css`
   }
 
   .language-name {
-    background: var(--app-color);
+    background: var(--color-on-background);
     border-radius: 1rem;
-    color: var(--app-background-color);
+    color: var(--color-background);
     display: none;
     font-size: 2rem;
     left: 50%;

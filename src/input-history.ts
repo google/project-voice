@@ -14,16 +14,30 @@
  * limitations under the License.
  */
 
-export const InputSource = {
-  BUTTON_BACKSPACE: 'BUTTON_BACKSPACE',
-  BUTTON_DELETE: 'BUTTON_DELETE',
-  CHARACTER: 'CHARACTER',
-  KEYBOARD: 'KEYBOARD',
-  SUGGESTED_SENTENCE: 'SUGGESTED_SENTENCE',
-  SUGGESTED_WORD: 'SUGGESTED_WORD',
-} as const;
+export enum InputSourceKind {
+  BUTTON_BACKSPACE = 'BUTTON_BACKSPACE',
+  BUTTON_DELETE = 'BUTTON_DELETE',
+  CHARACTER = 'CHARACTER',
+  KEYBOARD = 'KEYBOARD',
+  SUGGESTED_SENTENCE = 'SUGGESTED_SENTENCE',
+  SUGGESTED_WORD = 'SUGGESTED_WORD',
+}
 
-export type InputSource = (typeof InputSource)[keyof typeof InputSource];
+export type InputSource =
+  | {kind: InputSourceKind.BUTTON_BACKSPACE}
+  | {kind: InputSourceKind.BUTTON_DELETE}
+  | {kind: InputSourceKind.CHARACTER}
+  | {kind: InputSourceKind.KEYBOARD}
+  | {kind: InputSourceKind.SUGGESTED_SENTENCE; index: number}
+  | {kind: InputSourceKind.SUGGESTED_WORD};
+
+export const InputSource: Record<string, InputSource> = {
+  BUTTON_BACKSPACE: {kind: InputSourceKind.BUTTON_BACKSPACE},
+  BUTTON_DELETE: {kind: InputSourceKind.BUTTON_DELETE},
+  CHARACTER: {kind: InputSourceKind.CHARACTER},
+  KEYBOARD: {kind: InputSourceKind.KEYBOARD},
+  SUGGESTED_WORD: {kind: InputSourceKind.SUGGESTED_WORD},
+};
 
 export class HistoryElement {
   constructor(
@@ -64,23 +78,15 @@ export class InputHistory {
     return this.history[this.currentIndex];
   }
 
-  /**
-   * Returns true if any of the source of the last input is a member of the
-   * given input sources. If the history is empty, returns false.
-   * @param sources Input sources
-   * @returns True if any of the sources of the last input is a member of the
-   *   given input sources.
-   */
-  private isLastInputFrom(sources: InputSource[]): boolean {
-    const last = this.lastInput();
-    return last ? last.sources.some(source => sources.includes(source)) : false;
-  }
-
   isLastInputSuggested(): boolean {
-    const suggestions = [
-      InputSource.SUGGESTED_WORD,
-      InputSource.SUGGESTED_SENTENCE,
-    ];
-    return this.isLastInputFrom(suggestions);
+    const last = this.lastInput();
+    if (!last) {
+      return false;
+    }
+    return last.sources.some(
+      source =>
+        source.kind === InputSourceKind.SUGGESTED_WORD ||
+        source.kind === InputSourceKind.SUGGESTED_SENTENCE,
+    );
   }
 }

@@ -102,6 +102,14 @@
   <source>Japanese (single-row keyboard)</source>
   <target>日本語 (一行キーボード)</target>
 </trans-unit>
+<trans-unit id="s2ca367238c69d1e7">
+  <source>English (QWERTY keyboard)</source>
+  <target>英語 (QWERTYキーボード)</target>
+</trans-unit>
+<trans-unit id="s12be3981db8aad36">
+  <source>Japanese (Gojūon keyboard)</source>
+  <target>日本語 (五十音キーボード)</target>
+</trans-unit>
 
 </body>
 </file>

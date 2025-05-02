@@ -85,10 +85,10 @@ export class PvExpandKeypadElement extends LitElement {
     button {
       align-items: center;
       aspect-ratio: 1;
-      background: var(--app-background-color, white);
+      background: var(--color-surface, white);
       border-radius: 20%;
       border: solid 3px #81c995;
-      color: var(--app-color);
+      color: var(--color-on-surface);
       cursor: pointer;
       display: flex;
       font-family: 'Roboto Mono', 'Noto Sans JP', monospace;
@@ -101,7 +101,7 @@ export class PvExpandKeypadElement extends LitElement {
 
     button:hover,
     button:focus {
-      background: var(--app-highlight-background-color, yellow);
+      background: var(--color-primary, yellow);
     }
 
     .close {

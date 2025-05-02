@@ -48,7 +48,6 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
 
   static styles = css`
     :host {
-      background: var(--app-background-color);
       display: flex;
       --md-icon-size: 1.5rem;
     }
@@ -60,7 +59,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
     }
 
     .functions-bar {
-      background: #edf2fa;
+      background: var(--color-secondary);
       border-radius: 10rem;
       display: flex;
       flex-direction: column;
@@ -75,7 +74,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
       align-items: center;
       background: none;
       border: none;
-      color: black;
+      color: var(--color-on-secondary);
       cursor: pointer;
       display: flex;
       flex-direction: column;

@@ -37,7 +37,12 @@ import {customElement, property, query} from 'lit/decorators.js';
 import {AudioManager} from './audio-manager.js';
 import {ConfigStorage} from './config-storage.js';
 import {CONFIG_DEFAULT, LARGE_MARGIN_LINE_LIMIT} from './constants.js';
-import {InputSource} from './input-history.js';
+import {InputSource, InputSourceKind} from './input-history.js';
+import {
+  SMALL_KANA_TRIGGER,
+  STEGANA,
+  STEGANA_INVERT,
+} from './keyboards/pv-fifty-key-keyboard.js';
 import {LANGUAGES} from './language.js';
 import {sourceLocale, targetLocales} from './locale-codes.js';
 import * as jaModule from './locales/ja.js';
@@ -319,21 +324,44 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     }, this.delayBeforeFetchMs());
   }
 
+  /**
+   * Composes a sentence updated based on the incoming character.
+   * @param currentSentence The current sentence to update.
+   * @param incomingCharacter The character to append or a control character.
+   * @returns The updated sentence after processing the incoming character.
+   */
+  static composeUpdatedSentence(
+    currentSentence: string,
+    incomingCharacter: string,
+  ) {
+    if (incomingCharacter === SMALL_KANA_TRIGGER) {
+      const lastCharacter = currentSentence.slice(-1)[0];
+      if ([...STEGANA.keys()].includes(lastCharacter)) {
+        return currentSentence.slice(0, -1) + STEGANA.get(lastCharacter);
+      } else if ([...STEGANA_INVERT.keys()].includes(lastCharacter)) {
+        return currentSentence.slice(0, -1) + STEGANA_INVERT.get(lastCharacter);
+      } else {
+        return currentSentence;
+      }
+    }
+    return currentSentence + incomingCharacter;
+  }
+
   @playClickSound()
   private onCharacterSelect(e: CharacterSelectEvent) {
-    const textfield = this.textField;
-    if (!textfield) return;
+    if (!this.textField) return;
     const normalized = normalize(
-      textfield.value + e.detail,
-      textfield.isLastInputSuggested(),
+      PvAppElement.composeUpdatedSentence(this.textField.value, e.detail),
+      this.textField.isLastInputSuggested(),
     );
-    textfield.setTextFieldValue(normalized, [InputSource.CHARACTER]);
+    this.textField.setTextFieldValue(normalized, [InputSource.CHARACTER]);
   }
 
   @playClickSound()
   private onSuggestionSelect(e: SuggestionSelectEvent) {
-    this.textField?.setTextFieldValue(e.detail, [
-      InputSource.SUGGESTED_SENTENCE,
+    const [value, index] = e.detail;
+    this.textField?.setTextFieldValue(value, [
+      {kind: InputSourceKind.SUGGESTED_SENTENCE, index},
     ]);
   }
 
