@@ -179,17 +179,17 @@ abstract class Japanese implements Language {
   ];
   aiConfigs = {
     classic: {
-      model: 'gemini-1.5-pro-002',
+      model: 'gemini-1.5-flash-001',
       sentence: 'SentenceJapanese20240628',
       word: 'WordGeneric20240628',
     },
     fast: {
-      model: 'gemini-2.0-flash-lite-001',
+      model: 'gemini-1.5-flash-002',
       sentence: 'SentenceJapanese20240628',
       word: 'WordGeneric20240628',
     },
     smart: {
-      model: 'gemini-2.0-flash-001',
+      model: 'gemini-1.5-pro-002',
       sentence: 'SentenceJapaneseLong20241002',
       word: 'WordGeneric20240628',
     },
@@ -319,58 +319,6 @@ class SwedishExperimental extends Swedish {
   }
 }
 
-abstract class Mandarin implements Language {
-  code = 'zh-CN';
-  promptName = 'Mandarin';
-  keyboards: StaticValue[] = [];
-  separetor = '';
-  initialPhrases = ['你', '我', '他', '她', '它', '好', '今天', '昨天', '明天'];
-  aiConfigs = {
-    classic: {
-      model: 'gemini-1.5-flash-001',
-      sentence: 'SentenceGeneric20250311',
-      word: 'WordMandarin20250326',
-    },
-    fast: {
-      model: 'gemini-1.5-flash-002',
-      sentence: 'SentenceGeneric20250311',
-      word: 'WordMandarin20250326',
-    },
-    smart: {
-      model: 'gemini-1.5-pro-002',
-      sentence: 'SentenceGeneric20250311',
-      word: 'WordMandarin20250326',
-    },
-  };
-  abstract render(): TemplateResult;
-  segment(sentence: string) {
-    const result = [];
-    for (let i = 0; i < sentence.length; i++) {
-      result.push(sentence[i]);
-    }
-    return result;
-  }
-  join(words: string[]) {
-    return words.join('');
-  }
-  appendWord(text: string, word: string) {
-    // Remove pinyin part if any.
-    // TODO: This is way too hacky. Please use a more reliable way.
-    text = text.replace(/[a-z]+$/, '');
-    if (word.startsWith('-')) {
-      return text + word.slice(1);
-    }
-    return text + word;
-  }
-}
-
-class MandarinWithSingleRowKeyboard extends Mandarin {
-  keyboards = [literal`pv-alphanumeric-single-row-keyboard`];
-  render() {
-    return html`${msg('Mandarin (single-row keyboard)')}`;
-  }
-}
-
 export const LANGUAGES: {[name: string]: Language} = {
   englishWithSingleRowKeyboard: new EnglishWithSingleRowKeyboard(),
   englishWithQWERYKeyboard: new EnglishWithQWERYKeyboard(),
@@ -378,6 +326,5 @@ export const LANGUAGES: {[name: string]: Language} = {
   japaneseWithFullkeyboard: new JapaneseWithFullKeyboard(),
   frenchExperimental: new FrenchExperimental(),
   germanExperimental: new GermanExperimental(),
-  mandarinWithSingleRowKeyboard: new MandarinWithSingleRowKeyboard(),
   swedishExperimental: new SwedishExperimental(),
 };

@@ -18,9 +18,15 @@ import {css} from 'lit';
 
 export const pvAppStyle = css`
   :host {
-    background: var(--color-background);
     display: flex;
+  }
+
+  .container {
+    box-sizing: border-box;
+    display: flex;
+    gap: 0.5rem;
     padding: 0.5rem;
+    width: 100%;
   }
 
   .main {
@@ -29,7 +35,6 @@ export const pvAppStyle = css`
     flex-direction: column;
     flex: 1;
     overflow: hidden;
-    padding-left: 1rem;
   }
 
   .main textarea {
@@ -150,5 +155,14 @@ export const pvAppStyle = css`
 
   .language-name[active] {
     display: block;
+  }
+
+  .conversation-history-container {
+    background: var(--color-surface);
+    border-radius: 0.5rem;
+    max-width: 30vw;
+    overflow: scroll;
+    padding: 0.5rem;
+    width: 360px;
   }
 `;

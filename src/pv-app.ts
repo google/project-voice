@@ -32,7 +32,7 @@ import {
 } from '@lit/localize';
 import {SignalWatcher} from '@lit-labs/signals';
 import {html, LitElement} from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
+import {customElement, property, query, queryAll} from 'lit/decorators.js';
 
 import {AudioManager} from './audio-manager.js';
 import {ConfigStorage} from './config-storage.js';
@@ -476,46 +476,49 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     });
 
     return html`
-      <pv-functions-bar
-        .state=${this.stateInternal}
-        @undo-click=${this.onUndoClick}
-        @backspace-click=${this.onBackspaceClick}
-        @delete-click=${this.onDeleteClick}
-        @language-change-click=${this.onLanguageChangeClick}
-        @keyboard-change-click=${this.onKeyboardChangeClick}
-        @content-copy-click=${this.onContentCopyClick}
-        @setting-click=${this.onSettingClick}
+      <div class="container">
+        <pv-functions-bar
+          .state=${this.stateInternal}
+          @undo-click=${this.onUndoClick}
+          @backspace-click=${this.onBackspaceClick}
+          @delete-click=${this.onDeleteClick}
+          @language-change-click=${this.onLanguageChangeClick}
+          @keyboard-change-click=${this.onKeyboardChangeClick}
+          @content-copy-click=${this.onContentCopyClick}
+          @setting-click=${this.onSettingClick}
 
-      ></pv-functions-bar>
-      <div class="main">
-        <div class="keypad">
-          <pv-character-input
-            .state=${this.stateInternal}
-            @character-select=${this.onCharacterSelect}
-            @keypad-handler-click=${this.onKeypadHandlerClick}
-          ></pv-character-input>
-          <div class="suggestions">
-            <ul class="word-suggestions">
-              ${bodyOfWordSuggestions}
-            </ul>
-            <ul class="sentence-suggestions">
-              ${bodyOfSentenceSuggestions}
-            </ul>
-            <div class="loader ${this.isLoading ? 'loading' : ''}">
-              <md-circular-progress indeterminate></md-circular-progress>
+        ></pv-functions-bar>
+        <div class="main">
+          <div class="keypad">
+            <pv-character-input
+              .state=${this.stateInternal}
+              @character-select=${this.onCharacterSelect}
+              @keypad-handler-click=${this.onKeypadHandlerClick}
+            ></pv-character-input>
+            <div class="suggestions">
+              <ul class="word-suggestions">
+                ${bodyOfWordSuggestions}
+              </ul>
+              <ul class="sentence-suggestions">
+                ${bodyOfSentenceSuggestions}
+              </ul>
+              <div class="loader ${this.isLoading ? 'loading' : ''}">
+                <md-circular-progress indeterminate></md-circular-progress>
+              </div>
             </div>
+
           </div>
+          <div>
+            <pv-textarea-wrapper
+              .state=${this.stateInternal}
+              @text-update=${() => {
+                this.updateSuggestions();
+              }}
+            ></pv-textarea-wrapper>
+          </div>
+          <div class="language-name">${this.stateInternal.lang.render()}</div>
 
         </div>
-        <div>
-          <pv-textarea-wrapper
-            .state=${this.stateInternal}
-            @text-update=${() => {
-              this.updateSuggestions();
-            }}
-          ></pv-textarea-wrapper>
-        </div>
-        <div class="language-name">${this.stateInternal.lang.render()}</div>
 
       </div>
 
