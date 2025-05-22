@@ -28,7 +28,7 @@
     "@storybook/addon-essentials": "^8.6.12",
     "@storybook/blocks": "^8.6.12",
     "@storybook/experimental-addon-test": "^8.6.12",
-    "@storybook/test": "^8.6.10",
+    "@storybook/test": "^8.6.14",
     "@storybook/web-components": "^8.6.10",
     "@storybook/web-components-vite": "^8.6.12",
     "@types/dom-speech-recognition": "^0.0.6",
