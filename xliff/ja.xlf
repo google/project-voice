@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file target-language="ja" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s9d8b8aa2b404c2c8">
+  <source>Settings</source>
+  <target>設定</target>
+</trans-unit>
+<trans-unit id="sb6bc71df20a5484d">
+  <source>Always expand at origin</source>
+  <target>キーを左端から展開する</target>
+</trans-unit>
+<trans-unit id="s91b073374c468b93">
+  <source>Persona</source>
+  <target>利用者のプロフィール</target>
+</trans-unit>
+<trans-unit id="s6e237556e679b5b8">
+  <source>TTS Voice</source>
+  <target>テキスト読み上げ音声</target>
+</trans-unit>
+<trans-unit id="sc3ac225273c8316b">
+  <source>General</source>
+  <target>一般</target>
+</trans-unit>
+<trans-unit id="se127d1b851b56845">
+  <source>Initial phrases</source>
+  <target>初期フレーズ</target>
+</trans-unit>
+<trans-unit id="sb061ff5a347a296e">
+  <source>Profile</source>
+  <target>プロフィール</target>
+</trans-unit>
+<trans-unit id="s59e3e7ab292d7c11">
+  <source>Use smaller sentence margin</source>
+  <target>文の行間を詰める</target>
+</trans-unit>
+<trans-unit id="s8f4be9f086eb530f">
+  <source>Undo</source>
+  <target>もとに戻す</target>
+</trans-unit>
+<trans-unit id="sd64445ead33533cc">
+  <source>Backspace</source>
+  <target>一文字消す</target>
+</trans-unit>
+<trans-unit id="sefcf950b3cc4fc3b">
+  <source>Language</source>
+  <target>言語切替え</target>
+</trans-unit>
+<trans-unit id="s3687049d1af562c4">
+  <source>Copy</source>
+  <target>コピー</target>
+</trans-unit>
+<trans-unit id="s5bc98d6c14b1d2c6">
+  <source>Read aloud</source>
+  <target>読み上げる</target>
+</trans-unit>
+<trans-unit id="sb4f1dffbb6be6302">
+  <source>Clear</source>
+  <target>すべて削除</target>
+</trans-unit>
+<trans-unit id="s09085b07b5a0de5f">
+  <source>AI</source>
+  <target>AI設定</target>
+</trans-unit>
+<trans-unit id="s19e84b851836664f">
+  <source>Fast</source>
+  <target>高速</target>
+</trans-unit>
+<trans-unit id="s3ceed4d952789f32">
+  <source>Smart</source>
+  <target>賢い</target>
+</trans-unit>
+<trans-unit id="s98aa8b9481114f33">
+  <source>Classic</source>
+  <target>旧バージョン</target>
+</trans-unit>
+<trans-unit id="sb46606bea7e65177">
+  <source>Speaking rate</source>
+  <target>読む速さ</target>
+</trans-unit>
+<trans-unit id="s1369ddcc1b221411">
+  <source>Pitch</source>
+  <target>声の高さ</target>
+</trans-unit>
+<trans-unit id="s5c9bb69e2a31ad59">
+  <source>VOICE</source>
+  <target>VOICE</target>
+</trans-unit>
+<trans-unit id="s612301cee43af417">
+  <source>Enable earcons</source>
+  <target>効果音を再生</target>
+</trans-unit>
+<trans-unit id="s868a566fb9603774">
+  <source>Keyboard</source>
+  <target>キーボード</target>
+</trans-unit>
+<trans-unit id="s54f4fb35b3a04e2a">
+  <source>English (single-row keyboard)</source>
+  <target>英語 (一行キーボード)</target>
+</trans-unit>
+<trans-unit id="s9c2aff542563e783">
+  <source>Japanese (single-row keyboard)</source>
+  <target>日本語 (一行キーボード)</target>
+</trans-unit>
+<trans-unit id="s2ca367238c69d1e7">
+  <source>English (QWERTY keyboard)</source>
+  <target>英語 (QWERTYキーボード)</target>
+</trans-unit>
+<trans-unit id="s12be3981db8aad36">
+  <source>Japanese (Gojūon keyboard)</source>
+  <target>日本語 (五十音キーボード)</target>
+</trans-unit>
+
+</body>
+</file>
+</xliff>

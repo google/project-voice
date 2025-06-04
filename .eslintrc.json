@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "./node_modules/gts/",
+    "plugin:storybook/recommended"
+  ],
+  "plugins": [
+    "simple-import-sort"
+  ],
+  "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "@typescript-eslint/no-floating-promises": "off",
+    "n/no-unpublished-import": "off"
+  }
+}

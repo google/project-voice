@@ -1,0 +1,7 @@
+static/
+macromaker-polyfill/
+src/locale-codes.ts
+src/locales/
+spec
+third_party/
+storybook-static/

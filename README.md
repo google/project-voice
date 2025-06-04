@@ -6,6 +6,8 @@ This software uses generative AI to predict possible words and sentences that mi
 
 ![Demo animation](/demo_hamburger.gif)
 
+<!--- TODO: Add a link to the external promotion page. -->
+
 ## Before you begin
 
 Project VOICE is a web application built on Gemini API, and it’s designed to be run on Google App Engine primarily. Please set up a Google Cloud project with these APIs enabled. You will also need to install Python and Node.js to build and run the application.
@@ -92,3 +94,4 @@ This project exists thanks to all the people who have contributed.
 - Yasuaki Takebe
 - Yu-Sheng Li
 
+<!--- TODO: Revisit this section. -->
