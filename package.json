@@ -30,7 +30,7 @@
     "@storybook/experimental-addon-test": "^8.6.12",
     "@storybook/test": "^8.6.10",
     "@storybook/web-components": "^8.6.10",
-    "@storybook/web-components-vite": "^8.6.12",
+    "@storybook/web-components-vite": "^9.0.12",
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/jasmine": "^5.1.7",
     "@types/node": "^22.15.2",
