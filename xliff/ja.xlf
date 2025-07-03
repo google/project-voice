@@ -110,6 +110,14 @@
   <source>Japanese (Gojūon keyboard)</source>
   <target>日本語 (五十音キーボード)</target>
 </trans-unit>
+<trans-unit id="s41b4752c216d0b66">
+  <source>Conversation</source>
+  <target>会話</target>
+</trans-unit>
+<trans-unit id="sba8b78a7337ff2f4">
+  <source>Enable conversation mode</source>
+  <target>会話モード</target>
+</trans-unit>
 
 </body>
 </file>

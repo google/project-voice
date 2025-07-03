@@ -197,18 +197,29 @@ class State {
     this.enableEarconsInternal = newEnableEarcons;
   }
 
+  private enableConversationModeSignal = signal(false);
+
+  get enableConversationMode() {
+    return this.enableConversationModeSignal.get();
+  }
+
+  set enableConversationMode(newEnableConversationMode: boolean) {
+    this.storage.write('enableConversationMode', newEnableConversationMode);
+    this.enableConversationModeSignal.set(newEnableConversationMode);
+  }
+
   lastInputSpeech = '';
   lastOutputSpeech = '';
 
-  private messageHistoryInternal: [string, number][] = [];
+  private messageHistoryInternal: [string, string, number][] = [];
 
   get messageHistory() {
     return this.messageHistoryInternal;
   }
 
-  set messageHistory(newMessageHistory: [string, number][]) {
+  set messageHistory(newMessageHistory: [string, string, number][]) {
     this.messageHistoryInternal = newMessageHistory;
-    this.storage.write('messageHistory', newMessageHistory);
+    this.storage.write('messageHistoryWithPrefix', newMessageHistory);
   }
 
   // TODO: This is a little hacky... Consider a better way.
@@ -225,10 +236,11 @@ class State {
   loadState() {
     this.aiConfigInternal = this.storage.read('aiConfig');
     this.checkedLanguages = this.storage.read('checkedLanguages');
+    this.enableConversationMode = this.storage.read('enableConversationMode');
     this.enableEarconsInternal = this.storage.read('enableEarcons');
     this.expandAtOrigin = this.storage.read('expandAtOrigin');
     this.initialPhrases = this.storage.read('initialPhrases');
-    this.messageHistoryInternal = this.storage.read('messageHistory');
+    this.messageHistoryInternal = this.storage.read('messageHistoryWithPrefix');
     this.personaInternal = this.storage.read('persona');
     this.sentenceSmallMargin = this.storage.read('sentenceSmallMargin');
     this.voiceNameInternal = this.storage.read('ttsVoice');

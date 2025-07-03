@@ -111,7 +111,7 @@ export class PvTextareaWrapper extends LitElement {
         const element = new HistoryElement(value, [InputSource.KEYBOARD]);
         this.inputHistory.add(element);
       }
-      this.fireEvent();
+      this.fireEvent(this.inputHistory.lastInput().sources);
     };
 
     return html`
@@ -120,10 +120,10 @@ export class PvTextareaWrapper extends LitElement {
     `;
   }
 
-  private fireEvent() {
+  private fireEvent(sources: InputSource[]) {
     this.dispatchEvent(
       new CustomEvent(EVENT_KEY.textUpdate, {
-        detail: {callee: this},
+        detail: {callee: this, sources},
         bubbles: true,
         composed: true,
       }),

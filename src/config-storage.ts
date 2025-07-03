@@ -18,9 +18,10 @@ export interface Config {
   aiConfig: string;
   checkedLanguages: string[];
   enableEarcons: boolean;
+  enableConversationMode: boolean;
   expandAtOrigin: boolean;
   initialPhrases: string[];
-  messageHistory: [string, number][];
+  messageHistoryWithPrefix: [string, string, number][];
   persona: string;
   sentenceSmallMargin: boolean;
   ttsVoice: string;

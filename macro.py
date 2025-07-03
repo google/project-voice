@@ -200,6 +200,65 @@ TEMPLATES = {
         sentence: "[[text]]"
         answers:
         '''),
+    'WordJapanese20250623':
+        textwrap.dedent('''\
+        #ifdef lastInputSpeech
+        あなたと話し相手が、以下の会話をしています。:
+        #ifdef lastOutputSpeech
+        あなた:
+        [[lastOutputSpeech]]
+        #endif
+        相手:
+        [[lastInputSpeech]]
+
+        #ifdef conversationHistory
+        会話の履歴:
+        [[conversationHistory]]
+        #endif
+
+        この文脈を考慮して、
+        "[[text]]"
+        この文字列の続きを予測して、[[num]]個出力してください。 \\
+        #else
+        与えられた文字列の続きを予測して、[[num]]個出力してください。 \\
+        #endif
+        #ifdef persona
+
+        参考までに、このユーザのプロフィールは以下のとおりです:
+        [[persona]]
+
+        #endif
+        ルール:
+        - 一つの単語に補完する文字列を出力してください。
+        - 確率が高い順に出力してください。
+        - 異なる文字列を出力してください。
+        - 各回答はインデックス番号から始めてください。
+        - 出力にタイトルや説明などは不要です。
+        - 回答に句読点を含めないでください。
+        - 日本語で記述してください。
+
+        例:
+        文字列: "かん"
+        回答:
+        1. がえ
+        2. り
+        3. けつ
+
+        文字列: "おもい"
+        回答:
+        1. だし
+        2. で
+        3. きり
+
+        文字列: "私達のこ"
+        回答:
+        1. と
+        2. んご
+        3. れから
+
+        文字列: "[[text]]"
+        回答:
+        '''),
 }
 
 
@@ -221,9 +280,9 @@ def RunGeminiMacro(model_id, prompt, temperature, language):
   """
 
   client = genai.Client(api_key=os.environ.get('API_KEY'))
-  thiking_config = None
+  thinking_config = None
   if model_id.startswith('gemini-2.5-'):
-    thiking_config = types.ThinkingConfig(thinking_budget=0)
+    thinking_config = types.ThinkingConfig(thinking_budget=0)
   response = client.models.generate_content(
       model=model_id,
       contents=prompt,
@@ -237,7 +296,7 @@ def RunGeminiMacro(model_id, prompt, temperature, language):
                   category='HARM_CATEGORY_SEXUALLY_EXPLICIT',
                   threshold='BLOCK_NONE'),
           ],
-          thinking_config=thiking_config,
+          thinking_config=thinking_config,
       ),
   )
   if not response.text:

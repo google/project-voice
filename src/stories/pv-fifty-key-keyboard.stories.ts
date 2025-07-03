@@ -16,7 +16,7 @@
 
 import '../keyboards/pv-fifty-key-keyboard.js';
 
-import {Meta, StoryObj} from '@storybook/web-components';
+import {Meta, StoryObj} from '@storybook/web-components-vite';
 import {html} from 'lit';
 
 import {PvFiftyKeyKeyboard} from '../keyboards/pv-fifty-key-keyboard.js';

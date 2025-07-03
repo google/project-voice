@@ -40,6 +40,7 @@ It can be run in two modes:
 """
 from collections import Counter
 from datetime import datetime
+from retry import retry
 import MeCab
 import json
 import os
@@ -97,9 +98,14 @@ def parse_response(response):
     return []
 
 
+@retry(tries=5, delay=3)
+def run_macro_with_retry(macro_id, user_input, temperature, model_id):
+  return macro.RunMacro(macro_id, user_input, temperature, model_id)
+
+
 def word_suggestions(text_context, word_macro_id, model_id):
   user_input = {'language': 'Japanese', 'num': '5', 'text': text_context}
-  response = macro.RunMacro(word_macro_id, user_input, 0, model_id)
+  response = run_macro_with_retry(word_macro_id, user_input, 0, model_id)
   if DEBUG_LLM_RAW:
     print(f"DEBUG LLM word_suggestions response for '{text_context}':",
           repr(response))
@@ -111,7 +117,7 @@ def word_suggestions(text_context, word_macro_id, model_id):
 
 def sentence_suggestions(text, sentence_macro_id, model_id):
   user_input = {'language': 'Japanese', 'num': '5', 'text': text}
-  response = macro.RunMacro(sentence_macro_id, user_input, 0, model_id)
+  response = run_macro_with_retry(sentence_macro_id, user_input, 0, model_id)
   if DEBUG_LLM_RAW:
     print(f"DEBUG LLM sentence_suggestions response for '{text}':",
           repr(response))
