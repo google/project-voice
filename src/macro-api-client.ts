@@ -60,6 +60,7 @@ export class MacroApiClient {
       sentenceMacroId: string;
       wordMacroId: string;
       persona: string;
+      systemPrompt: string;
 
       lastOutputSpeech: string;
       lastInputSpeech: string;
@@ -80,6 +81,7 @@ export class MacroApiClient {
       num, // [[num]]
       text: textValue, // [[text]]
       persona: context.persona,
+      systemPrompt: context.systemPrompt,
       lastOutputSpeech: context.lastOutputSpeech,
       lastInputSpeech: context.lastInputSpeech,
       conversationHistory: context.conversationHistory,

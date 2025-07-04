@@ -148,6 +148,23 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
       </div>
       <div class="form-section">
         <label>
+          ${msg('System prompt')}
+          <p>
+            <md-filled-text-field
+              class="pv-system-prompt-text-field"
+              type="textarea"
+              rows="3"
+              @input=${(e: Event) => {
+                this.state.systemPrompt = (e.target as HTMLTextAreaElement).value;
+              }}
+              value="${this.state.systemPrompt}"
+            >
+            </md-filled-text-field>
+          </p>
+        </label>
+      </div>
+      <div class="form-section">
+        <label>
           ${msg('Initial phrases')}
           <p>
             <md-filled-text-field

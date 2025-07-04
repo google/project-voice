@@ -397,6 +397,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           wordMacroId:
             this.state.features.wordMacroId ?? this.stateInternal.wordMacroId,
           persona: this.stateInternal.persona,
+          systemPrompt: this.stateInternal.systemPrompt,
           lastInputSpeech: this.state.lastInputSpeech,
           lastOutputSpeech: this.state.lastOutputSpeech,
           conversationHistory: this.conversationHistory

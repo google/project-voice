@@ -144,6 +144,17 @@ class State {
     this.personaInternal = newPersona;
   }
 
+  private systemPromptInternal = '';
+
+  get systemPrompt() {
+    return this.systemPromptInternal;
+  }
+
+  set systemPrompt(newSystemPrompt: string) {
+    this.storage.write('systemPrompt', newSystemPrompt);
+    this.systemPromptInternal = newSystemPrompt;
+  }
+
   private initialPhrasesSignal = signal([] as string[]);
 
   get initialPhrases() {
@@ -231,6 +242,7 @@ class State {
     this.messageHistoryInternal = this.storage.read('messageHistory');
     this.personaInternal = this.storage.read('persona');
     this.sentenceSmallMargin = this.storage.read('sentenceSmallMargin');
+    this.systemPromptInternal = this.storage.read('systemPrompt');
     this.voiceNameInternal = this.storage.read('ttsVoice');
     this.voicePitchInternal = this.storage.read('voicePitch');
     this.voiceSpeakingRateInternal = this.storage.read('voiceSpeakingRate');

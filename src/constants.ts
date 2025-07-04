@@ -27,6 +27,7 @@ export const CONFIG_DEFAULT: Config = {
   messageHistory: [],
   persona: '',
   sentenceSmallMargin: false,
+  systemPrompt: '',
   ttsVoice: '',
   voicePitch: 0.0,
   voiceSpeakingRate: 0.0,
