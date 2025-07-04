@@ -23,7 +23,6 @@ export interface Config {
   messageHistory: [string, number][];
   persona: string;
   sentenceSmallMargin: boolean;
-  systemPrompt: string;
   ttsVoice: string;
   voicePitch: number;
   voiceSpeakingRate: number;
