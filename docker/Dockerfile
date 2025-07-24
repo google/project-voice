@@ -25,5 +25,5 @@ RUN npm install && npm run build
 
 EXPOSE 5000
 
-# run server when the container starts
-CMD ["npm", "run", "serve"]
+ENTRYPOINT ["python"]
+CMD ["main.py"]

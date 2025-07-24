@@ -151,8 +151,77 @@ class State {
   }
 
   set initialPhrases(newInitialPhrases: string[]) {
-    this.storage.write('initialPhrases', newInitialPhrases);
+    // Store for the current language
+    const currentLanguageKey = this.getCurrentLanguageKey();
+    if (currentLanguageKey) {
+      const perLanguagePhrases = this.storage.read('initialPhrasesPerLanguage');
+      perLanguagePhrases[currentLanguageKey] = newInitialPhrases;
+      this.storage.write('initialPhrasesPerLanguage', perLanguagePhrases);
+    }
     this.initialPhrasesSignal.set(newInitialPhrases);
+  }
+
+  /**
+   * Gets initial phrases for a specific language.
+   * @param languageKey The language key (e.g., 'japaneseWithSingleRowKeyboard')
+   * @returns The initial phrases for the language
+   */
+  getInitialPhrasesForLanguage(languageKey: string): string[] {
+    const perLanguagePhrases = this.storage.read('initialPhrasesPerLanguage');
+    return perLanguagePhrases[languageKey] || [];
+  }
+
+  /**
+   * Sets initial phrases for a specific language.
+   * @param languageKey The language key (e.g., 'japaneseWithSingleRowKeyboard')
+   * @param phrases The initial phrases to set
+   */
+  setInitialPhrasesForLanguage(languageKey: string, phrases: string[]) {
+    const perLanguagePhrases = this.storage.read('initialPhrasesPerLanguage');
+    perLanguagePhrases[languageKey] = phrases;
+    this.storage.write('initialPhrasesPerLanguage', perLanguagePhrases);
+
+    // Update the signal if this is the current language
+    if (this.getCurrentLanguageKey() === languageKey) {
+      this.initialPhrasesSignal.set(phrases);
+    }
+  }
+
+  /**
+   * Gets the current language key based on the current language object.
+   * @returns The language key or null if not found
+   */
+  getCurrentLanguageKey(): string | null {
+    for (const [key, language] of Object.entries(LANGUAGES)) {
+      if (language === this.lang) {
+        return key;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Updates initial phrases to match the current language.
+   * This should be called when switching languages.
+   */
+  updateInitialPhrasesForCurrentLanguage() {
+    const currentLanguageKey = this.getCurrentLanguageKey();
+    if (currentLanguageKey) {
+      const storedPhrases =
+        this.getInitialPhrasesForLanguage(currentLanguageKey);
+      if (storedPhrases.length > 0) {
+        // Use stored phrases for this language
+        this.initialPhrasesSignal.set(storedPhrases);
+      } else {
+        // Use default phrases from the language definition
+        this.initialPhrasesSignal.set(this.lang.initialPhrases);
+        // Store the default phrases for future use
+        this.setInitialPhrasesForLanguage(
+          currentLanguageKey,
+          this.lang.initialPhrases,
+        );
+      }
+    }
   }
 
   private voiceSpeakingRateInternal!: number;
@@ -197,18 +266,39 @@ class State {
     this.enableEarconsInternal = newEnableEarcons;
   }
 
+  private enableConversationModeSignal = signal(false);
+
+  get enableConversationMode() {
+    return this.enableConversationModeSignal.get();
+  }
+
+  set enableConversationMode(newEnableConversationMode: boolean) {
+    this.storage.write('enableConversationMode', newEnableConversationMode);
+    this.enableConversationModeSignal.set(newEnableConversationMode);
+  }
+
+  private isMicrophoneOnSignal = signal(false);
+
+  get isMicrophoneOn() {
+    return this.isMicrophoneOnSignal.get();
+  }
+
+  set isMicrophoneOn(newIsMicrophoneOn: boolean) {
+    this.isMicrophoneOnSignal.set(newIsMicrophoneOn);
+  }
+
   lastInputSpeech = '';
   lastOutputSpeech = '';
 
-  private messageHistoryInternal: [string, number][] = [];
+  private messageHistoryInternal: [string, string, number][] = [];
 
   get messageHistory() {
     return this.messageHistoryInternal;
   }
 
-  set messageHistory(newMessageHistory: [string, number][]) {
+  set messageHistory(newMessageHistory: [string, string, number][]) {
     this.messageHistoryInternal = newMessageHistory;
-    this.storage.write('messageHistory', newMessageHistory);
+    this.storage.write('messageHistoryWithPrefix', newMessageHistory);
   }
 
   // TODO: This is a little hacky... Consider a better way.
@@ -225,10 +315,30 @@ class State {
   loadState() {
     this.aiConfigInternal = this.storage.read('aiConfig');
     this.checkedLanguages = this.storage.read('checkedLanguages');
+    this.enableConversationMode = this.storage.read('enableConversationMode');
     this.enableEarconsInternal = this.storage.read('enableEarcons');
     this.expandAtOrigin = this.storage.read('expandAtOrigin');
-    this.initialPhrases = this.storage.read('initialPhrases');
-    this.messageHistoryInternal = this.storage.read('messageHistory');
+
+    // Handle backward compatibility for initial phrases
+    const globalInitialPhrases = this.storage.read('initialPhrases');
+    const perLanguagePhrases = this.storage.read('initialPhrasesPerLanguage');
+
+    // If we have global initial phrases but no per-language phrases, migrate them
+    if (
+      globalInitialPhrases &&
+      globalInitialPhrases.length > 0 &&
+      (!perLanguagePhrases || Object.keys(perLanguagePhrases).length === 0)
+    ) {
+      // Migrate global phrases to the default language
+      const defaultLanguageKey = this.checkedLanguages[0];
+      const migratedPhrases = {
+        ...perLanguagePhrases,
+        [defaultLanguageKey]: globalInitialPhrases,
+      };
+      this.storage.write('initialPhrasesPerLanguage', migratedPhrases);
+    }
+
+    this.messageHistoryInternal = this.storage.read('messageHistoryWithPrefix');
     this.personaInternal = this.storage.read('persona');
     this.sentenceSmallMargin = this.storage.read('sentenceSmallMargin');
     this.voiceNameInternal = this.storage.read('ttsVoice');
@@ -252,6 +362,8 @@ class State {
     this.storage =
       storage ?? new ConfigStorage('com.google.pv', CONFIG_DEFAULT);
     this.loadState();
+    // Load initial phrases for the current language
+    this.updateInitialPhrasesForCurrentLanguage();
   }
 }
 

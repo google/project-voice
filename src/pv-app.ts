@@ -34,6 +34,7 @@ import {
   str,
 } from '@lit/localize';
 import {SignalWatcher} from '@lit-labs/signals';
+import {diff_match_patch} from 'diff-match-patch';
 import {html, LitElement} from 'lit';
 import {customElement, property, query, queryAll} from 'lit/decorators.js';
 
@@ -56,7 +57,11 @@ import type {PvFunctionsBar} from './pv-functions-bar.js';
 import {PvSentenceTypeSelectorElement} from './pv-sentence-type-selector.js';
 import type {PvSettingPanel} from './pv-setting-panel.js';
 import {PvSnackbar} from './pv-snackbar.js';
-import type {SuggestionSelectEvent} from './pv-suggestion-stripe.js';
+import {
+  SentenceSuggestion,
+  SentenceSuggestionSource,
+  SuggestionSelectEvent,
+} from './pv-suggestion-stripe.js';
 import type {PvTextareaWrapper} from './pv-textarea-wrapper.js';
 import {State} from './state.js';
 
@@ -65,9 +70,13 @@ const URL_PARAMS = {
   WORD_MACRO_ID: 'wordMacroId',
 } as const;
 
-const MIN_MESSAGE_LENGTH = 3;
+const MIN_MESSAGE_LENGTH = 0;
 const MAX_EDIT_DIFF_LENGTH = 10;
 const MESSAGE_HISTORY_LIMIT = 1024;
+const MIN_SUGGESTION_LENGTH = 3;
+const MODIFIABLE_TEXT_LENGTH = 10;
+const MAX_SENTENCE_LENGTH_NICE_TO_LLM = 30;
+const MAX_DIFFS = 10;
 
 const {setLocale} = configureLocalization({
   sourceLocale,
@@ -128,20 +137,113 @@ function normalize(sentence: string, isLastInputFromSuggestion?: boolean) {
 }
 
 /**
- * Returns the last sentence from the given string.
+ * Splits the given string into sentences.
  * @param text The whole text.
- * @returns The sentence.
+ * @returns A list of sentences.
  */
-function getLastSentence(text: string) {
+function splitToSentences(text: string) {
   // TODO: Use more robust way to get the sentence that the user is editing.
-  const sentences = text
-    .split(/[.?。？]/)
-    .map(str => str.trim())
-    .filter(str => str);
-  if (sentences.length === 0) {
-    return '';
+  const delim = /([。？！]|[.?!] ) */;
+  const result = [];
+  let i = 0;
+  while (i < text.length) {
+    const match = delim.exec(text.substring(i));
+    if (!match) {
+      result.push(text.substring(i));
+      break;
+    }
+    const endIndex = i + match.index + match[0].length;
+    result.push(text.substring(i, endIndex));
+    i = endIndex;
   }
-  return sentences[sentences.length - 1];
+  return result;
+}
+
+/**
+ * Splits the last sentence from the given string.
+ * @param text The whole text.
+ * @returns A pair of the preceeding sentences and the last sentence.
+ */
+function splitLastSentence(text: string) {
+  const sentences = splitToSentences(text);
+  if (sentences.length === 0) {
+    return ['', ''];
+  }
+  return [
+    sentences.slice(0, sentences.length - 1).join(''),
+    sentences[sentences.length - 1].trimEnd(),
+  ];
+}
+
+/**
+ * Splits the last few sentences to avoid sending too long text to LLM.
+ * @param text The whole text.
+ * @returns A pair of the preceeding sentences and the last sentences.
+ */
+function splitLastFewSentencesForLLM(text: string) {
+  const sentences = splitToSentences(text);
+  if (sentences.length === 0) {
+    return ['', ''];
+  }
+  const sentenceLengths = sentences.map(s => s.length);
+  let totalLength = 0;
+  for (let i = sentenceLengths.length - 1; i >= 0; i--) {
+    totalLength += sentenceLengths[i];
+    if (totalLength >= MAX_SENTENCE_LENGTH_NICE_TO_LLM) {
+      return [sentences.slice(0, i).join(''), sentences.slice(i).join('')];
+    }
+  }
+  return ['', text];
+}
+
+/**
+ * Returns the prefix of the given string which contains only chars that can
+ * be input from keyboard.
+ * @param text The input string.
+ * @return The prefix string.
+ */
+function getUserInputPrefix(text: string) {
+  const match = text.match(/^[A-Za-z あ-んー]*/u);
+  return match ? match[0] : '';
+}
+
+/**
+ * Heuristically removes unnecessary diffs from the new string.
+ * @param text The original string.
+ * @param newText The new string.
+ * @return The new string changed more similar to the original string.
+ */
+function ignoreUnnecessaryDiffs(text: string, newText: string) {
+  const diffMatchPatch = new diff_match_patch();
+  const diffs: [number, string][] = diffMatchPatch.diff_main(text, newText);
+  diffMatchPatch.diff_cleanupSemantic(diffs);
+  if (diffs.length > MAX_DIFFS || diffs.every(diff => diff[0] !== 0)) {
+    return newText;
+  }
+  let result = '';
+  for (let i = 0; i < diffs.length; i++) {
+    const [op, str] = diffs[i];
+    if (result.length < text.length - MODIFIABLE_TEXT_LENGTH) {
+      if (op === 0 || op === -1) {
+        // Accept the original text.
+        result += str;
+        // Skip the next diff if it is an insertion just after deletion.
+        if (i < diffs.length - 1 && op === -1 && diffs[i + 1][0] === 1) {
+          i++;
+        }
+      }
+    } else {
+      if (op === 0 || op === 1) {
+        // Accept the new text.
+        result += str;
+      }
+    }
+  }
+  // If the result is identical to the original text, return the new text.
+  if (result === text) {
+    return newText;
+  }
+  return result;
 }
 
 /**
@@ -168,6 +270,10 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   private apiClient: MacroApiClient;
   private stateInternal: State;
 
+  // Persistent speech recognition instance for always-on mode
+  private speechRecognition?: SpeechRecognition;
+  private isSpeechRecognitionActive = false;
+
   constructor(
     state: State | null = null,
     apiClient: MacroApiClient | null = null,
@@ -182,7 +288,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   }
 
   @property({type: Array})
-  suggestions: string[] = [];
+  suggestions: SentenceSuggestion[] = [];
 
   @property({type: Array})
   words: string[] = [];
@@ -218,7 +324,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   conversationHistory: [number, string][] = [];
 
   @property({type: Array})
-  emotions: {emoji: string; label: string}[] = [];
+  emotions: {emoji: string; prompt: string; label?: string}[] = [];
 
   @property({type: String, attribute: 'feature-storage-domain'})
   private featureStorageDomain = 'com.google.pv';
@@ -228,6 +334,9 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
   @property({type: Boolean, attribute: 'feature-enable-sentence-emotion'})
   private featureEnableSentenceEmotion = false;
+
+  @query('pv-sentence-type-selector')
+  private sentenceTypeSelector?: PvSentenceTypeSelectorElement;
 
   @queryAll('[emotion]')
   private sentenceEmotionButtons?: HTMLElement[];
@@ -274,15 +383,100 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       );
     }
 
-    // This behavior is a bit tricky. The default initial phrases are stored
-    // to local storage. So initial phrases won't be changed by switching input
-    // language.
-    if (!this.stateInternal.initialPhrases.some(str => str)) {
-      this.stateInternal.initialPhrases =
-        this.stateInternal.lang.initialPhrases;
-    }
+    // Initialize initial phrases for the current language
+    this.stateInternal.updateInitialPhrasesForCurrentLanguage();
 
     this.emotions = this.stateInternal.lang.emotions;
+  }
+
+  updated(changedProps: Map<string, any>) {
+    super.updated?.(changedProps);
+    // Always-on speech recognition effect
+    if (
+      this.state.enableConversationMode &&
+      this.state.features.featureEnableSpeechInput &&
+      this.state.isMicrophoneOn
+    ) {
+      this.startSpeechRecognition();
+    } else {
+      this.stopSpeechRecognition();
+    }
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.stopSpeechRecognition();
+  }
+
+  private startSpeechRecognition() {
+    if (this.isSpeechRecognitionActive) return;
+    const SpeechRecognitionCtor =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognitionCtor) return;
+    this.speechRecognition = new SpeechRecognitionCtor();
+    if (!this.speechRecognition) {
+      return;
+    }
+    this.speechRecognition.lang = this.state.lang.code;
+    this.speechRecognition.continuous = true;
+    this.speechRecognition.interimResults = false;
+    this.speechRecognition.onresult = (event: SpeechRecognitionEvent) => {
+      const lastResult = event.results[event.results.length - 1];
+      if (lastResult && lastResult.isFinal && lastResult[0]) {
+        const recognizedText = lastResult[0].transcript.trim();
+        if (recognizedText) {
+          this.conversationHistory = [
+            ...this.conversationHistory,
+            [Date.now(), `PartnerInput: ${recognizedText}`],
+          ];
+          this.state.lastInputSpeech = recognizedText;
+          if (this.snackbar?.labelText !== undefined) {
+            this.snackbar.labelText = recognizedText;
+            this.snackbar.show();
+          }
+        }
+      }
+    };
+    this.speechRecognition.onerror = () => {
+      // Optionally handle errors (network, no-speech, etc)
+      // For robustness, try to restart on recoverable errors
+      this.stopSpeechRecognition();
+      if (
+        this.state.enableConversationMode &&
+        this.state.features.featureEnableSpeechInput &&
+        this.state.isMicrophoneOn
+      ) {
+        setTimeout(() => this.startSpeechRecognition(), 1000);
+      }
+    };
+    this.speechRecognition.onend = () => {
+      this.isSpeechRecognitionActive = false;
+      // Once the speech recognition ends, restart it if the conversation mode is enabled
+      // and the microphone is on.
+      // This allows the app to continuously listen for speech input, until the user
+      // explicitly turns off the microphone or disables conversation mode.
+      if (
+        this.state.enableConversationMode &&
+        this.state.features.featureEnableSpeechInput &&
+        this.state.isMicrophoneOn
+      ) {
+        this.startSpeechRecognition();
+      }
+    };
+    this.speechRecognition.start();
+    this.isSpeechRecognitionActive = true;
+  }
+
+  private stopSpeechRecognition() {
+    if (this.speechRecognition) {
+      this.speechRecognition.onresult = null;
+      this.speechRecognition.onerror = null;
+      this.speechRecognition.onend = null;
+      this.speechRecognition.stop();
+      this.speechRecognition = undefined;
+    }
+    this.isSpeechRecognitionActive = false;
   }
 
   private isBlank() {
@@ -297,58 +491,88 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     ];
   }
 
-  private updateMessageHistory() {
-    const currentSentence = getLastSentence(this.state.text);
-    if (currentSentence.length <= MIN_MESSAGE_LENGTH) {
+  private updateMessageHistory(sources: InputSource[]) {
+    const [, currentSentence] = splitLastSentence(this.state.text);
+    if (sources.length === 0 || currentSentence.length <= MIN_MESSAGE_LENGTH) {
       return;
     }
     const now = Date.now();
     let newMessageHistory = [...this.state.messageHistory];
     if (newMessageHistory.length === 0) {
-      newMessageHistory.push([currentSentence, now]);
+      newMessageHistory.push([
+        currentSentence,
+        getUserInputPrefix(currentSentence),
+        now,
+      ]);
       this.state.messageHistory = newMessageHistory;
       return;
     }
-    const lastSentence = newMessageHistory[newMessageHistory.length - 1][0];
+    const [lastSentence, lastPrefix] =
+      newMessageHistory[newMessageHistory.length - 1];
+    const currentPrefix = getUserInputPrefix(currentSentence);
+    let prefix = '';
     if (
+      sources[0].kind === InputSourceKind.SENTENCE_HISTORY ||
+      sources[0].kind === InputSourceKind.SUGGESTED_SENTENCE ||
+      sources[0].kind === InputSourceKind.SUGGESTED_WORD ||
       lastSentence.startsWith(currentSentence) ||
       (currentSentence.startsWith(lastSentence) &&
         lastSentence.length - currentSentence.length < MAX_EDIT_DIFF_LENGTH)
     ) {
-      // Discard the last sentence from history because the user is still
-      // editing it.
+      // Update the last sentence in history because the user is still editing
+      // it.
       newMessageHistory.pop();
+      prefix =
+        currentPrefix.length > lastPrefix.length ? currentPrefix : lastPrefix;
+    } else {
+      prefix = currentPrefix;
     }
+    newMessageHistory.forEach(([sentence, oldPrefix]) => {
+      // Keep longer prefix if exists.
+      if (sentence === currentSentence && oldPrefix.startsWith(prefix)) {
+        prefix = oldPrefix;
+      }
+    });
     newMessageHistory = newMessageHistory.filter(
       ([sentence]) => sentence !== currentSentence,
     );
-    newMessageHistory.push([currentSentence, now]);
+    newMessageHistory.push([currentSentence, prefix, now]);
     newMessageHistory.slice(-MESSAGE_HISTORY_LIMIT);
     this.state.messageHistory = newMessageHistory;
   }
 
-  // Experimental implementation of searching suggestions from history. For
-  // now, it just logs the result to console.
+  // Experimental implementation of searching suggestions from history.
   private searchSuggestionsFromMessageHistory() {
-    const currentSentence = getLastSentence(this.state.text);
+    const [preceedingSentences, currentSentence] = splitLastSentence(
+      this.state.text,
+    );
     if (!currentSentence) {
-      return;
+      return null;
     }
     const candidates = this.state.messageHistory.filter(
-      ([sentence]) =>
-        sentence !== currentSentence && sentence.startsWith(currentSentence),
+      ([sentence, prefix]) => {
+        return (
+          sentence.length >= MIN_SUGGESTION_LENGTH &&
+          sentence !== currentSentence &&
+          (prefix.startsWith(currentSentence) ||
+            sentence.startsWith(currentSentence))
+        );
+      },
     );
     if (candidates.length === 0) {
-      return;
+      return null;
     }
-    console.log(candidates[candidates.length - 1][0]);
+    return preceedingSentences + candidates[candidates.length - 1][0];
   }
 
-  private updateSentences(suggestions: string[]) {
+  private updateSentences(suggestions: SentenceSuggestion[]) {
     if (!this.stateInternal.sentenceSmallMargin) {
       suggestions = suggestions.slice(0, LARGE_MARGIN_LINE_LIMIT);
     }
-    this.suggestions = suggestions.map(s => normalize(s));
+    this.suggestions = suggestions.map(s => {
+      s.value = normalize(s.value);
+      return s;
+    });
   }
 
   private updateWords(words: string[]) {
@@ -386,8 +610,11 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     this.timeoutId = window.setTimeout(async () => {
       this.inFlightRequests++;
       this.isLoading = true;
+      const [firstHalf, secondHalf] = splitLastFewSentencesForLLM(
+        this.stateInternal.text,
+      );
       const result = await this.apiClient.fetchSuggestions(
-        this.textField!.value ?? '',
+        secondHalf,
         this.stateInternal.lang.promptName,
         this.stateInternal.model,
         {
@@ -412,7 +639,14 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       if (!result) {
         return;
       }
-      const [sentences, words] = result;
+      const [sentenceValues, words] = result;
+      const sentences = sentenceValues.map(
+        s =>
+          new SentenceSuggestion(
+            SentenceSuggestionSource.LLM,
+            firstHalf + ignoreUnnecessaryDiffs(secondHalf, s),
+          ),
+      );
       this.updateSentences(sentences);
       this.updateWords(words);
       this.requestUpdate();
@@ -454,10 +688,12 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
   @playClickSound()
   private onSuggestionSelect(e: SuggestionSelectEvent) {
-    const [value, index] = e.detail;
-    this.textField?.setTextFieldValue(value, [
-      {kind: InputSourceKind.SUGGESTED_SENTENCE, index},
-    ]);
+    const [value, index, source] = e.detail;
+    const kind =
+      source === SentenceSuggestionSource.HISTORY
+        ? InputSourceKind.SENTENCE_HISTORY
+        : InputSourceKind.SUGGESTED_SENTENCE;
+    this.textField?.setTextFieldValue(value, [{kind, index}]);
   }
 
   @playClickSound()
@@ -507,6 +743,12 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     this.keyboardIndex = 0;
     this.state.keyboard = this.state.lang.keyboards[this.keyboardIndex];
     this.emotions = this.stateInternal.lang.emotions;
+    this.state.emotion = '';
+    if (this.sentenceTypeSelector) {
+      this.sentenceTypeSelector.selected = '';
+    }
+    // Update initial phrases for the new language
+    this.state.updateInitialPhrasesForCurrentLanguage();
     this.updateSuggestions();
     if (this.languageName) {
       this.languageName.setAttribute('active', 'true');
@@ -540,34 +782,12 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   private onKeypadHandlerClick() {}
 
   onSnackbarClose() {
-    // TODO: Do not clear textfield when the user input anything after speech.
-    this.textField?.setTextFieldValue('', [InputSource.SNACK_BAR]);
-    this.textField?.setPlaceholder(this.state.lastInputSpeech);
-  }
-
-  onTtsEnd() {
-    if (!this.state.features.featureEnableSpeechInput) {
-      return;
+    // Do not clear textfield or set placeholder. Instead, add current value to inputHistory.
+    if (this.textField) {
+      this.textField.addToInputHistory(this.textField.value, [
+        InputSource.SNACK_BAR,
+      ]);
     }
-    this.state.lastInputSpeech = '';
-    const recognition = new (window.SpeechRecognition ||
-      webkitSpeechRecognition)();
-    recognition.lang = this.state.lang.code;
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
-      this.state.lastInputSpeech = event.results[0][0].transcript;
-      if (this.conversationHistory.length === 0) return;
-      const lastTurn = this.conversationHistory.slice(-1)[0];
-      this.conversationHistory = [
-        ...this.conversationHistory.slice(0, -1),
-        [
-          lastTurn[0],
-          `${lastTurn[1]}, PartnerInput: ${this.state.lastInputSpeech}`,
-        ],
-      ];
-      this.snackbar!.labelText = this.state.lastInputSpeech;
-      this.snackbar!.show();
-    };
-    recognition.start();
   }
 
   // TODO: Call this event handler whenever the dialog is closed.
@@ -602,7 +822,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     const bodyOfSentenceSuggestions = this.suggestions.map(suggestion => {
       if (!this.textField?.value) return '';
       const text = normalize(this.textField.value);
-      const sharedOffset = getSharedPrefix([suggestion, text]);
+      const sharedOffset = getSharedPrefix([suggestion.value, text]);
       return html` <li
         class="${this.stateInternal.sentenceSmallMargin ? 'tight' : ''}"
       >
@@ -628,7 +848,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           @setting-click=${this.onSettingClick}
           @snackbar-close=${this.onSnackbarClose}
           @output-speech-click=${this.updateConversationHistory}
-          @tts-end=${this.onTtsEnd}
 
         ></pv-functions-bar>
         <div class="main">
@@ -661,17 +880,17 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           <div>
             <pv-textarea-wrapper
               .state=${this.stateInternal}
-              @text-update=${() => {
+              @text-update=${(e: CustomEvent) => {
                 this.updateSuggestions();
-                this.searchSuggestionsFromMessageHistory();
-                this.updateMessageHistory();
+                this.updateMessageHistory(e.detail.sources);
               }}
             ></pv-textarea-wrapper>
           </div>
           <div class="language-name">${this.stateInternal.lang.render()}</div>
 
         </div>
-        ${this.state.features.featureEnableSpeechInput
+        ${this.state.features.featureEnableSpeechInput &&
+        this.state.enableConversationMode
           ? html`<div class="conversation-history-container">
               <pv-conversation-history
                 .history=${this.conversationHistory}
@@ -691,6 +910,11 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
 export const TEST_ONLY = {
   getSharedPrefix,
+  getUserInputPrefix,
+  ignoreUnnecessaryDiffs,
   normalize,
   PvAppElement,
+  splitLastFewSentencesForLLM,
+  splitLastSentence,
+  splitToSentences,
 };

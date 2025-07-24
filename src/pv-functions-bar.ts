@@ -38,7 +38,6 @@ const EVENT_KEY = {
   settingClick: 'setting-click',
   undoClick: 'undo-click',
   outputSpeechClick: 'output-speech-click',
-  ttsEnd: 'tts-end',
 } as const;
 
 type EventKey = (typeof EVENT_KEY)[keyof typeof EVENT_KEY];
@@ -190,6 +189,10 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
     );
   }
 
+  private onMicrophoneClick() {
+    this.state.isMicrophoneOn = !this.state.isMicrophoneOn;
+  }
+
   render() {
     const isTextEmpty = this.state.text === '';
     const isKeyboardSwitchable = this.state.lang.keyboards.length > 1;
@@ -216,8 +219,6 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
           </button>
           <button
             @click="${() => {
-              this.state.lastInputSpeech = '';
-              this.state.lastOutputSpeech = '';
               this.fireEvent(EVENT_KEY.deleteClick);
             }}"
             ?disabled=${isTextEmpty}
@@ -268,6 +269,16 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
             <md-icon>text_to_speech</md-icon>
             <span>${msg('Read aloud')}</span>
           </button>
+          ${this.state.enableConversationMode
+            ? html`
+                <button @click="${this.onMicrophoneClick}">
+                  <md-icon
+                    >${this.state.isMicrophoneOn ? 'mic' : 'mic_off'}</md-icon
+                  >
+                  <span>${this.state.isMicrophoneOn ? 'Mute' : 'Unmute'}</span>
+                </button>
+              `
+            : ''}
 
           <hr />
           <button
@@ -324,6 +335,5 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
 
   private onTtsEnd() {
     this.isTtsReading = false;
-    this.fireEvent(EVENT_KEY.ttsEnd);
   }
 }

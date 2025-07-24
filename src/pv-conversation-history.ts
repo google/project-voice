@@ -83,6 +83,7 @@ export class PvConversationHistory extends LitElement {
     }
   `;
 
+  // TODO(beketa): Use more robust way to split conversation history items.
   protected render() {
     return html`<header>
         <span class="icon">communication</span>${msg('Conversation')}
@@ -90,7 +91,7 @@ export class PvConversationHistory extends LitElement {
       ${this.history.map(
         turn =>
           html`<div class="turn">
-            ${turn[1].split(',').map(item => {
+            ${turn[1].split(', PartnerInput').map(item => {
               const [speakerTag, content] = item.split(':');
               const speaker = speakerTag.startsWith('UserOutput')
                 ? 'user'

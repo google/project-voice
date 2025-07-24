@@ -18,11 +18,13 @@ import {Config, ConfigStorage} from '../config-storage.js';
 
 export const TEST_CONFIG: Config = {
   aiConfig: 'smart',
-  checkedLanguages: ['japaneseSingleRowKeyboard'],
+  checkedLanguages: ['japaneseWithSingleRowKeyboard'],
+  enableConversationMode: false,
   enableEarcons: false,
   expandAtOrigin: true,
   initialPhrases: ['Yes', 'No'],
-  messageHistory: [],
+  initialPhrasesPerLanguage: {},
+  messageHistoryWithPrefix: [],
   persona: "I'm an example model smarter than example model 1.0",
   sentenceSmallMargin: false,
   ttsVoice: 'ja-JP-ExampleVoice-X',

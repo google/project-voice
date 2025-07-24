@@ -18,9 +18,13 @@ export interface Config {
   aiConfig: string;
   checkedLanguages: string[];
   enableEarcons: boolean;
+  enableConversationMode: boolean;
   expandAtOrigin: boolean;
+  // This is kept for backward compatibility, especially for Japanese UXR users.
+  // See also loadState() in state.ts
   initialPhrases: string[];
-  messageHistory: [string, number][];
+  initialPhrasesPerLanguage: {[languageKey: string]: string[]};
+  messageHistoryWithPrefix: [string, string, number][];
   persona: string;
   sentenceSmallMargin: boolean;
   ttsVoice: string;

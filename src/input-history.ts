@@ -19,6 +19,7 @@ export enum InputSourceKind {
   BUTTON_DELETE = 'BUTTON_DELETE',
   CHARACTER = 'CHARACTER',
   KEYBOARD = 'KEYBOARD',
+  SENTENCE_HISTORY = 'SENTENCE_HISTORY',
   SNACK_BAR = 'SNACK_BAR',
   SUGGESTED_SENTENCE = 'SUGGESTED_SENTENCE',
   SUGGESTED_WORD = 'SUGGESTED_WORD',
@@ -29,6 +30,7 @@ export type InputSource =
   | {kind: InputSourceKind.BUTTON_DELETE}
   | {kind: InputSourceKind.CHARACTER}
   | {kind: InputSourceKind.KEYBOARD}
+  | {kind: InputSourceKind.SENTENCE_HISTORY; index: number}
   | {kind: InputSourceKind.SNACK_BAR}
   | {kind: InputSourceKind.SUGGESTED_SENTENCE; index: number}
   | {kind: InputSourceKind.SUGGESTED_WORD};

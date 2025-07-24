@@ -68,10 +68,15 @@ export class PvTextareaWrapper extends LitElement {
 
   setTextFieldValue(value: string, source: InputSource[]) {
     if (!this.textArea) return;
-    const element = new HistoryElement(value, source);
-    this.inputHistory.add(element);
+    this.addToInputHistory(value, source);
     this.textArea.value = value;
     this.textArea.placeholder = '';
+  }
+
+  // Add to input history without changing the text field value or placeholder
+  addToInputHistory(value: string, source: InputSource[]) {
+    const element = new HistoryElement(value, source);
+    this.inputHistory.add(element);
   }
 
   textUndo() {
@@ -111,7 +116,7 @@ export class PvTextareaWrapper extends LitElement {
         const element = new HistoryElement(value, [InputSource.KEYBOARD]);
         this.inputHistory.add(element);
       }
-      this.fireEvent();
+      this.fireEvent(this.inputHistory.lastInput().sources);
     };
 
     return html`
@@ -120,10 +125,10 @@ export class PvTextareaWrapper extends LitElement {
     `;
   }
 
-  private fireEvent() {
+  private fireEvent(sources: InputSource[]) {
     this.dispatchEvent(
       new CustomEvent(EVENT_KEY.textUpdate, {
-        detail: {callee: this},
+        detail: {callee: this, sources},
         bubbles: true,
         composed: true,
       }),

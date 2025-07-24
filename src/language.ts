@@ -52,7 +52,7 @@ export interface Language {
   readonly initialPhrases: string[];
 
   /** Sentence emotions */
-  readonly emotions: {emoji: string; label: string}[];
+  readonly emotions: {emoji: string; prompt: string; label?: string}[];
 
   /** AI configs for this language. */
   readonly aiConfigs: {
@@ -88,7 +88,7 @@ abstract class LatinScriptLanguage implements Language {
   promptName = '';
   keyboards: StaticValue[] = [];
   initialPhrases: string[] = [];
-  emotions: {emoji: string; label: string}[] = [];
+  emotions: {emoji: string; prompt: string; label?: string}[] = [];
   aiConfigs = {
     classic: {
       model: 'gemini-1.5-pro-002',
@@ -137,11 +137,11 @@ abstract class LatinScriptLanguage implements Language {
 abstract class English extends LatinScriptLanguage {
   code = 'en-US';
   promptName = 'English';
-  emotions = [
-    {emoji: '💬', label: 'Statement'},
-    {emoji: '❓', label: 'Question'},
-    {emoji: '🙏', label: 'Request'},
-    {emoji: '🚫', label: 'Negative'},
+  emotions: {emoji: string; prompt: string; label?: string}[] = [
+    {emoji: '💬', prompt: 'Statement'},
+    {emoji: '❓', prompt: 'Question'},
+    {emoji: '🙏', prompt: 'Request'},
+    {emoji: '🚫', prompt: 'Negative'},
   ];
   initialPhrases = [
     'I',
@@ -193,14 +193,14 @@ abstract class Japanese implements Language {
     '明日',
   ];
   emotions = [
-    {emoji: '💬', label: '平叙'},
-    {emoji: '❓', label: '疑問'},
-    {emoji: '🙏', label: '依頼'},
-    {emoji: '🚫', label: '否定'},
+    {emoji: '💬', prompt: '平叙', label: '普通'},
+    {emoji: '❓', prompt: '疑問', label: '質問'},
+    {emoji: '🙏', prompt: '依頼', label: 'お願い'},
+    {emoji: '🚫', prompt: '否定', label: '否定'},
   ];
   aiConfigs = {
     classic: {
-      model: 'gemini-1.5-flash-001',
+      model: 'gemini-1.5-flash-002',
       sentence: 'SentenceJapanese20240628',
       word: 'WordGeneric20240628',
     },
@@ -210,9 +210,9 @@ abstract class Japanese implements Language {
       word: 'WordGeneric20240628',
     },
     smart: {
-      model: 'gemini-1.5-pro-002',
-      sentence: 'SentenceJapaneseLong20241002',
-      word: 'WordGeneric20240628',
+      model: 'gemini-2.5-flash',
+      sentence: 'SentenceJapaneseLong20250603',
+      word: 'WordJapanese20250623',
     },
     gemini_2_5_flash: {
       model: 'gemini-2.5-flash-preview-05-20',
@@ -230,7 +230,30 @@ abstract class Japanese implements Language {
     if (!this.tinySegmenter) {
       return [sentence];
     }
-    return this.tinySegmenter?.segment(sentence);
+    const segments = this.tinySegmenter?.segment(sentence);
+    if (segments.length === 0) {
+      return segments;
+    }
+    // Concatenate surrogate pairs.
+    let prevSegment = segments[0];
+    const results = [prevSegment];
+    for (const segment of segments.slice(1)) {
+      const prevCode = prevSegment.charCodeAt(prevSegment.length - 1);
+      const code = segment.charCodeAt(0);
+      if (
+        prevCode >= 0xd800 &&
+        prevCode <= 0xdbff &&
+        code >= 0xdc00 &&
+        code <= 0xdfff
+      ) {
+        results[results.length - 1] += segment;
+        prevSegment = results[results.length - 1];
+      } else {
+        results.push(segment);
+        prevSegment = segment;
+      }
+    }
+    return results;
   }
 
   join(words: string[]) {

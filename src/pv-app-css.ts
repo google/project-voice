@@ -120,11 +120,11 @@ export const pvAppStyle = css`
   }
 
   .stats {
-    background-color: rgba(1, 1, 1, 0.0);
+    background-color: rgba(1, 1, 1, 0);
     border: solid rgba(96, 96, 96, 0.5);
     bottom: 4px;
     color: rgba(96, 96, 96, 0.5);
-    cursor: pointer;"
+    cursor: pointer;
     padding: 4px;
     position: absolute;
     right: 4px;
@@ -132,7 +132,7 @@ export const pvAppStyle = css`
 
   @media (prefers-color-scheme: dark) {
     .stats {
-      background-color: rgba(1, 1, 1, 0.0);
+      background-color: rgba(1, 1, 1, 0);
       border: solid rgba(255, 255, 255, 0.5);
       color: rgba(255, 255, 255, 0.5);
     }

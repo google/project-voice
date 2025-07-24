@@ -281,7 +281,7 @@ export class PvExpandKeypadElement extends LitElement {
           row =>
             html`<li>
               <ul class="row">
-                ${row.split('').map(
+                ${Array.from(row).map(
                   c =>
                     html`<li>
                       <button
