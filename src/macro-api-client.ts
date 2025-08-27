@@ -21,7 +21,7 @@ import {RUN_MACRO_ENDPOINT_URL} from './constants.js';
  * @param response A response from LLM
  * @returns A list of suggestions
  */
-function parseResponse(response: string) {
+function parseResponse(response: string, num: number) {
   // Quick fix to remove '\n' in a suggestion.
   // In theory, this fix doesn't work when a suggestion actually ends with '\\\n'.
   // But we have yet to encounter such a situation.
@@ -30,6 +30,7 @@ function parseResponse(response: string) {
     .split('\n')
     .map(text => text.trim())
     .filter(text => text.match(/^[0-9]+\./))
+    .slice(0, num)
     .map(text => text.replace(/^\d+\.\s?/, ''));
 }
 
@@ -128,7 +129,7 @@ export class MacroApiClient {
       model,
       temperature,
     );
-    return parseResponse(text);
+    return parseResponse(text, +userInputs.num);
   }
 
   /**

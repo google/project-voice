@@ -23,7 +23,7 @@ export class PvSentenceTypeSelectorElement extends LitElement {
   selected = '';
 
   @property({type: Array})
-  sentenceTypes: {emoji: string; label: string}[] = [];
+  sentenceTypes: {emoji: string; prompt: string; label: string}[] = [];
 
   static styles = css`
     ul {
@@ -44,6 +44,7 @@ export class PvSentenceTypeSelectorElement extends LitElement {
     button {
       border-radius: 1rem;
       border: solid 3px transparent;
+      color: #202124;
       cursor: pointer;
       font-family: var(--font-family-base);
       padding: 0.5rem 1rem;
@@ -75,13 +76,17 @@ export class PvSentenceTypeSelectorElement extends LitElement {
           <button
             @click=${() => {
               this.selected =
-                sentenceType.label === this.selected ? '' : sentenceType.label;
+                sentenceType.prompt === this.selected
+                  ? ''
+                  : sentenceType.prompt;
               this.dispatchEvent(new Event('select'));
             }}
-            class="${sentenceType.label === this.selected ? 'selected' : ''}"
+            class="${sentenceType.prompt === this.selected ? 'selected' : ''}"
           >
             <div class="emoji">${sentenceType.emoji}</div>
-            <div class="label">${sentenceType.label}</div>
+            <div class="label">
+              ${sentenceType.label ?? sentenceType.prompt}
+            </div>
           </button>
         </li>`;
       })}

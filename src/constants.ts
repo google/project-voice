@@ -21,10 +21,12 @@ export const RUN_MACRO_ENDPOINT_URL = '/run-macro';
 export const CONFIG_DEFAULT: Config = {
   aiConfig: 'smart',
   checkedLanguages: [],
+  enableConversationMode: false,
   enableEarcons: false,
   expandAtOrigin: false,
   initialPhrases: [],
-  messageHistory: [],
+  initialPhrasesPerLanguage: {},
+  messageHistoryWithPrefix: [],
   persona: '',
   sentenceSmallMargin: false,
   ttsVoice: '',

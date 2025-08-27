@@ -16,7 +16,7 @@
 
 import '../keyboards/pv-single-row-keyboard.js';
 
-import {Meta, StoryObj} from '@storybook/web-components';
+import {Meta, StoryObj} from '@storybook/web-components-vite';
 import {html} from 'lit';
 
 import {PvSingleRowKeyboard} from '../keyboards/pv-single-row-keyboard.js';

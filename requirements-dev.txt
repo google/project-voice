@@ -1,1 +1,5 @@
+ipadic
+mecab-python3
+retry
+tinysegmenter
 yapf
