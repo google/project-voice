@@ -20,3 +20,4 @@ import './test_macro-api-client.js';
 import './test_pv-app.js';
 import './test_pv-suggestion-stripe.js';
 import './test_state.js';
+import './test_language.js';

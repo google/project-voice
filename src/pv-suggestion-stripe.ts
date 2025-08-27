@@ -21,7 +21,21 @@ import {customElement, property} from 'lit/decorators.js';
 
 import {State} from './state.js';
 
-export class SuggestionSelectEvent extends CustomEvent<[string, number]> {}
+export enum SentenceSuggestionSource {
+  HISTORY = 'HISTORY',
+  LLM = 'LLM',
+}
+
+export class SentenceSuggestion {
+  constructor(
+    public source: SentenceSuggestionSource,
+    public value: string,
+  ) {}
+}
+
+export class SuggestionSelectEvent extends CustomEvent<
+  [string, number, SentenceSuggestionSource]
+> {}
 
 /**
  * Returns the leading words covered by the offset string.
@@ -62,8 +76,8 @@ export class PvSuggestionStripeElement extends LitElement {
   @property({type: Object})
   private state!: State;
 
-  @property({type: String, reflect: true})
-  suggestion = '';
+  @property({type: Object, reflect: true})
+  suggestion = new SentenceSuggestion(SentenceSuggestionSource.LLM, '');
 
   @property({type: String, reflect: true})
   offset = '';
@@ -95,7 +109,9 @@ export class PvSuggestionStripeElement extends LitElement {
   `;
 
   render() {
-    const words = splitPunctuations(this.state.lang.segment(this.suggestion));
+    const words = splitPunctuations(
+      this.state.lang.segment(this.suggestion.value),
+    );
     const leadingWords = getLeadingWords(
       words,
       splitPunctuations(this.state.lang.segment(this.offset)),
@@ -121,6 +137,7 @@ export class PvSuggestionStripeElement extends LitElement {
                   detail: [
                     this.state.lang.join(words.slice(0, i + 1)),
                     i - leadingWords.length,
+                    this.suggestion.source,
                   ],
                 }),
               );

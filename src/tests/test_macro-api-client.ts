@@ -21,6 +21,7 @@ describe('Macro API Client', () => {
     it('should remove leading numbers and dots', () => {
       const result = TEST_ONLY.parseResponse(
         '1. This is the first line.\n2. This is the second line.',
+        5,
       );
       expect(result).toEqual([
         'This is the first line.',
@@ -31,6 +32,7 @@ describe('Macro API Client', () => {
     it('should remove unnecessary line breaks', () => {
       const result = TEST_ONLY.parseResponse(
         '1. This is the first line.\n2. This is the second line.\n\n3. This is the third line.',
+        5,
       );
       expect(result).toEqual([
         'This is the first line.',
@@ -42,6 +44,7 @@ describe('Macro API Client', () => {
     it('should remove leading spaces', () => {
       const result = TEST_ONLY.parseResponse(
         '1. This is the first line.\n   2. This is the second line.',
+        5,
       );
       expect(result).toEqual([
         'This is the first line.',
@@ -52,6 +55,7 @@ describe('Macro API Client', () => {
     it('should remove trailing spaces', () => {
       const result = TEST_ONLY.parseResponse(
         '1. This is the first line. \n2. This is the second line.',
+        5,
       );
       expect(result).toEqual([
         'This is the first line.',
@@ -62,6 +66,7 @@ describe('Macro API Client', () => {
     it('should ignore escaped line breaks', () => {
       const result = TEST_ONLY.parseResponse(
         '1. This is the\\\n first line.\n2. This is the second line.',
+        5,
       );
       expect(result).toEqual([
         'This is the first line.',
@@ -72,11 +77,20 @@ describe('Macro API Client', () => {
     it('should ignore unrelated lines', () => {
       const result = TEST_ONLY.parseResponse(
         'Here we go!\n1. This is the first line.\n2. This is the second line.\nGood luck.',
+        5,
       );
       expect(result).toEqual([
         'This is the first line.',
         'This is the second line.',
       ]);
+    });
+
+    it('should not return more than num results', () => {
+      const result = TEST_ONLY.parseResponse(
+        '1. a\n2. b\n3. c\n4. d\n5. e\n6. f\n7. g',
+        5,
+      );
+      expect(result).toEqual(['a', 'b', 'c', 'd', 'e']);
     });
   });
 });

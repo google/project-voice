@@ -100,7 +100,71 @@ describe('State', () => {
     const newPhrases = ['Test', 'Phrase'];
     state.initialPhrases = newPhrases;
     expect(state.initialPhrases).toEqual(newPhrases);
-    expect(storage.read('initialPhrases')).toEqual(newPhrases);
+    // Check that it's stored in per-language storage
+    const currentLanguageKey = state.getCurrentLanguageKey();
+    expect(currentLanguageKey).toBeTruthy();
+    if (currentLanguageKey) {
+      expect(state.getInitialPhrasesForLanguage(currentLanguageKey)).toEqual(
+        newPhrases,
+      );
+    }
+  });
+
+  it('stores initial phrases per language', () => {
+    const japanesePhrases = ['はい', 'いいえ'];
+    const englishPhrases = ['Yes', 'No'];
+
+    // Set initial phrases for different languages
+    state.setInitialPhrasesForLanguage(
+      'japaneseWithSingleRowKeyboard',
+      japanesePhrases,
+    );
+    state.setInitialPhrasesForLanguage(
+      'englishWithSingleRowKeyboard',
+      englishPhrases,
+    );
+
+    // Verify they are stored correctly
+    expect(
+      state.getInitialPhrasesForLanguage('japaneseWithSingleRowKeyboard'),
+    ).toEqual(japanesePhrases);
+    expect(
+      state.getInitialPhrasesForLanguage('englishWithSingleRowKeyboard'),
+    ).toEqual(englishPhrases);
+
+    // Verify the per-language storage is updated
+    const perLanguageStorage = storage.read('initialPhrasesPerLanguage');
+    expect(perLanguageStorage['japaneseWithSingleRowKeyboard']).toEqual(
+      japanesePhrases,
+    );
+    expect(perLanguageStorage['englishWithSingleRowKeyboard']).toEqual(
+      englishPhrases,
+    );
+  });
+
+  it('updates initial phrases when switching languages', () => {
+    // Set up different initial phrases for different languages
+    const japanesePhrases = ['はい', 'いいえ'];
+    const englishPhrases = ['Yes', 'No'];
+
+    state.setInitialPhrasesForLanguage(
+      'japaneseWithSingleRowKeyboard',
+      japanesePhrases,
+    );
+    state.setInitialPhrasesForLanguage(
+      'englishWithSingleRowKeyboard',
+      englishPhrases,
+    );
+
+    // Switch to Japanese
+    state.lang = LANGUAGES['japaneseWithSingleRowKeyboard'];
+    state.updateInitialPhrasesForCurrentLanguage();
+    expect(state.initialPhrases).toEqual(japanesePhrases);
+
+    // Switch to English
+    state.lang = LANGUAGES['englishWithSingleRowKeyboard'];
+    state.updateInitialPhrasesForCurrentLanguage();
+    expect(state.initialPhrases).toEqual(englishPhrases);
   });
 
   it('updates voice settings correctly', () => {
