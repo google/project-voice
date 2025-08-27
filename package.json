@@ -44,7 +44,7 @@
     "jasmine-core": "^5.7.0",
     "node-localstorage": "^3.0.5",
     "storybook": "^8.6.12",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@lit-labs/signals": "^0.1.2",
