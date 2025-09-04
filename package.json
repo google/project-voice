@@ -39,7 +39,7 @@
     "jasmine-browser-runner": "^3.0.0",
     "jasmine-core": "^5.7.0",
     "node-localstorage": "^3.0.5",
-    "storybook": "^9.0.0",
+    "storybook": "^9.1.4",
     "typescript": "^5.9.2"
   },
   "dependencies": {
