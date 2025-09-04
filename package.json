@@ -30,7 +30,7 @@
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/jasmine": "^5.1.7",
     "@types/node": "^22.15.2",
-    "concurrently": "^9.1.2",
+    "concurrently": "^9.2.1",
     "esbuild": "^0.25.2",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-storybook": "^9.0.0",
