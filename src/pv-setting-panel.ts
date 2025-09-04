@@ -235,6 +235,22 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
           ></md-switch>
         </label>
       </div>
+      ${this.state.features.featureEnableSpeechInput
+        ? html`
+            <div class="form-section">
+              <label>
+                ${msg('Enable conversation mode')}
+                <md-switch
+                  ?selected=${this.state.enableConversationMode}
+                  @change=${() => {
+                    this.state.enableConversationMode =
+                      !this.state.enableConversationMode;
+                  }}
+                ></md-switch>
+              </label>
+            </div>
+          `
+        : ''}
       <div class="form-section">
         <div>
           <label>${msg('Language')}</label>

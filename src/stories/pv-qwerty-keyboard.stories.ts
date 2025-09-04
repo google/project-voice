@@ -16,7 +16,7 @@
 
 import '../keyboards/pv-qwerty-keyboard.js';
 
-import {Meta, StoryObj} from '@storybook/web-components';
+import {Meta, StoryObj} from '@storybook/web-components-vite';
 import {html} from 'lit';
 
 import {PvQwertyKeyboard} from '../keyboards/pv-qwerty-keyboard.js';
