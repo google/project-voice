@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@lit/localize-tools": "^0.8.0",
-    "@storybook/addon-docs": "^9.1.4",
+    "@storybook/addon-docs": "^9.1.5",
     "@storybook/web-components": "^9.1.5",
     "@storybook/web-components-vite": "^9.0.0",
     "@types/dom-speech-recognition": "^0.0.6",
