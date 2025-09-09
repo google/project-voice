@@ -29,7 +29,7 @@
     "@storybook/web-components-vite": "^9.0.0",
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/jasmine": "^5.1.9",
-    "@types/node": "^22.15.2",
+    "@types/node": "^24.3.1",
     "concurrently": "^9.2.1",
     "esbuild": "^0.25.2",
     "eslint-plugin-simple-import-sort": "^12.1.1",
