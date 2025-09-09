@@ -48,7 +48,7 @@
     "@lit/localize": "^0.12.1",
     "@material/web": "^2.4.0",
     "diff-match-patch": "^1.0.5",
-    "lit": "^3.3.0",
+    "lit": "^3.3.1",
     "signal-polyfill": "^0.2.2",
     "simhash-js": "github:beketa/simhash-js"
   }
