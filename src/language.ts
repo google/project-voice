@@ -91,7 +91,7 @@ abstract class LatinScriptLanguage implements Language {
   emotions: {emoji: string; prompt: string; label?: string}[] = [];
   aiConfigs = {
     classic: {
-      model: 'gemini-1.5-pro-002',
+      model: 'gemini-2.0-flash-001',
       sentence: 'SentenceGeneric20250311',
       word: 'WordGeneric20240628',
     },
@@ -106,7 +106,7 @@ abstract class LatinScriptLanguage implements Language {
       word: 'WordGeneric20240628',
     },
     gemini_2_5_flash: {
-      model: 'gemini-2.5-flash-preview-05-20',
+      model: 'gemini-2.5-flash',
       sentence: 'SentenceGeneric20250311',
       word: 'WordGeneric20240628',
     },
@@ -200,12 +200,12 @@ abstract class Japanese implements Language {
   ];
   aiConfigs = {
     classic: {
-      model: 'gemini-1.5-flash-002',
+      model: 'gemini-2.5-flash',
       sentence: 'SentenceJapanese20240628',
       word: 'WordGeneric20240628',
     },
     fast: {
-      model: 'gemini-1.5-flash-002',
+      model: 'gemini-2.5-flash-lite',
       sentence: 'SentenceJapanese20240628',
       word: 'WordGeneric20240628',
     },
@@ -215,7 +215,7 @@ abstract class Japanese implements Language {
       word: 'WordJapanese20250623',
     },
     gemini_2_5_flash: {
-      model: 'gemini-2.5-flash-preview-05-20',
+      model: 'gemini-2.5-flash',
       sentence: 'SentenceJapaneseLong20250603',
       word: 'WordGeneric20240628',
     },
@@ -376,22 +376,22 @@ abstract class Mandarin implements Language {
   initialPhrases = ['你', '我', '他', '她', '它', '好', '今天', '昨天', '明天'];
   aiConfigs = {
     classic: {
-      model: 'gemini-1.5-flash-002',
+      model: 'gemini-2.5-flash',
       sentence: 'SentenceMandarin20250616',
       word: 'WordMandarin20250616',
     },
     fast: {
-      model: 'gemini-1.5-flash-002',
+      model: 'gemini-2.5-flash-lite',
       sentence: 'SentenceMandarin20250616',
       word: 'WordMandarin20250616',
     },
     smart: {
-      model: 'gemini-1.5-pro-002',
+      model: 'gemini-2.5-flash',
       sentence: 'SentenceMandarin20250616',
       word: 'WordMandarin20250616',
     },
     gemini_2_5_flash: {
-      model: 'gemini-2.5-flash-preview-05-20',
+      model: 'gemini-2.5-flash',
       sentence: 'SentenceMandarin20250616',
       word: 'WordMandarin20250616',
     },

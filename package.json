@@ -13,7 +13,8 @@
     "watch": "npm run build:i18n && esbuild src/index.ts --bundle --watch --define:process.env.NODE_ENV=\\\"development\\\" --outfile=static/index.js",
     "fix": "gts fix 'src/**/*.ts' && python -m yapf -i *.py tools/*.py",
     "pretest": "esbuild src/tests/test_index.ts --bundle --outfile=spec/test_bundle.js",
-    "test": "jasmine-browser-runner runSpecs",
+    "test:js": "jasmine-browser-runner runSpecs",
+    "test": "concurrently \"npm run test:js\" \"PYTHONPATH=. pytest -vv\"",
     "deploy": "npm run build && gcloud app deploy app.yaml --no-promote",
     "postinstall": "python -m pip install -r requirements.txt && python -m pip install -r requirements-dev.txt",
     "storybook": "storybook dev -p 6006"
