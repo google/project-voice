@@ -3,3 +3,4 @@ flask-cors
 flask-seasurf
 google-genai
 gunicorn
+jinja2

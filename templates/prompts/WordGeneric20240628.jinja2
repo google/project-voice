@@ -1,0 +1,41 @@
+{% if lastInputSpeech %}
+You are talking with your partner. The conversation is as follows:
+{% if lastOutputSpeech %}
+You:
+{{ lastOutputSpeech }}
+{% endif %}
+Partner:
+{{ lastInputSpeech }}
+{% if conversationHistory %}
+
+Here is the conversation history:
+{{ conversationHistory }}
+{% endif %}
+
+Considering this context, please guess and generate a list of {{ num }} single words that come right after the sentence "{{ text }}".
+{% else %}
+Generate a list of {{ num }} different single words that come right after the given sentence.
+{% endif %}
+If the last word in the sentence looks incomplete, suggest the succeeding characters without replacing them. Make sure to start with a hyphen in that case. Each answer should be just one word and must start with an index number. The response should be in {{ language }}. You should follow the format shown in the example below.
+
+Examples:
+sentence: "He"
+answers:
+1. -llo
+2. -lsinki
+3. was
+
+sentence: "Hel"
+answers:
+1. -lo
+2. -sinki
+3. -icopter
+
+sentence: "I"
+answers:
+1. was
+2. am
+3. -talian
+
+sentence: "{{ text }}"
+answers:
