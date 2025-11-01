@@ -108,7 +108,7 @@ class KeyboardView: UIView {
             suggestionBar.topAnchor.constraint(equalTo: topAnchor, constant: 4), // Start from top
             suggestionBar.leadingAnchor.constraint(equalTo: leadingAnchor),
             suggestionBar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            suggestionBar.heightAnchor.constraint(equalToConstant: 40),
+            suggestionBar.heightAnchor.constraint(equalToConstant: 90), // 3 rows: 30px each
 
             keyboardStackView.topAnchor.constraint(equalTo: suggestionBar.bottomAnchor, constant: 8),
             keyboardStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 3),
@@ -444,11 +444,15 @@ class KeyboardView: UIView {
     }
 
     func updateSuggestions(_ suggestions: [String], currentText: String = "") {
-        suggestionBar.updateSuggestions(suggestions, currentText: currentText)
+        suggestionBar.updateSuggestions(sentences: suggestions, words: [], currentText: currentText)
+    }
+
+    func updateSuggestions(sentences: [String], words: [String], currentText: String = "") {
+        suggestionBar.updateSuggestions(sentences: sentences, words: words, currentText: currentText)
     }
 
     func showInitialPhrases(_ phrases: [String]) {
-        suggestionBar.updateSuggestions(phrases, currentText: "")
+        suggestionBar.updateSuggestions(sentences: phrases, words: [], currentText: "")
     }
 
     func getCurrentEmotion() -> SentenceEmotion {
@@ -488,8 +492,16 @@ protocol SuggestionBarDelegate: AnyObject {
 class SuggestionBar: UIView {
 
     weak var delegate: SuggestionBarDelegate?
-    private let scrollView = UIScrollView()
-    private let stackView = UIStackView()
+
+    // 3 rows: sentence1, sentence2, words
+    private let sentenceRow1 = UIScrollView()
+    private let sentenceRow2 = UIScrollView()
+    private let wordRow = UIScrollView()
+
+    private let sentenceStack1 = UIStackView()
+    private let sentenceStack2 = UIStackView()
+    private let wordStack = UIStackView()
+
     private var currentText: String = ""
     private var currentLanguage: Language?
 
@@ -505,9 +517,34 @@ class SuggestionBar: UIView {
     private func setupUI() {
         backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.97, alpha: 1.0)
 
+        // Main vertical stack to hold 3 rows
+        let mainStack = UIStackView()
+        mainStack.axis = .vertical
+        mainStack.spacing = 2
+        mainStack.distribution = .fillEqually
+        mainStack.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(mainStack)
+
+        // Setup each row
+        setupRow(scrollView: sentenceRow1, stackView: sentenceStack1)
+        setupRow(scrollView: sentenceRow2, stackView: sentenceStack2)
+        setupRow(scrollView: wordRow, stackView: wordStack)
+
+        mainStack.addArrangedSubview(sentenceRow1)
+        mainStack.addArrangedSubview(sentenceRow2)
+        mainStack.addArrangedSubview(wordRow)
+
+        NSLayoutConstraint.activate([
+            mainStack.topAnchor.constraint(equalTo: topAnchor),
+            mainStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            mainStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            mainStack.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+
+    private func setupRow(scrollView: UIScrollView, stackView: UIStackView) {
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(scrollView)
 
         stackView.axis = .horizontal
         stackView.spacing = 8
@@ -516,42 +553,58 @@ class SuggestionBar: UIView {
         scrollView.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
             stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 8),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -8),
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             stackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
         ])
     }
 
-    func updateSuggestions(_ suggestions: [String], currentText: String = "") {
+    func updateSuggestions(sentences: [String], words: [String], currentText: String = "") {
         // Clear existing suggestions
-        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        sentenceStack1.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        sentenceStack2.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        wordStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
         self.currentText = currentText
         self.currentLanguage = LanguageManager.shared.getLanguage(code: UserSettings.shared.currentLanguage)
 
-        // Add new suggestions with word-by-word selection
-        for suggestion in suggestions {
-            let container = createSuggestionContainer(for: suggestion)
-            stackView.addArrangedSubview(container)
+        // Add sentences to first 2 rows
+        for (index, sentence) in sentences.enumerated() {
+            let container = createSuggestionContainer(for: sentence, isWord: false)
+            if index == 0 {
+                sentenceStack1.addArrangedSubview(container)
+            } else if index == 1 {
+                sentenceStack2.addArrangedSubview(container)
+            }
+            // Only show first 2 sentences
+            if index >= 1 { break }
+        }
+
+        // Add words to third row (rounded buttons)
+        for word in words.prefix(5) {
+            let button = createWordButton(word, fullSuggestion: word, rounded: true)
+            wordStack.addArrangedSubview(button)
         }
     }
 
-    private func createSuggestionContainer(for suggestion: String) -> UIView {
+    private func createSuggestionContainer(for suggestion: String, isWord: Bool) -> UIView {
         let container = UIStackView()
         container.axis = .horizontal
         container.spacing = 2
         container.distribution = .fill
 
+        // Display as a single button without word-by-word splitting
+        let button = createWordButton(suggestion, fullSuggestion: suggestion, wordIndex: -1, rounded: isWord)
+        container.addArrangedSubview(button)
+
+        return container
+
+        /* Commented out: word-by-word splitting disabled
         guard let language = currentLanguage else {
             // Fallback to simple button
-            let button = createWordButton(suggestion, fullSuggestion: suggestion)
+            let button = createWordButton(suggestion, fullSuggestion: suggestion, rounded: isWord)
             container.addArrangedSubview(button)
             return container
         }
@@ -579,24 +632,40 @@ class SuggestionBar: UIView {
         let startIndex = min(leadingWordsCount, words.count)
         for i in startIndex..<words.count {
             let word = words[i]
-            let button = createWordButton(word, fullSuggestion: suggestion, wordIndex: i)
+            let button = createWordButton(word, fullSuggestion: suggestion, wordIndex: i, rounded: isWord)
             container.addArrangedSubview(button)
         }
 
         return container
+        */
     }
 
-    private func createWordButton(_ word: String, fullSuggestion: String, wordIndex: Int = -1) -> UIButton {
+    private func createWordButton(_ word: String, fullSuggestion: String, wordIndex: Int = -1, rounded: Bool = false) -> UIButton {
         let button = UIButton(type: .system)
 
-        var config = UIButton.Configuration.plain()
-        config.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 6, bottom: 4, trailing: 6)
-        config.baseForegroundColor = .black
-        config.attributedTitle = AttributedString(
-            word,
-            attributes: AttributeContainer([.font: UIFont.systemFont(ofSize: 16)])
-        )
-        button.configuration = config
+        if rounded {
+            // Rounded button style for words
+            var config = UIButton.Configuration.filled()
+            config.baseBackgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.92, alpha: 1.0)
+            config.baseForegroundColor = .black
+            config.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12)
+            config.cornerStyle = .capsule
+            config.attributedTitle = AttributedString(
+                word,
+                attributes: AttributeContainer([.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
+            )
+            button.configuration = config
+        } else {
+            // Plain button style for sentence words
+            var config = UIButton.Configuration.plain()
+            config.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 6, bottom: 4, trailing: 6)
+            config.baseForegroundColor = .black
+            config.attributedTitle = AttributedString(
+                word,
+                attributes: AttributeContainer([.font: UIFont.systemFont(ofSize: 16)])
+            )
+            button.configuration = config
+        }
 
         // Store full suggestion and word info
         button.accessibilityLabel = fullSuggestion

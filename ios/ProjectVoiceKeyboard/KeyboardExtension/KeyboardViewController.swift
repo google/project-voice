@@ -144,12 +144,12 @@ class KeyboardViewController: UIInputViewController {
                     firstHalf + DiffProcessor.ignoreUnnecessaryDiffs(original: secondHalf, modified: sentence)
                 }
 
-                // Combine all suggestions: history + processed AI sentences + AI words
-                var allSuggestions = historySuggestions + processedSentences + response.words
+                // Combine history + processed AI sentences
+                var allSentences = historySuggestions + processedSentences
 
-                // Remove duplicates while preserving order
+                // Remove duplicates from sentences
                 var seen = Set<String>()
-                allSuggestions = allSuggestions.filter { suggestion in
+                allSentences = allSentences.filter { suggestion in
                     let lowercased = suggestion.lowercased()
                     if seen.contains(lowercased) {
                         return false
@@ -158,7 +158,19 @@ class KeyboardViewController: UIInputViewController {
                     return true
                 }
 
-                self?.keyboardView.updateSuggestions(allSuggestions, currentText: text)
+                // Remove duplicates from words
+                var seenWords = Set<String>()
+                let uniqueWords = response.words.filter { word in
+                    let lowercased = word.lowercased()
+                    if seenWords.contains(lowercased) {
+                        return false
+                    }
+                    seenWords.insert(lowercased)
+                    return true
+                }
+
+                // Update UI with separated sentences and words
+                self?.keyboardView.updateSuggestions(sentences: allSentences, words: uniqueWords, currentText: text)
             }
         }
     }
