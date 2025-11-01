@@ -25,16 +25,29 @@ class KeyboardView: UIView {
     private let suggestionBar = SuggestionBar()
     private let keyboardStackView = UIStackView()
 
+    // English alphabet keyboard (QWERTY - iOS standard)
     private let alphabetKeys = [
-        ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
-        ["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-        ["shift", "z", "x", "c", "v", "b", "n", "m", "delete"]
+        ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"],
+        ["k", "l", "m", "n", "o", "p", "q", "r", "s", "t"],
+        ["u", "v", "w", "x", "y", "z", "(", ")", "[", "]"],
+        ["-", "_", "/", ":", ";", "&", "@", "#", "*", "'"]
+    ]
+
+    // Japanese hiragana keyboard (iOS standard flick layout style)
+    // All rows have exactly 10 keys for perfect grid alignment
+    private let hiraganaKeys = [
+        ["わ", "ら", "や", "ま", "は", "な", "た", "さ", "か", "あ"],
+        ["を", "り", "", "み", "ひ", "に", "ち", "し", "き", "い"],
+        ["ん", "る", "ゆ", "む", "ふ", "ぬ", "つ", "す", "く", "う"],
+        ["ー", "れ", "", "め", "へ", "ね", "て", "せ", "け", "え"],
+        ["゛゜小", "ろ", "よ", "も", "ほ", "の", "と", "そ", "こ", "お"]
     ]
 
     private let numberKeys = [
-        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"],
-        ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""],
-        ["#+=", ".", ",", "?", "!", "'", "delete"]
+        ["年", "月", "日", "時", "分", "1", "2", "3"],
+        ["×", "÷", "+", "-", "=", "4", "5", "6"],
+        ["♪", "☆", "%", "¥", "〒", "7", "8", "9"],
+        ["→", "~", "・", "…", "○", "'", "0", "・"]
     ]
 
     private let symbolKeys = [
@@ -45,12 +58,16 @@ class KeyboardView: UIView {
 
     enum KeyboardMode {
         case alphabet
+        case hiragana
         case number
         case symbol
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        // Set initial mode based on language
+        let currentLanguage = UserSettings.shared.currentLanguage
+        mode = (currentLanguage == "ja-JP") ? .hiragana : .alphabet
         setupUI()
     }
 
@@ -59,7 +76,8 @@ class KeyboardView: UIView {
     }
 
     private func setupUI() {
-        backgroundColor = UIColor(red: 0.82, green: 0.84, blue: 0.86, alpha: 1.0)
+        // iOS standard keyboard background (light mode)
+        backgroundColor = UIColor(red: 0.82, green: 0.835, blue: 0.863, alpha: 1.0)
 
         // Setup emotion selector
         emotionSelector.delegate = self
@@ -78,13 +96,16 @@ class KeyboardView: UIView {
         keyboardStackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(keyboardStackView)
 
+        // Hide emotion selector - now using button in keyboard
+        emotionSelector.isHidden = true
+
         NSLayoutConstraint.activate([
             emotionSelector.topAnchor.constraint(equalTo: topAnchor, constant: 4),
             emotionSelector.leadingAnchor.constraint(equalTo: leadingAnchor),
             emotionSelector.trailingAnchor.constraint(equalTo: trailingAnchor),
-            emotionSelector.heightAnchor.constraint(equalToConstant: 60),
+            emotionSelector.heightAnchor.constraint(equalToConstant: 0), // Set to 0
 
-            suggestionBar.topAnchor.constraint(equalTo: emotionSelector.bottomAnchor, constant: 4),
+            suggestionBar.topAnchor.constraint(equalTo: topAnchor, constant: 4), // Start from top
             suggestionBar.leadingAnchor.constraint(equalTo: leadingAnchor),
             suggestionBar.trailingAnchor.constraint(equalTo: trailingAnchor),
             suggestionBar.heightAnchor.constraint(equalToConstant: 40),
@@ -104,57 +125,117 @@ class KeyboardView: UIView {
 
         let keys = getCurrentKeys()
 
-        // Render each row
+        // Fixed left column buttons: mode switches and keyboard switch
+        let leftColumnKeys = ["☆123", "ABC", "あいう", "🌐"]
+
+        // Fixed right column buttons: delete, space, return
+        let rightColumnKeys = ["delete", "空白", "改行"]
+
+        // Render each row with left and right fixed buttons
         for (index, row) in keys.enumerated() {
             let rowStack = UIStackView()
             rowStack.axis = .horizontal
-            rowStack.spacing = 6
-            rowStack.distribution = .fillEqually
+            rowStack.spacing = 4
+            rowStack.distribution = .fill
+
+            // Left side: fixed button (mode switch or keyboard switch)
+            if index < leftColumnKeys.count {
+                let leftButton = createKeyButton(for: leftColumnKeys[index])
+                leftButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
+                rowStack.addArrangedSubview(leftButton)
+            } else {
+                // For rows beyond the fixed buttons, add empty spacer
+                let spacer = UIView()
+                spacer.widthAnchor.constraint(equalToConstant: 60).isActive = true
+                rowStack.addArrangedSubview(spacer)
+            }
+
+            // Middle: main keys with equal distribution
+            let mainKeysStack = UIStackView()
+            mainKeysStack.axis = .horizontal
+            mainKeysStack.spacing = 4
+            mainKeysStack.distribution = .fillEqually
 
             for key in row {
-                let button = createKeyButton(for: key)
-                rowStack.addArrangedSubview(button)
+                if key.isEmpty {
+                    // Empty key: add invisible spacer
+                    let spacer = UIView()
+                    spacer.backgroundColor = .clear
+                    mainKeysStack.addArrangedSubview(spacer)
+                } else {
+                    let button = createKeyButton(for: key)
+                    mainKeysStack.addArrangedSubview(button)
+                }
             }
 
-            // Add bottom row with special layout
-            if index == keys.count - 1 {
-                let bottomRow = createBottomRow()
-                keyboardStackView.addArrangedSubview(bottomRow)
+            rowStack.addArrangedSubview(mainKeysStack)
+
+            // Right side: fixed button (delete, space, return, or emotion selector)
+            if index < rightColumnKeys.count {
+                let rightButton = createKeyButton(for: rightColumnKeys[index])
+                rightButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+                rowStack.addArrangedSubview(rightButton)
+            } else if index == keys.count - 1 {
+                // Last row: add emotion selector button
+                let emotionButton = createEmotionSelectorButton()
+                emotionButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+                rowStack.addArrangedSubview(emotionButton)
             } else {
-                keyboardStackView.addArrangedSubview(rowStack)
+                // For other rows, add empty spacer
+                let spacer = UIView()
+                spacer.widthAnchor.constraint(equalToConstant: 70).isActive = true
+                rowStack.addArrangedSubview(spacer)
             }
+
+            keyboardStackView.addArrangedSubview(rowStack)
         }
     }
 
     private func createBottomRow() -> UIStackView {
         let rowStack = UIStackView()
         rowStack.axis = .horizontal
-        rowStack.spacing = 6
+        rowStack.spacing = 4
         rowStack.distribution = .fill
 
-        // Mode switch button (123/ABC)
-        let modeButton = createKeyButton(for: getModeButtonLabel())
+        // ☆123 button
+        let modeButton = createKeyButton(for: "☆123")
         modeButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
 
-        // Globe button (keyboard switcher)
+        // ABC button
+        let abcButton = createKeyButton(for: "ABC")
+        abcButton.widthAnchor.constraint(equalToConstant: 55).isActive = true
+
+        // Spacer 1
+        let spacer1 = UIView()
+        spacer1.widthAnchor.constraint(equalToConstant: 10).isActive = true
+
+        // Spacer 2
+        let spacer2 = UIView()
+        spacer2.widthAnchor.constraint(equalToConstant: 10).isActive = true
+
+        // Spacer 3 (flexible - takes remaining space)
+        let spacer3 = UIView()
+
+        // あいう button
+        let hiraganaButton = createKeyButton(for: "あいう")
+        hiraganaButton.widthAnchor.constraint(equalToConstant: 55).isActive = true
+
+        // 🌐 button
         let globeButton = createKeyButton(for: "🌐")
-        globeButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        globeButton.widthAnchor.constraint(equalToConstant: 45).isActive = true
 
-        // Space bar
-        let spaceButton = createKeyButton(for: "space")
-        spaceButton.setTitle("space", for: .normal)
-
-        // Return button
-        let returnButton = createKeyButton(for: "return")
-        returnButton.setTitle("return", for: .normal)
-        returnButton.backgroundColor = UIColor(red: 0.0, green: 0.48, blue: 1.0, alpha: 1.0)
-        returnButton.setTitleColor(.white, for: .normal)
-        returnButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        // ⌨︎ button
+        let keyboardButton = createKeyButton(for: "⌨︎")
+        keyboardButton.widthAnchor.constraint(equalToConstant: 45).isActive = true
 
         rowStack.addArrangedSubview(modeButton)
+        rowStack.addArrangedSubview(abcButton)
+        rowStack.addArrangedSubview(spacer1)
+        rowStack.addArrangedSubview(spacer2)
+        rowStack.addArrangedSubview(spacer3)
+        rowStack.addArrangedSubview(hiraganaButton)
         rowStack.addArrangedSubview(globeButton)
-        rowStack.addArrangedSubview(spaceButton)
-        rowStack.addArrangedSubview(returnButton)
+        rowStack.addArrangedSubview(keyboardButton)
 
         return rowStack
     }
@@ -164,19 +245,37 @@ class KeyboardView: UIView {
         let displayText = (mode == .alphabet && isShifted) ? key.uppercased() : key
 
         button.setTitle(displayText, for: .normal)
+
+        // Store the original key value in accessibilityIdentifier
+        button.accessibilityIdentifier = key
+
+        // iOS standard key styling
         button.backgroundColor = .white
         button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .regular)
-        button.layer.cornerRadius = 6
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.1
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .regular)
+        button.layer.cornerRadius = 5
+
+        // iOS standard shadow
+        button.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3).cgColor
+        button.layer.shadowOpacity = 1.0
         button.layer.shadowOffset = CGSize(width: 0, height: 1)
         button.layer.shadowRadius = 0
 
-        // Special styling for special keys
-        if ["shift", "delete", "123", "ABC", "#+=", "🌐"].contains(key) {
-            button.backgroundColor = UIColor(red: 0.68, green: 0.71, blue: 0.74, alpha: 1.0)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        // Special styling for special keys (iOS standard gray keys)
+        if ["shift", "delete", "⌫", "123", "☆123", "ABC", "#", "#+=", "🌐", "小", "゛゜小", "あいう", "空白", "改行"].contains(key) {
+            button.backgroundColor = UIColor(red: 0.67, green: 0.69, blue: 0.73, alpha: 1.0)
+            button.setTitleColor(.black, for: .normal)
+
+            // Special symbols for shift and delete
+            if key == "shift" {
+                button.setTitle("⇧", for: .normal)
+                button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+            } else if key == "delete" || key == "⌫" {
+                button.setTitle("⌫", for: .normal)
+                button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .light)
+            } else {
+                button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+            }
         }
 
         button.addTarget(self, action: #selector(keyTapped(_:)), for: .touchUpInside)
@@ -184,8 +283,74 @@ class KeyboardView: UIView {
         return button
     }
 
+    private func createEmotionSelectorButton() -> UIButton {
+        let button = UIButton(type: .system)
+
+        // Get current emotion and display its emoji
+        let currentEmotion = emotionSelector.getCurrentEmotion()
+        let emoji = getEmotionEmoji(for: currentEmotion)
+
+        button.setTitle(emoji, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 28, weight: .regular)
+
+        // Gray background like other special keys
+        button.backgroundColor = UIColor(red: 0.67, green: 0.69, blue: 0.73, alpha: 1.0)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.cornerRadius = 5
+
+        // iOS standard shadow
+        button.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.3).cgColor
+        button.layer.shadowOpacity = 1.0
+        button.layer.shadowOffset = CGSize(width: 0, height: 1)
+        button.layer.shadowRadius = 0
+
+        button.addTarget(self, action: #selector(emotionButtonTapped(_:)), for: .touchUpInside)
+
+        return button
+    }
+
+    private func getEmotionEmoji(for emotion: SentenceEmotion) -> String {
+        switch emotion {
+        case .statement:
+            return "💬"  // 普通
+        case .question:
+            return "❓"  // 質問
+        case .request:
+            return "🙏"  // お願い
+        case .negative:
+            return "🚫"  // 否定
+        }
+    }
+
+    @objc private func emotionButtonTapped(_ sender: UIButton) {
+        // Cycle through emotions
+        let currentEmotion = emotionSelector.getCurrentEmotion()
+        let nextEmotion: SentenceEmotion
+
+        switch currentEmotion {
+        case .statement:
+            nextEmotion = .question
+        case .question:
+            nextEmotion = .request
+        case .request:
+            nextEmotion = .negative
+        case .negative:
+            nextEmotion = .statement
+        }
+
+        // Update emotion selector
+        emotionSelector.setEmotion(nextEmotion)
+
+        // Update button emoji
+        sender.setTitle(getEmotionEmoji(for: nextEmotion), for: .normal)
+
+        // Re-render keyboard to update the button
+        renderKeyboard()
+    }
+
     @objc private func keyTapped(_ sender: UIButton) {
-        guard let key = sender.currentTitle else { return }
+        // Use accessibilityIdentifier to get the original key value
+        guard let key = sender.accessibilityIdentifier else { return }
 
         // Handle special keys
         switch key {
@@ -193,8 +358,17 @@ class KeyboardView: UIView {
             delegate?.keyboardViewDidRequestKeyboardChange(self)
         case let k where k.uppercased() == "SHIFT" || k == "⇧":
             toggleShift()
-        case "123", "ABC", "#+=":
+        case "123", "☆123", "ABC", "#+=", "あいう", "#":
             handleModeSwitch(key)
+        case "空白":
+            delegate?.keyboardView(self, didTapKey: "space")
+        case "改行":
+            delegate?.keyboardView(self, didTapKey: "return")
+        case "delete", "⌫":
+            delegate?.keyboardView(self, didTapKey: "delete")
+        case "小", "゛゜小":
+            // Combined key for dakuten, handakuten, and small kana
+            delegate?.keyboardView(self, didTapKey: "小")
         default:
             let outputKey = (mode == .alphabet && isShifted) ? key.lowercased() : key
             delegate?.keyboardView(self, didTapKey: outputKey)
@@ -209,11 +383,17 @@ class KeyboardView: UIView {
 
     private func handleModeSwitch(_ key: String) {
         switch key {
-        case "123":
+        case "123", "☆123":
             switchToNumberMode()
         case "ABC":
-            switchToAlphabetMode()
-        case "#+=":
+            // ABC button always switches to alphabet mode
+            mode = .alphabet
+            renderKeyboard()
+        case "あいう":
+            // Hiragana button always switches to hiragana mode
+            mode = .hiragana
+            renderKeyboard()
+        case "#", "#+=":
             mode = .symbol
             renderKeyboard()
         default:
@@ -225,6 +405,8 @@ class KeyboardView: UIView {
         switch mode {
         case .alphabet:
             return alphabetKeys
+        case .hiragana:
+            return hiraganaKeys
         case .number:
             return numberKeys
         case .symbol:
@@ -234,12 +416,11 @@ class KeyboardView: UIView {
 
     private func getModeButtonLabel() -> String {
         switch mode {
-        case .alphabet:
+        case .alphabet, .hiragana:
             return "123"
-        case .number:
-            return "#+"
-        case .symbol:
-            return "ABC"
+        case .number, .symbol:
+            let currentLanguage = UserSettings.shared.currentLanguage
+            return (currentLanguage == "ja-JP") ? "あいう" : "ABC"
         }
     }
 
@@ -256,16 +437,30 @@ class KeyboardView: UIView {
     }
 
     func switchToAlphabetMode() {
-        mode = .alphabet
+        // Choose alphabet or hiragana based on current language
+        let currentLanguage = UserSettings.shared.currentLanguage
+        mode = (currentLanguage == "ja-JP") ? .hiragana : .alphabet
         renderKeyboard()
     }
 
-    func updateSuggestions(_ suggestions: [String]) {
-        suggestionBar.updateSuggestions(suggestions)
+    func updateSuggestions(_ suggestions: [String], currentText: String = "") {
+        suggestionBar.updateSuggestions(suggestions, currentText: currentText)
+    }
+
+    func showInitialPhrases(_ phrases: [String]) {
+        suggestionBar.updateSuggestions(phrases, currentText: "")
     }
 
     func getCurrentEmotion() -> SentenceEmotion {
         return emotionSelector.getCurrentEmotion()
+    }
+
+    func getCurrentLanguage() -> String {
+        return UserSettings.shared.currentLanguage
+    }
+
+    func updateEmotionLabels() {
+        emotionSelector.updateLabelsForCurrentLanguage()
     }
 }
 
@@ -287,6 +482,7 @@ extension KeyboardView: SuggestionBarDelegate {
 // MARK: - SuggestionBar
 protocol SuggestionBarDelegate: AnyObject {
     func suggestionBar(_ bar: SuggestionBar, didSelectSuggestion suggestion: String)
+    func suggestionBar(_ bar: SuggestionBar, didSelectPartialSuggestion partial: String, from fullSuggestion: String)
 }
 
 class SuggestionBar: UIView {
@@ -294,6 +490,8 @@ class SuggestionBar: UIView {
     weak var delegate: SuggestionBarDelegate?
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
+    private var currentText: String = ""
+    private var currentLanguage: Language?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -331,25 +529,106 @@ class SuggestionBar: UIView {
         ])
     }
 
-    func updateSuggestions(_ suggestions: [String]) {
+    func updateSuggestions(_ suggestions: [String], currentText: String = "") {
         // Clear existing suggestions
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        // Add new suggestions
-        for suggestion in suggestions {
-            let button = UIButton(type: .system)
-            button.setTitle(suggestion, for: .normal)
-            button.setTitleColor(.black, for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-            button.contentEdgeInsets = UIEdgeInsets(top: 4, left: 12, bottom: 4, right: 12)
-            button.addTarget(self, action: #selector(suggestionTapped(_:)), for: .touchUpInside)
+        self.currentText = currentText
+        self.currentLanguage = LanguageManager.shared.getLanguage(code: UserSettings.shared.currentLanguage)
 
-            stackView.addArrangedSubview(button)
+        // Add new suggestions with word-by-word selection
+        for suggestion in suggestions {
+            let container = createSuggestionContainer(for: suggestion)
+            stackView.addArrangedSubview(container)
         }
     }
 
-    @objc private func suggestionTapped(_ sender: UIButton) {
-        guard let suggestion = sender.currentTitle else { return }
-        delegate?.suggestionBar(self, didSelectSuggestion: suggestion)
+    private func createSuggestionContainer(for suggestion: String) -> UIView {
+        let container = UIStackView()
+        container.axis = .horizontal
+        container.spacing = 2
+        container.distribution = .fill
+
+        guard let language = currentLanguage else {
+            // Fallback to simple button
+            let button = createWordButton(suggestion, fullSuggestion: suggestion)
+            container.addArrangedSubview(button)
+            return container
+        }
+
+        // Check for shared prefix with current text
+        let leadingWordsCount = PunctuationProcessor.getLeadingWords(
+            suggestion,
+            matching: currentText,
+            language: language
+        )
+
+        // Split into words with punctuation separation
+        let words = PunctuationProcessor.splitPunctuations(suggestion)
+
+        // Add ellipsis if there's a shared prefix
+        if leadingWordsCount > 0 && !currentText.isEmpty {
+            let ellipsisLabel = UILabel()
+            ellipsisLabel.text = "… "
+            ellipsisLabel.font = UIFont.systemFont(ofSize: 16)
+            ellipsisLabel.textColor = .gray
+            container.addArrangedSubview(ellipsisLabel)
+        }
+
+        // Add word buttons (skip leading shared words)
+        let startIndex = min(leadingWordsCount, words.count)
+        for i in startIndex..<words.count {
+            let word = words[i]
+            let button = createWordButton(word, fullSuggestion: suggestion, wordIndex: i)
+            container.addArrangedSubview(button)
+        }
+
+        return container
+    }
+
+    private func createWordButton(_ word: String, fullSuggestion: String, wordIndex: Int = -1) -> UIButton {
+        let button = UIButton(type: .system)
+
+        var config = UIButton.Configuration.plain()
+        config.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 6, bottom: 4, trailing: 6)
+        config.baseForegroundColor = .black
+        config.attributedTitle = AttributedString(
+            word,
+            attributes: AttributeContainer([.font: UIFont.systemFont(ofSize: 16)])
+        )
+        button.configuration = config
+
+        // Store full suggestion and word info
+        button.accessibilityLabel = fullSuggestion
+        button.tag = wordIndex
+
+        button.addTarget(self, action: #selector(wordButtonTapped(_:)), for: .touchUpInside)
+
+        return button
+    }
+
+    @objc private func wordButtonTapped(_ sender: UIButton) {
+        guard let fullSuggestion = sender.accessibilityLabel else { return }
+        let wordIndex = sender.tag
+
+        if wordIndex >= 0 {
+            // Partial selection: reconstruct suggestion up to this word
+            let words = PunctuationProcessor.splitPunctuations(fullSuggestion)
+            if wordIndex < words.count {
+                let partial = words[0...wordIndex].joined()
+                delegate?.suggestionBar(self, didSelectPartialSuggestion: partial, from: fullSuggestion)
+            }
+        } else {
+            // Full suggestion selection
+            delegate?.suggestionBar(self, didSelectSuggestion: fullSuggestion)
+        }
+    }
+}
+
+// MARK: - SuggestionBarDelegate Extension for backward compatibility
+extension SuggestionBarDelegate {
+    func suggestionBar(_ bar: SuggestionBar, didSelectPartialSuggestion partial: String, from fullSuggestion: String) {
+        // Default implementation: treat as full suggestion
+        suggestionBar(bar, didSelectSuggestion: partial)
     }
 }

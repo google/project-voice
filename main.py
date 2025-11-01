@@ -35,6 +35,7 @@ def Root():
 
 
 @app.route('/run-macro', methods=['POST'])
+@csrf.exempt  # Exempt from CSRF protection for iOS app access
 def RunMacro():
   request = flask.request
   macro_id = request.form.get('id')
@@ -42,7 +43,14 @@ def RunMacro():
   temperature = float(request.form.get('temperature'))
   model_id = request.form.get('model_id')
 
-  return macro.RunMacro(macro_id, user_inputs, temperature, model_id)
+  # Debug logging
+  print(f"[DEBUG] RunMacro called: macro_id={macro_id}, model_id={model_id}")
+  print(f"[DEBUG] Text input: {user_inputs.get('text', '')[:50]}...")  # First 50 chars
+
+  result = macro.RunMacro(macro_id, user_inputs, temperature, model_id)
+  print(f"[DEBUG] Response length: {len(result)}")
+
+  return result
 
 
 if __name__ == '__main__':

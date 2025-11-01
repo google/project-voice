@@ -27,7 +27,13 @@ enum SentenceEmotion: String, CaseIterable {
         }
     }
 
-    var label: String {
+    func label(for languageCode: String) -> String {
+        if let language =
+        LanguageManager.shared.getLanguage(code: languageCode),
+           let emotionConfig = language.emotions.first(where: { $0.emoji == self.emoji }) {
+            return emotionConfig.label
+        }
+        // Fallback to Japanese labels
         switch self {
         case .statement: return "普通"
         case .question: return "質問"
@@ -87,18 +93,21 @@ class EmotionSelector: UIView {
         // Create vertical stack for emoji and label
         let containerView = UIView()
         containerView.isUserInteractionEnabled = false
+        containerView.tag = 100 // Tag to find it later
 
         let emojiLabel = UILabel()
         emojiLabel.text = emotion.emoji
         emojiLabel.font = UIFont.systemFont(ofSize: 24)
         emojiLabel.textAlignment = .center
+        emojiLabel.tag = 101 // Tag for emoji label
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let textLabel = UILabel()
-        textLabel.text = emotion.label
+        textLabel.text = emotion.label(for: UserSettings.shared.currentLanguage)
         textLabel.font = UIFont.systemFont(ofSize: 11, weight: .medium)
         textLabel.textAlignment = .center
         textLabel.textColor = UIColor(red: 0.13, green: 0.13, blue: 0.14, alpha: 1.0)
+        textLabel.tag = 102 // Tag for text label
         textLabel.translatesAutoresizingMaskIntoConstraints = false
 
         containerView.addSubview(emojiLabel)
@@ -159,5 +168,15 @@ class EmotionSelector: UIView {
 
     func getCurrentEmotion() -> SentenceEmotion {
         return selectedEmotion
+    }
+
+    func updateLabelsForCurrentLanguage() {
+        let currentLanguage = UserSettings.shared.currentLanguage
+        for (emotion, button) in emotionButtons {
+            if let containerView = button.viewWithTag(100),
+               let textLabel = containerView.viewWithTag(102) as? UILabel {
+                textLabel.text = emotion.label(for: currentLanguage)
+            }
+        }
     }
 }

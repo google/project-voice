@@ -10,3 +10,40 @@ static/locales/
 
 *storybook.log
 /storybook-static
+
+# iOS
+ios/DerivedData/
+ios/build/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/*.xcworkspace/xcuserdata/
+ios/.swiftpm/
+ios/*.playground
+ios/*.ipa
+ios/*.dSYM.zip
+ios/*.dSYM
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xcworkspace/xcshareddata/*.xccheckout
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Packages/
+Package.pins
+Package.resolved
+
+# CocoaPods
+ios/Pods/
+ios/Podfile.lock

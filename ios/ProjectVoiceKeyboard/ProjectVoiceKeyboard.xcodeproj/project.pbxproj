@@ -1,0 +1,798 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9BC869492EB5A3AC002481EC /* KeyboardExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9BC869422EB5A3AC002481EC /* KeyboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9BC869142EB5A016002481EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9BC868FE2EB5A015002481EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9BC869052EB5A015002481EC;
+			remoteInfo = ProjectVoiceKeyboard;
+		};
+		9BC8691E2EB5A016002481EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9BC868FE2EB5A015002481EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9BC869052EB5A015002481EC;
+			remoteInfo = ProjectVoiceKeyboard;
+		};
+		9BC869472EB5A3AC002481EC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9BC868FE2EB5A015002481EC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9BC869412EB5A3AC002481EC;
+			remoteInfo = KeyboardExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9BC8694A2EB5A3AC002481EC /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9BC869492EB5A3AC002481EC /* KeyboardExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9BC869062EB5A015002481EC /* ProjectVoiceKeyboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectVoiceKeyboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BC869132EB5A016002481EC /* ProjectVoiceKeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProjectVoiceKeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BC8691D2EB5A016002481EC /* ProjectVoiceKeyboardUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ProjectVoiceKeyboardUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BC869422EB5A3AC002481EC /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9B58DC872EB625FD00DED965 /* Exceptions for "ProjectVoiceKeyboard" folder in "ProjectVoiceKeyboardTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SettingsView.swift,
+			);
+			target = 9BC869122EB5A016002481EC /* ProjectVoiceKeyboardTests */;
+		};
+		9B58DC882EB625FD00DED965 /* Exceptions for "ProjectVoiceKeyboard" folder in "ProjectVoiceKeyboardUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SettingsView.swift,
+			);
+			target = 9BC8691C2EB5A016002481EC /* ProjectVoiceKeyboardUITests */;
+		};
+		9B58DC892EB625FD00DED965 /* Exceptions for "ProjectVoiceKeyboard" folder in "KeyboardExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SettingsView.swift,
+			);
+			target = 9BC869412EB5A3AC002481EC /* KeyboardExtension */;
+		};
+		9BC8694D2EB5A3AC002481EC /* Exceptions for "KeyboardExtension" folder in "KeyboardExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9BC869412EB5A3AC002481EC /* KeyboardExtension */;
+		};
+		9BC8695C2EB5C035002481EC /* Exceptions for "KeyboardExtension" folder in "ProjectVoiceKeyboard" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EmotionSelector.swift,
+				LanguageManager.swift,
+				UserSettings.swift,
+			);
+			target = 9BC869052EB5A015002481EC /* ProjectVoiceKeyboard */;
+		};
+		9BC8695D2EB5C035002481EC /* Exceptions for "KeyboardExtension" folder in "ProjectVoiceKeyboardTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EmotionSelector.swift,
+				LanguageManager.swift,
+				UserSettings.swift,
+			);
+			target = 9BC869122EB5A016002481EC /* ProjectVoiceKeyboardTests */;
+		};
+		9BC8695E2EB5C035002481EC /* Exceptions for "KeyboardExtension" folder in "ProjectVoiceKeyboardUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				EmotionSelector.swift,
+				LanguageManager.swift,
+				UserSettings.swift,
+			);
+			target = 9BC8691C2EB5A016002481EC /* ProjectVoiceKeyboardUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		9BC869082EB5A015002481EC /* ProjectVoiceKeyboard */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9B58DC872EB625FD00DED965 /* Exceptions for "ProjectVoiceKeyboard" folder in "ProjectVoiceKeyboardTests" target */,
+				9B58DC882EB625FD00DED965 /* Exceptions for "ProjectVoiceKeyboard" folder in "ProjectVoiceKeyboardUITests" target */,
+				9B58DC892EB625FD00DED965 /* Exceptions for "ProjectVoiceKeyboard" folder in "KeyboardExtension" target */,
+			);
+			path = ProjectVoiceKeyboard;
+			sourceTree = "<group>";
+		};
+		9BC869162EB5A016002481EC /* ProjectVoiceKeyboardTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ProjectVoiceKeyboardTests;
+			sourceTree = "<group>";
+		};
+		9BC869202EB5A016002481EC /* ProjectVoiceKeyboardUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ProjectVoiceKeyboardUITests;
+			sourceTree = "<group>";
+		};
+		9BC869432EB5A3AC002481EC /* KeyboardExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9BC8695C2EB5C035002481EC /* Exceptions for "KeyboardExtension" folder in "ProjectVoiceKeyboard" target */,
+				9BC8695D2EB5C035002481EC /* Exceptions for "KeyboardExtension" folder in "ProjectVoiceKeyboardTests" target */,
+				9BC8695E2EB5C035002481EC /* Exceptions for "KeyboardExtension" folder in "ProjectVoiceKeyboardUITests" target */,
+				9BC8694D2EB5A3AC002481EC /* Exceptions for "KeyboardExtension" folder in "KeyboardExtension" target */,
+			);
+			path = KeyboardExtension;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9BC869032EB5A015002481EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC869102EB5A016002481EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC8691A2EB5A016002481EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC8693F2EB5A3AC002481EC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9BC868FD2EB5A015002481EC = {
+			isa = PBXGroup;
+			children = (
+				9BC869082EB5A015002481EC /* ProjectVoiceKeyboard */,
+				9BC869162EB5A016002481EC /* ProjectVoiceKeyboardTests */,
+				9BC869202EB5A016002481EC /* ProjectVoiceKeyboardUITests */,
+				9BC869432EB5A3AC002481EC /* KeyboardExtension */,
+				9BC869072EB5A015002481EC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9BC869072EB5A015002481EC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9BC869062EB5A015002481EC /* ProjectVoiceKeyboard.app */,
+				9BC869132EB5A016002481EC /* ProjectVoiceKeyboardTests.xctest */,
+				9BC8691D2EB5A016002481EC /* ProjectVoiceKeyboardUITests.xctest */,
+				9BC869422EB5A3AC002481EC /* KeyboardExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9BC869052EB5A015002481EC /* ProjectVoiceKeyboard */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BC869272EB5A016002481EC /* Build configuration list for PBXNativeTarget "ProjectVoiceKeyboard" */;
+			buildPhases = (
+				9BC869022EB5A015002481EC /* Sources */,
+				9BC869032EB5A015002481EC /* Frameworks */,
+				9BC869042EB5A015002481EC /* Resources */,
+				9BC8694A2EB5A3AC002481EC /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9BC869482EB5A3AC002481EC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9BC869082EB5A015002481EC /* ProjectVoiceKeyboard */,
+			);
+			name = ProjectVoiceKeyboard;
+			packageProductDependencies = (
+			);
+			productName = ProjectVoiceKeyboard;
+			productReference = 9BC869062EB5A015002481EC /* ProjectVoiceKeyboard.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9BC869122EB5A016002481EC /* ProjectVoiceKeyboardTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BC8692A2EB5A016002481EC /* Build configuration list for PBXNativeTarget "ProjectVoiceKeyboardTests" */;
+			buildPhases = (
+				9BC8690F2EB5A016002481EC /* Sources */,
+				9BC869102EB5A016002481EC /* Frameworks */,
+				9BC869112EB5A016002481EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9BC869152EB5A016002481EC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9BC869162EB5A016002481EC /* ProjectVoiceKeyboardTests */,
+			);
+			name = ProjectVoiceKeyboardTests;
+			packageProductDependencies = (
+			);
+			productName = ProjectVoiceKeyboardTests;
+			productReference = 9BC869132EB5A016002481EC /* ProjectVoiceKeyboardTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		9BC8691C2EB5A016002481EC /* ProjectVoiceKeyboardUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BC8692D2EB5A016002481EC /* Build configuration list for PBXNativeTarget "ProjectVoiceKeyboardUITests" */;
+			buildPhases = (
+				9BC869192EB5A016002481EC /* Sources */,
+				9BC8691A2EB5A016002481EC /* Frameworks */,
+				9BC8691B2EB5A016002481EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9BC8691F2EB5A016002481EC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9BC869202EB5A016002481EC /* ProjectVoiceKeyboardUITests */,
+			);
+			name = ProjectVoiceKeyboardUITests;
+			packageProductDependencies = (
+			);
+			productName = ProjectVoiceKeyboardUITests;
+			productReference = 9BC8691D2EB5A016002481EC /* ProjectVoiceKeyboardUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		9BC869412EB5A3AC002481EC /* KeyboardExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BC8694E2EB5A3AC002481EC /* Build configuration list for PBXNativeTarget "KeyboardExtension" */;
+			buildPhases = (
+				9BC8693E2EB5A3AC002481EC /* Sources */,
+				9BC8693F2EB5A3AC002481EC /* Frameworks */,
+				9BC869402EB5A3AC002481EC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9BC869432EB5A3AC002481EC /* KeyboardExtension */,
+			);
+			name = KeyboardExtension;
+			packageProductDependencies = (
+			);
+			productName = KeyboardExtension;
+			productReference = 9BC869422EB5A3AC002481EC /* KeyboardExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9BC868FE2EB5A015002481EC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					9BC869052EB5A015002481EC = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					9BC869122EB5A016002481EC = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 9BC869052EB5A015002481EC;
+					};
+					9BC8691C2EB5A016002481EC = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 9BC869052EB5A015002481EC;
+					};
+					9BC869412EB5A3AC002481EC = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = 9BC869012EB5A015002481EC /* Build configuration list for PBXProject "ProjectVoiceKeyboard" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9BC868FD2EB5A015002481EC;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 9BC869072EB5A015002481EC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9BC869052EB5A015002481EC /* ProjectVoiceKeyboard */,
+				9BC869122EB5A016002481EC /* ProjectVoiceKeyboardTests */,
+				9BC8691C2EB5A016002481EC /* ProjectVoiceKeyboardUITests */,
+				9BC869412EB5A3AC002481EC /* KeyboardExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9BC869042EB5A015002481EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC869112EB5A016002481EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC8691B2EB5A016002481EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC869402EB5A3AC002481EC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9BC869022EB5A015002481EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC8690F2EB5A016002481EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC869192EB5A016002481EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9BC8693E2EB5A3AC002481EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9BC869152EB5A016002481EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9BC869052EB5A015002481EC /* ProjectVoiceKeyboard */;
+			targetProxy = 9BC869142EB5A016002481EC /* PBXContainerItemProxy */;
+		};
+		9BC8691F2EB5A016002481EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9BC869052EB5A015002481EC /* ProjectVoiceKeyboard */;
+			targetProxy = 9BC8691E2EB5A016002481EC /* PBXContainerItemProxy */;
+		};
+		9BC869482EB5A3AC002481EC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9BC869412EB5A3AC002481EC /* KeyboardExtension */;
+			targetProxy = 9BC869472EB5A3AC002481EC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		9BC869252EB5A016002481EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = P9HS42XN3V;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		9BC869262EB5A016002481EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = P9HS42XN3V;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9BC869282EB5A016002481EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = P9HS42XN3V;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.katsukiono.ProjectVoiceKeyboard;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ProjectVoiceKeyboard;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9BC869292EB5A016002481EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = P9HS42XN3V;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.katsukiono.ProjectVoiceKeyboard;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ProjectVoiceKeyboard;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9BC8692B2EB5A016002481EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P9HS42XN3V;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ProjectVoiceKeyboard.ProjectVoiceKeyboardTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ProjectVoiceKeyboard.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ProjectVoiceKeyboard";
+			};
+			name = Debug;
+		};
+		9BC8692C2EB5A016002481EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P9HS42XN3V;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ProjectVoiceKeyboard.ProjectVoiceKeyboardTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ProjectVoiceKeyboard.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ProjectVoiceKeyboard";
+			};
+			name = Release;
+		};
+		9BC8692E2EB5A016002481EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ProjectVoiceKeyboard.ProjectVoiceKeyboardUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ProjectVoiceKeyboard;
+			};
+			name = Debug;
+		};
+		9BC8692F2EB5A016002481EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ProjectVoiceKeyboard.ProjectVoiceKeyboardUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ProjectVoiceKeyboard;
+			};
+			name = Release;
+		};
+		9BC8694B2EB5A3AC002481EC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = P9HS42XN3V;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KeyboardExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Project Voice Keyboard";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.katsukiono.ProjectVoiceKeyboard.KeyboardExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ProjectVoiceKeyboard.KeyboardExtension;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9BC8694C2EB5A3AC002481EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = P9HS42XN3V;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KeyboardExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Project Voice Keyboard";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.katsukiono.ProjectVoiceKeyboard.KeyboardExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ProjectVoiceKeyboard.KeyboardExtension;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9BC869012EB5A015002481EC /* Build configuration list for PBXProject "ProjectVoiceKeyboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BC869252EB5A016002481EC /* Debug */,
+				9BC869262EB5A016002481EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BC869272EB5A016002481EC /* Build configuration list for PBXNativeTarget "ProjectVoiceKeyboard" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BC869282EB5A016002481EC /* Debug */,
+				9BC869292EB5A016002481EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BC8692A2EB5A016002481EC /* Build configuration list for PBXNativeTarget "ProjectVoiceKeyboardTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BC8692B2EB5A016002481EC /* Debug */,
+				9BC8692C2EB5A016002481EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BC8692D2EB5A016002481EC /* Build configuration list for PBXNativeTarget "ProjectVoiceKeyboardUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BC8692E2EB5A016002481EC /* Debug */,
+				9BC8692F2EB5A016002481EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BC8694E2EB5A3AC002481EC /* Build configuration list for PBXNativeTarget "KeyboardExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BC8694B2EB5A3AC002481EC /* Debug */,
+				9BC8694C2EB5A3AC002481EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9BC868FE2EB5A015002481EC /* Project object */;
+}

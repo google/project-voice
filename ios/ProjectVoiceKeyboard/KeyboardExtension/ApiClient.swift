@@ -16,7 +16,11 @@ struct SuggestionResponse {
 class ApiClient {
 
     private let settings = UserSettings.shared
-    private var currentTask: URLSessionDataTask?
+    private var currentTasks: [URLSessionDataTask] = []
+
+    // Adaptive delay tracking (QPS-based)
+    private var previousCallTimes: [TimeInterval] = []
+    private let maxCallHistory = 10
 
     // MARK: - Main Fetch Method (matches web version)
 
@@ -25,16 +29,65 @@ class ApiClient {
         emotion: SentenceEmotion,
         completion: @escaping (SuggestionResponse?) -> Void
     ) {
-        // Cancel any ongoing request
-        currentTask?.cancel()
+        // Cancel any ongoing requests
+        print("[ApiClient] Cancelling \(currentTasks.count) ongoing tasks")
+        for task in currentTasks {
+            task.cancel()
+        }
+        currentTasks.removeAll()
 
-        let baseURL = settings.apiEndpoint
+        // Track call time BEFORE delay calculation
+        let currentTime = Date().timeIntervalSince1970
+        previousCallTimes.append(currentTime)
+        if previousCallTimes.count > maxCallHistory {
+            previousCallTimes.removeFirst()
+        }
+
+        // Calculate adaptive delay
+        let delay = calculateAdaptiveDelay()
+        print("[ApiClient] fetchSuggestions for text: '\(text.prefix(20))...', delay: \(delay)s")
+
+        // Apply delay if needed
+        if delay > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                self?.performFetch(text: text, emotion: emotion, completion: completion)
+            }
+        } else {
+            performFetch(text: text, emotion: emotion, completion: completion)
+        }
+    }
+
+    private func performFetch(
+        text: String,
+        emotion: SentenceEmotion,
+        completion: @escaping (SuggestionResponse?) -> Void
+    ) {
+        var baseURL = settings.apiEndpoint
+        // CRITICAL FIX: Ensure baseURL is never empty
+        if baseURL.isEmpty {
+            baseURL = "https://project-voice-476504.uc.r.appspot.com"
+            NSLog("[ApiClient] WARNING: apiEndpoint was empty, using default: %@", baseURL)
+        }
+        NSLog("[ApiClient] Using baseURL: %@", baseURL)
+
+        let currentLanguage = settings.currentLanguage
+        let aiConfigName = settings.aiConfig
+
+        // Get AI configuration for current language
+        guard let aiConfig = LanguageManager.shared.getAIConfig(languageCode: currentLanguage, configName: aiConfigName) else {
+            print("Failed to get AI config for language: \(currentLanguage), config: \(aiConfigName)")
+            completion(nil)
+            return
+        }
+
+        // Split text to send only last ~30 chars to LLM (matching web version)
+        let (_, textForLLM) = TextProcessor.splitLastFewSentencesForLLM(text)
 
         // Prepare request context (matching web version structure)
         let userInputs: [String: String] = [
-            "language": settings.language,
-            "num": "5",
-            "text": text,
+            "language": currentLanguage,
+            "num": String(settings.getSuggestionCount()),
+            "text": textForLLM,  // Send only last few sentences
             "persona": settings.persona,
             "lastOutputSpeech": settings.lastOutputSpeech,
             "lastInputSpeech": settings.lastInputSpeech,
@@ -52,8 +105,8 @@ class ApiClient {
         group.enter()
         fetchMacro(
             baseURL: baseURL,
-            macroId: "SentenceGeneric20250311",
-            model: "gemini-2.0-flash-001",
+            macroId: aiConfig.sentenceMacro,
+            model: aiConfig.model,
             userInputs: userInputs,
             temperature: 0.0
         ) { sentences in
@@ -65,8 +118,8 @@ class ApiClient {
         group.enter()
         fetchMacro(
             baseURL: baseURL,
-            macroId: "WordGeneric20240628",
-            model: "gemini-2.0-flash-001",
+            macroId: aiConfig.wordMacro,
+            model: aiConfig.model,
             userInputs: userInputs,
             temperature: 0.0
         ) { words in
@@ -94,10 +147,17 @@ class ApiClient {
         temperature: Double,
         completion: @escaping ([String]) -> Void
     ) {
-        guard let url = URL(string: "\(baseURL)/run-macro") else {
+        let urlString = "\(baseURL)/run-macro"
+        print("[ApiClient] Attempting to create URL from: '\(urlString)'")
+        print("[ApiClient] baseURL is: '\(baseURL)'")
+
+        guard let url = URL(string: urlString) else {
+            print("[ApiClient] ERROR: Failed to create URL from '\(urlString)'")
             completion([])
             return
         }
+
+        print("[ApiClient] URL created successfully: \(url)")
 
         // Create multipart/form-data request (matching web version)
         let boundary = "Boundary-\(UUID().uuidString)"
@@ -144,12 +204,13 @@ class ApiClient {
         // Make the request
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error fetching macro: \(error)")
+                print("[ApiClient] Error fetching macro \(macroId): \(error)")
                 completion([])
                 return
             }
 
             guard let data = data else {
+                print("[ApiClient] No data received for macro \(macroId)")
                 completion([])
                 return
             }
@@ -163,17 +224,22 @@ class ApiClient {
                    let resultText = firstMessage["text"] as? String {
                     // Parse numbered list format
                     let suggestions = self.parseNumberedList(resultText)
+                    print("[ApiClient] Received \(suggestions.count) suggestions for macro \(macroId)")
                     completion(suggestions)
                 } else {
-                    print("Unexpected response format")
+                    print("[ApiClient] Unexpected response format for macro \(macroId)")
+                    if let responseString = String(data: data, encoding: .utf8) {
+                        print("[ApiClient] Response: \(responseString.prefix(200))")
+                    }
                     completion([])
                 }
             } catch {
-                print("Error parsing response: \(error)")
+                print("[ApiClient] Error parsing response for macro \(macroId): \(error)")
                 completion([])
             }
         }
 
+        currentTasks.append(task)
         task.resume()
     }
 
@@ -185,8 +251,8 @@ class ApiClient {
         // 2. Second suggestion
         // etc.
 
-        // Remove escaped newlines (matching web version)
-        var cleanedText = text.replacingOccurrences(of: "\\\n", with: "")
+        // Clean up response (matching web version)
+        let cleanedText = TextProcessor.cleanupResponse(text)
 
         let lines = cleanedText.components(separatedBy: .newlines)
         var suggestions: [String] = []
@@ -207,6 +273,28 @@ class ApiClient {
     }
 
     func cancelOngoingRequests() {
-        currentTask?.cancel()
+        for task in currentTasks {
+            task.cancel()
+        }
+        currentTasks.removeAll()
+    }
+
+    // MARK: - Adaptive Delay
+
+    /// Calculates adaptive delay based on recent request frequency (QPS)
+    /// Returns delay in seconds (0-0.3) - matches web version formula exactly
+    private func calculateAdaptiveDelay() -> TimeInterval {
+        let currentTime = Date().timeIntervalSince1970
+        let recentCalls = previousCallTimes.filter { currentTime - $0 < 1.0 }  // Calls in last second
+
+        // QPS = number of recent calls
+        let qps = recentCalls.count
+
+        // Web version formula: Math.min(150 * (qps - 1), 300)
+        // QPS=1 -> 0ms, QPS=2 -> 150ms, QPS=3+ -> 300ms
+        let delayMs = min(150 * (qps - 1), 300)
+        let delay = Double(delayMs) / 1000.0  // Convert to seconds
+
+        return delay
     }
 }

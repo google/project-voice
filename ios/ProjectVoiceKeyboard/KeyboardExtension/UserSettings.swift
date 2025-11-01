@@ -17,13 +17,29 @@ class UserSettings {
 
     // Keys for UserDefaults
     private enum Keys {
+        // General Settings
+        static let aiConfig = "aiConfig"
+        static let checkedLanguages = "checkedLanguages"
+        static let sentenceSmallMargin = "sentenceSmallMargin"
+
+        // Profile Settings
         static let persona = "persona"
-        static let language = "language"
+        static let initialPhrasesPerLanguage = "initialPhrasesPerLanguage"
+
+        // API Settings
         static let apiEndpoint = "apiEndpoint"
+
+        // Message History
+        static let messageHistoryWithPrefix = "messageHistoryWithPrefix"
+
+        // Conversation History (for backward compatibility)
         static let conversationHistory = "conversationHistory"
         static let lastInputSpeech = "lastInputSpeech"
         static let lastOutputSpeech = "lastOutputSpeech"
+
+        // Current State
         static let selectedEmotion = "selectedEmotion"
+        static let currentLanguage = "currentLanguage"
     }
 
     init() {
@@ -36,40 +52,144 @@ class UserSettings {
         }
     }
 
-    // MARK: - Persona
+    // MARK: - General Settings
+
+    var aiConfig: String {
+        get {
+            return defaults.string(forKey: Keys.aiConfig) ?? "smart"
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.aiConfig)
+        }
+    }
+
+    var checkedLanguages: [String] {
+        get {
+            return defaults.stringArray(forKey: Keys.checkedLanguages) ?? ["ja-JP"]
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.checkedLanguages)
+        }
+    }
+
+    var sentenceSmallMargin: Bool {
+        get {
+            return defaults.bool(forKey: Keys.sentenceSmallMargin)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.sentenceSmallMargin)
+        }
+    }
+
+    // MARK: - Profile Settings
 
     var persona: String {
         get {
-            return defaults.string(forKey: Keys.persona) ?? "A helpful assistant who provides clear and concise suggestions."
+            return defaults.string(forKey: Keys.persona) ?? ""
         }
         set {
             defaults.set(newValue, forKey: Keys.persona)
         }
     }
 
-    // MARK: - Language
-
-    var language: String {
+    var initialPhrasesPerLanguage: [String: [String]] {
         get {
-            return defaults.string(forKey: Keys.language) ?? "en-US"
+            guard let data = defaults.data(forKey: Keys.initialPhrasesPerLanguage),
+                  let dict = try? JSONDecoder().decode([String: [String]].self, from: data) else {
+                return [:]
+            }
+            return dict
         }
         set {
-            defaults.set(newValue, forKey: Keys.language)
+            if let data = try? JSONEncoder().encode(newValue) {
+                defaults.set(data, forKey: Keys.initialPhrasesPerLanguage)
+            }
         }
+    }
+
+    func getInitialPhrases(for languageCode: String) -> [String] {
+        if let phrases = initialPhrasesPerLanguage[languageCode], !phrases.isEmpty {
+            return phrases
+        }
+        // Return default initial phrases for the language
+        return LanguageManager.shared.getLanguage(code: languageCode)?.defaultInitialPhrases ?? []
+    }
+
+    func setInitialPhrases(_ phrases: [String], for languageCode: String) {
+        var current = initialPhrasesPerLanguage
+        current[languageCode] = phrases
+        initialPhrasesPerLanguage = current
     }
 
     // MARK: - API Endpoint
 
     var apiEndpoint: String {
         get {
-            return defaults.string(forKey: Keys.apiEndpoint) ?? "https://your-api-endpoint.com/api"
+            return defaults.string(forKey: Keys.apiEndpoint) ?? "https://project-voice-476504.uc.r.appspot.com"
         }
         set {
             defaults.set(newValue, forKey: Keys.apiEndpoint)
         }
     }
 
-    // MARK: - Conversation History
+    // MARK: - Message History (matching web version)
+
+    var messageHistoryWithPrefix: [(text: String, prefix: String, timestamp: Double)] {
+        get {
+            guard let data = defaults.data(forKey: Keys.messageHistoryWithPrefix),
+                  let array = try? JSONDecoder().decode([[String]].self, from: data) else {
+                return []
+            }
+            return array.compactMap { item in
+                guard item.count == 3,
+                      let timestamp = Double(item[2]) else { return nil }
+                return (text: item[0], prefix: item[1], timestamp: timestamp)
+            }
+        }
+        set {
+            let array = newValue.map { [$0.text, $0.prefix, String($0.timestamp)] }
+            if let data = try? JSONEncoder().encode(array) {
+                defaults.set(data, forKey: Keys.messageHistoryWithPrefix)
+            }
+        }
+    }
+
+    /// Adds to message history with smart deduplication (matches web version logic)
+    func addToMessageHistory(text: String, prefix: String) {
+        var history = messageHistoryWithPrefix
+        let timestamp = Date().timeIntervalSince1970
+
+        // Web version logic: check if we should update existing entry or create new one
+        // If the last entry has the same prefix and current text starts with it, update it
+        if let lastEntry = history.last {
+            let textLower = text.lowercased()
+            let lastTextLower = lastEntry.text.lowercased()
+
+            // If current text starts with last text and same prefix, update (not append)
+            if textLower.hasPrefix(lastTextLower) && prefix == lastEntry.prefix {
+                // Update the last entry instead of appending
+                history[history.count - 1] = (text: text, prefix: prefix, timestamp: timestamp)
+                messageHistoryWithPrefix = history
+                return
+            }
+        }
+
+        // Otherwise append new entry
+        history.append((text: text, prefix: prefix, timestamp: timestamp))
+
+        // Keep only last 1024 messages (matching web version)
+        if history.count > 1024 {
+            history = Array(history.suffix(1024))
+        }
+
+        messageHistoryWithPrefix = history
+    }
+
+    func clearMessageHistory() {
+        messageHistoryWithPrefix = []
+    }
+
+    // MARK: - Conversation History (legacy support)
 
     var conversationHistory: [ConversationMessage] {
         get {
@@ -122,7 +242,7 @@ class UserSettings {
         }
     }
 
-    // MARK: - Selected Emotion
+    // MARK: - Current State
 
     var selectedEmotion: String {
         get {
@@ -133,7 +253,16 @@ class UserSettings {
         }
     }
 
-    // MARK: - Helper
+    var currentLanguage: String {
+        get {
+            return defaults.string(forKey: Keys.currentLanguage) ?? checkedLanguages.first ?? "ja-JP"
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.currentLanguage)
+        }
+    }
+
+    // MARK: - Helper Methods
 
     func getConversationHistoryString() -> String {
         let messages = conversationHistory
@@ -144,6 +273,10 @@ class UserSettings {
         return messages.map { message in
             "\(message.role): \(message.content)"
         }.joined(separator: "\n")
+    }
+
+    func getSuggestionCount() -> Int {
+        return sentenceSmallMargin ? 5 : 4
     }
 }
 

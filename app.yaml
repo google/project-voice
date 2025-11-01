@@ -14,7 +14,7 @@
 
 runtime: python312
 env_variables:
-  API_KEY: "api-key"
+  API_KEY: "AIzaSyCP-6pGSlattZyrMtQXhBZUs7vUOC_mldA"
   SECRET_KEY: "project-voice-secret"
 
 handlers:
