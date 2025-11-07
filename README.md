@@ -1,5 +1,7 @@
 # Project VOICE
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/google/project-voice)
+
 Project VOICE is an experimental software developed as a communication support tool using generative AI for people who have difficulty in vocalizing and / or typing due to disabilities.
 
 This software uses generative AI to predict possible words and sentences that might be implied by the user’s input. The user can select a suggested word or sentence using accessibility features such as eye tracking and / or switch access. We aim to enable users to input longer sentences in fewer steps than other input methods.
