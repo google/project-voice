@@ -421,6 +421,63 @@ class MandarinWithSingleRowKeyboard extends Mandarin {
   }
 }
 
+abstract class TraditionalChinese implements Language {
+  code = 'zh-TW';
+  promptName = 'TraditionalChinese';
+  keyboards: StaticValue[] = [];
+  initialPhrases = ['你', '我', '他', '她', '好', '今天', '昨天', '明天', '謝謝'];
+  aiConfigs = {
+    classic: {
+      model: 'gemini-2.5-flash',
+      sentence: 'SentenceTraditionalChineseZhuyin20260316',
+      word: 'WordTraditionalChineseZhuyin20260316',
+    },
+    fast: {
+      model: 'gemini-2.5-flash-lite',
+      sentence: 'SentenceTraditionalChineseZhuyin20260316',
+      word: 'WordTraditionalChineseZhuyin20260316',
+    },
+    smart: {
+      model: 'gemini-2.5-flash',
+      sentence: 'SentenceTraditionalChineseZhuyin20260316',
+      word: 'WordTraditionalChineseZhuyin20260316',
+    },
+    gemini_2_5_flash: {
+      model: 'gemini-2.5-flash',
+      sentence: 'SentenceTraditionalChineseZhuyin20260316',
+      word: 'WordTraditionalChineseZhuyin20260316',
+    },
+  };
+
+  abstract render(): TemplateResult;
+
+  segment(sentence: string) {
+    return Array.from(sentence);
+  }
+
+  join(words: string[]) {
+    return words.join('');
+  }
+
+  appendWord(text: string, word: string) {
+    text = text.replace(/[\u3100-\u312F\u02CA\u02C7\u02CB\u02D9]+$/, '');
+    if (word.startsWith('-')) {
+      return text + word.slice(1);
+    }
+    return text + word;
+  }
+}
+
+class TraditionalChineseWithSingleRowKeyboard extends TraditionalChinese {
+  keyboards = [
+    literal`pv-zhuyin-single-row-keyboard`,
+    literal`pv-alphanumeric-single-row-keyboard`,
+  ];
+  render() {
+    return html`${msg('Traditional Chinese (Zhuyin)')}`;
+  }
+}
+
 export const LANGUAGES: {[name: string]: Language} = {
   englishWithSingleRowKeyboard: new EnglishWithSingleRowKeyboard(),
   englishWithQWERYKeyboard: new EnglishWithQWERYKeyboard(),
@@ -429,5 +486,6 @@ export const LANGUAGES: {[name: string]: Language} = {
   frenchExperimental: new FrenchExperimental(),
   germanExperimental: new GermanExperimental(),
   mandarinWithSingleRowKeyboard: new MandarinWithSingleRowKeyboard(),
+  traditionalChineseWithSingleRowKeyboard: new TraditionalChineseWithSingleRowKeyboard(),
   swedishExperimental: new SwedishExperimental(),
 };
