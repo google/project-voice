@@ -24,6 +24,22 @@ import {State} from '../state.js';
 
 type Key = {label: string; value: string[]};
 
+export const ZHUYIN_SINGLE_ROW_KEYGRID: Key[][] = [
+  [
+    {label: 'ㄅ', value: ['ㄅㄆㄇㄈ']},
+    {label: 'ㄉ', value: ['ㄉㄊㄋㄌ']},
+    {label: 'ㄍ', value: ['ㄍㄎㄏ']},
+    {label: 'ㄐ', value: ['ㄐㄑㄒ']},
+    {label: 'ㄓ', value: ['ㄓㄔㄕㄖ']},
+    {label: 'ㄗ', value: ['ㄗㄘㄙ']},
+    {label: 'ㄧ', value: ['ㄧㄨㄩ']},
+    {label: 'ㄚ', value: ['ㄚㄛㄜㄝ']},
+    {label: 'ㄞ', value: ['ㄞㄟㄠㄡ']},
+    {label: 'ㄢ', value: ['ㄢㄣㄤㄥㄦ']},
+    {label: '聲詞', value: ['␣˙ˊˇˋ']},
+  ],
+];
+
 export const ALPHANUMERIC_SINGLE_ROW_KEYGRID: Key[][] = [
   [
     {label: 'abc', value: ['abc']},
@@ -192,5 +208,12 @@ export class PvGermanSingleRowKeyboard extends PvSingleRowKeyboard {
 export class PvSwedishSingleRowKeyboard extends PvSingleRowKeyboard {
   constructor() {
     super(SWEDISH_SINGLE_ROW_KEYGRID);
+  }
+}
+
+@customElement('pv-zhuyin-single-row-keyboard')
+export class PvZhuyinSingleRowKeyboard extends PvSingleRowKeyboard {
+  constructor() {
+    super(ZHUYIN_SINGLE_ROW_KEYGRID);
   }
 }

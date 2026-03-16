@@ -374,6 +374,12 @@ abstract class Mandarin implements Language {
   keyboards: StaticValue[] = [];
   separetor = '';
   initialPhrases = ['你', '我', '他', '她', '它', '好', '今天', '昨天', '明天'];
+  emotions = [
+    {emoji: '💬', prompt: '陈述', label: '普通'},
+    {emoji: '❓', prompt: '疑问', label: '提问'},
+    {emoji: '🙏', prompt: '请求', label: '拜托'},
+    {emoji: '🚫', prompt: '否定', label: '否定'},
+  ];
   aiConfigs = {
     classic: {
       model: 'gemini-2.5-flash',
@@ -426,6 +432,12 @@ abstract class TraditionalChinese implements Language {
   promptName = 'TraditionalChinese';
   keyboards: StaticValue[] = [];
   initialPhrases = ['你', '我', '他', '她', '好', '今天', '昨天', '明天', '謝謝'];
+  emotions = [
+    {emoji: '💬', prompt: '陳述', label: '普通'},
+    {emoji: '❓', prompt: '疑問', label: '提問'},
+    {emoji: '🙏', prompt: '請求', label: '拜託'},
+    {emoji: '🚫', prompt: '否定', label: '否定'},
+  ];
   aiConfigs = {
     classic: {
       model: 'gemini-2.5-flash',
