@@ -25,3 +25,10 @@ This file records the step-by-step progress of implementing Traditional Chinese 
     - Created `ZHUYIN_SINGLE_ROW_KEYGRID` with expandable key grouped layouts for 37 characters + 4 tones.
     - Exported `PvZhuyinSingleRowKeyboard` class in `pv-single-row-keyboard.ts`.
     - Fixed missing `emotions` property in `Mandarin` and `TraditionalChinese` classes resolving TypeScript errors.
+
+## Phase 4: Create AI Prompts (Word Level)
+- **Status**: Completed
+- **Date**: 2026-03-16
+- **Details**:
+    - Created `WordTraditionalChineseZhuyin20260316.jinja2` template in `templates/prompts/`.
+    - Provided guidelines and examples for converting Bopomofo symbols to Traditional Chinese candidate words.
