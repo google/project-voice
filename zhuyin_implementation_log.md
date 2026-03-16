@@ -46,3 +46,9 @@ This file records the step-by-step progress of implementing Traditional Chinese 
 - **Details**:
     - Appended Zhuyin characters & tones stripping regex logic to `TraditionalChinese.appendWord()`.
     - Logic verified complete and registered in previous phases.
+
+## Phase 7: UI Component & Localization Updates
+- **Status**: Completed
+- **Date**: 2026-03-16
+- **Details**:
+    - Added `"zh-TW"` to `targetLocales` in `lit-localize.json` to prepare for static UI translations.
