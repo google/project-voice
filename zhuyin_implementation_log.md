@@ -32,3 +32,17 @@ This file records the step-by-step progress of implementing Traditional Chinese 
 - **Details**:
     - Created `WordTraditionalChineseZhuyin20260316.jinja2` template in `templates/prompts/`.
     - Provided guidelines and examples for converting Bopomofo symbols to Traditional Chinese candidate words.
+
+## Phase 5: Create AI Prompts (Sentence Level)
+- **Status**: Completed
+- **Date**: 2026-03-16
+- **Details**:
+    - Created `SentenceTraditionalChineseZhuyin20260316.jinja2` template in `templates/prompts/`.
+    - Configured prompts to guide Gemini in completing continuous Bopomofo/Zhuyin text into full Traditional Chinese sentences with dialogue context.
+
+## Phase 6: Refine Language Logic for Zhuyin
+- **Status**: Completed
+- **Date**: 2026-03-16
+- **Details**:
+    - Appended Zhuyin characters & tones stripping regex logic to `TraditionalChinese.appendWord()`.
+    - Logic verified complete and registered in previous phases.
