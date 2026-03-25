@@ -19,7 +19,7 @@ import {LANGUAGES} from '../language.js';
 describe('Language Functionality Tests', () => {
   describe('English Language Tests', () => {
     const englishSingleRow = LANGUAGES['englishWithSingleRowKeyboard'];
-    const englishQWERTY = LANGUAGES['englishWithQWERYKeyboard'];
+    const englishQwerty = LANGUAGES['englishWithQwertyKeyboard'];
 
     describe('segment', () => {
       it('should segment English text by spaces', () => {
@@ -27,7 +27,7 @@ describe('Language Functionality Tests', () => {
         const expected = ['Hello', 'world', 'this', 'is', 'a', 'test'];
 
         expect(englishSingleRow.segment(text)).toEqual(expected);
-        expect(englishQWERTY.segment(text)).toEqual(expected);
+        expect(englishQwerty.segment(text)).toEqual(expected);
       });
 
       it('should handle single word', () => {
@@ -35,7 +35,7 @@ describe('Language Functionality Tests', () => {
         const expected = ['Hello'];
 
         expect(englishSingleRow.segment(text)).toEqual(expected);
-        expect(englishQWERTY.segment(text)).toEqual(expected);
+        expect(englishQwerty.segment(text)).toEqual(expected);
       });
 
       it('should handle empty string', () => {
@@ -43,7 +43,7 @@ describe('Language Functionality Tests', () => {
         const expected = [''];
 
         expect(englishSingleRow.segment(text)).toEqual(expected);
-        expect(englishQWERTY.segment(text)).toEqual(expected);
+        expect(englishQwerty.segment(text)).toEqual(expected);
       });
 
       it('should handle emoji', () => {
@@ -51,7 +51,7 @@ describe('Language Functionality Tests', () => {
         const expected = ['Hello', '🙂', 'world'];
 
         expect(englishSingleRow.segment(text)).toEqual(expected);
-        expect(englishQWERTY.segment(text)).toEqual(expected);
+        expect(englishQwerty.segment(text)).toEqual(expected);
       });
     });
 
@@ -61,7 +61,7 @@ describe('Language Functionality Tests', () => {
         const expected = 'Hello world this is a test ';
 
         expect(englishSingleRow.join(words)).toEqual(expected);
-        expect(englishQWERTY.join(words)).toEqual(expected);
+        expect(englishQwerty.join(words)).toEqual(expected);
       });
 
       it('should handle single word', () => {
@@ -69,7 +69,7 @@ describe('Language Functionality Tests', () => {
         const expected = 'Hello ';
 
         expect(englishSingleRow.join(words)).toEqual(expected);
-        expect(englishQWERTY.join(words)).toEqual(expected);
+        expect(englishQwerty.join(words)).toEqual(expected);
       });
 
       it('should handle empty array', () => {
@@ -77,7 +77,7 @@ describe('Language Functionality Tests', () => {
         const expected = ' ';
 
         expect(englishSingleRow.join(words)).toEqual(expected);
-        expect(englishQWERTY.join(words)).toEqual(expected);
+        expect(englishQwerty.join(words)).toEqual(expected);
       });
 
       it('should remove extra space before punctuation', () => {
@@ -85,7 +85,7 @@ describe('Language Functionality Tests', () => {
         const expected = 'Yes, I can. ';
 
         expect(englishSingleRow.join(words)).toEqual(expected);
-        expect(englishQWERTY.join(words)).toEqual(expected);
+        expect(englishQwerty.join(words)).toEqual(expected);
       });
 
       it('should handle multiple punctuation marks', () => {
@@ -93,7 +93,7 @@ describe('Language Functionality Tests', () => {
         const expected = 'What is .NET framework? ';
 
         expect(englishSingleRow.join(words)).toEqual(expected);
-        expect(englishQWERTY.join(words)).toEqual(expected);
+        expect(englishQwerty.join(words)).toEqual(expected);
       });
     });
 
@@ -104,7 +104,7 @@ describe('Language Functionality Tests', () => {
         const expected = 'Hello world ';
 
         expect(englishSingleRow.appendWord(text, word)).toEqual(expected);
-        expect(englishQWERTY.appendWord(text, word)).toEqual(expected);
+        expect(englishQwerty.appendWord(text, word)).toEqual(expected);
       });
 
       it('should handle word starting with hyphen', () => {
@@ -113,7 +113,7 @@ describe('Language Functionality Tests', () => {
         const expected = 'Hello ';
 
         expect(englishSingleRow.appendWord(text, word)).toEqual(expected);
-        expect(englishQWERTY.appendWord(text, word)).toEqual(expected);
+        expect(englishQwerty.appendWord(text, word)).toEqual(expected);
       });
     });
   });

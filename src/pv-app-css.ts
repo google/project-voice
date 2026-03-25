@@ -125,9 +125,9 @@ export const pvAppStyle = css`
     bottom: 4px;
     color: rgba(96, 96, 96, 0.5);
     cursor: pointer;
+    left: 80px;
     padding: 4px;
     position: absolute;
-    right: 4px;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -157,11 +157,22 @@ export const pvAppStyle = css`
     display: block;
   }
 
+  .conversation-history-opener {
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(calc(max(-30vw, -360px) - 1.5rem), -50%);
+  }
+
+  .conversation-history-opener[closed] {
+    transform: translateY(-50%);
+  }
+
   .conversation-history-container {
     background: var(--color-surface);
     border-radius: 0.5rem;
     max-width: 30vw;
-    overflow: scroll;
     padding: 0.5rem;
     width: 360px;
   }
@@ -169,4 +180,15 @@ export const pvAppStyle = css`
   pv-sentence-type-selector {
     margin-bottom: 1rem;
   }
+
+  .input-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .input-row > pv-character-input {
+    flex: 1;
+  }
+
 `;

@@ -56,7 +56,11 @@ export interface Language {
 
   /** AI configs for this language. */
   readonly aiConfigs: {
-    [key: string]: {model: string; sentence: string; word: string};
+    [key: string]: {
+      model: string;
+      sentence: string;
+      word: string;
+    };
   };
 
   // Renders the language name in a human readable way.
@@ -90,24 +94,14 @@ abstract class LatinScriptLanguage implements Language {
   initialPhrases: string[] = [];
   emotions: {emoji: string; prompt: string; label?: string}[] = [];
   aiConfigs = {
-    classic: {
-      model: 'gemini-2.0-flash-001',
-      sentence: 'SentenceGeneric20250311',
-      word: 'WordGeneric20240628',
-    },
-    fast: {
-      model: 'gemini-2.0-flash-lite-001',
-      sentence: 'SentenceGeneric20250311',
-      word: 'WordGeneric20240628',
-    },
-    smart: {
-      model: 'gemini-2.0-flash-001',
-      sentence: 'SentenceGeneric20250311',
+    gemini_2_5_flash_lite: {
+      model: 'gemini-2.5-flash-lite',
+      sentence: 'SentenceGeneric20260130',
       word: 'WordGeneric20240628',
     },
     gemini_2_5_flash: {
       model: 'gemini-2.5-flash',
-      sentence: 'SentenceGeneric20250311',
+      sentence: 'SentenceGeneric20260130',
       word: 'WordGeneric20240628',
     },
   };
@@ -167,7 +161,7 @@ class EnglishWithSingleRowKeyboard extends English {
   }
 }
 
-class EnglishWithQWERYKeyboard extends English {
+class EnglishWithQwertyKeyboard extends English {
   keyboards = [literal`pv-qwerty-keyboard`];
   override render() {
     return html`${msg('English (QWERTY keyboard)')}`;
@@ -199,25 +193,15 @@ abstract class Japanese implements Language {
     {emoji: '🚫', prompt: '否定', label: '否定'},
   ];
   aiConfigs = {
-    classic: {
-      model: 'gemini-2.5-flash',
-      sentence: 'SentenceJapanese20240628',
-      word: 'WordGeneric20240628',
-    },
-    fast: {
+    gemini_2_5_flash_lite: {
       model: 'gemini-2.5-flash-lite',
       sentence: 'SentenceJapanese20240628',
       word: 'WordGeneric20240628',
     },
-    smart: {
-      model: 'gemini-2.5-flash',
-      sentence: 'SentenceJapaneseLong20250603',
-      word: 'WordJapanese20250623',
-    },
     gemini_2_5_flash: {
       model: 'gemini-2.5-flash',
-      sentence: 'SentenceJapaneseLong20250603',
-      word: 'WordGeneric20240628',
+      sentence: 'SentenceJapaneseLong20251205',
+      word: 'WordJapanese20250623',
     },
   };
 
@@ -375,18 +359,8 @@ abstract class Mandarin implements Language {
   separetor = '';
   initialPhrases = ['你', '我', '他', '她', '它', '好', '今天', '昨天', '明天'];
   aiConfigs = {
-    classic: {
-      model: 'gemini-2.5-flash',
-      sentence: 'SentenceMandarin20250616',
-      word: 'WordMandarin20250616',
-    },
-    fast: {
+    gemini_2_5_flash_lite: {
       model: 'gemini-2.5-flash-lite',
-      sentence: 'SentenceMandarin20250616',
-      word: 'WordMandarin20250616',
-    },
-    smart: {
-      model: 'gemini-2.5-flash',
       sentence: 'SentenceMandarin20250616',
       word: 'WordMandarin20250616',
     },
@@ -423,7 +397,7 @@ class MandarinWithSingleRowKeyboard extends Mandarin {
 
 export const LANGUAGES: {[name: string]: Language} = {
   englishWithSingleRowKeyboard: new EnglishWithSingleRowKeyboard(),
-  englishWithQWERYKeyboard: new EnglishWithQWERYKeyboard(),
+  englishWithQwertyKeyboard: new EnglishWithQwertyKeyboard(),
   japaneseWithSingleRowKeyboard: new JapaneseWithSingleRowKeyboard(),
   japaneseWithFullkeyboard: new JapaneseWithFullKeyboard(),
   frenchExperimental: new FrenchExperimental(),

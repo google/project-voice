@@ -33,7 +33,7 @@ export type InputSource =
   | {kind: InputSourceKind.SENTENCE_HISTORY; index: number}
   | {kind: InputSourceKind.SNACK_BAR}
   | {kind: InputSourceKind.SUGGESTED_SENTENCE; index: number}
-  | {kind: InputSourceKind.SUGGESTED_WORD};
+  | {kind: InputSourceKind.SUGGESTED_WORD}
 
 export const InputSource: Record<string, InputSource> = {
   BUTTON_BACKSPACE: {kind: InputSourceKind.BUTTON_BACKSPACE},

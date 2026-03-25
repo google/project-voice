@@ -26,12 +26,12 @@ function parseResponse(response: string, num: number) {
   // In theory, this fix doesn't work when a suggestion actually ends with '\\\n'.
   // But we have yet to encounter such a situation.
   response = response.replaceAll('\\\n', '');
-  return response
+  const suggestions = response
     .split('\n')
     .map(text => text.trim())
     .filter(text => text.match(/^[0-9]+\./))
-    .slice(0, num)
     .map(text => text.replace(/^\d+\.\s?/, ''));
+  return Array.from(new Set(suggestions)).slice(0, num);
 }
 
 export class MacroApiClient {
@@ -170,7 +170,20 @@ export class MacroApiClient {
       body: formData,
       signal: abortSignal,
     })
-      .then(res => res.json())
+      .then(async res => {
+        const textResponse = await res.text();
+        try {
+          return JSON.parse(textResponse);
+        } catch (e) {
+          console.error(
+            'Failed to parse API response as JSON. Raw response:',
+            textResponse,
+          );
+          throw new Error(
+            'API returned an invalid response (not JSON). Please check the console log for more details.',
+          );
+        }
+      })
       .then(extractText);
     return text;
   }

@@ -15,8 +15,6 @@
  */
 
 import '@material/web/icon/icon.js';
-import '@material/web/iconbutton/icon-button.js';
-import '@material/web/icon/icon.js';
 import './pv-setting-panel.js';
 
 import {localized, msg} from '@lit/localize';
@@ -25,7 +23,7 @@ import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
 import {AudioManager} from './audio-manager.js';
-import {CLOUD_TTS_VOICE_NAMES} from './constants.js';
+import {CLOUD_TTS_VOICE_NAMES, PROMPT_SUPPORTED_VOICES} from './constants.js';
 import {State} from './state.js';
 
 const EVENT_KEY = {
@@ -263,22 +261,20 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
           </button>
 
           <button
-            @click="${this.onTtsButtonClick}"
+            @click="${() => {
+              const ttsPromise = this.onTtsButtonClick();
+            }}"
             ?disabled=${this.isTtsReading || isTextEmpty}
           >
             <md-icon>text_to_speech</md-icon>
             <span>${msg('Read aloud')}</span>
           </button>
-          ${this.state.enableConversationMode
-            ? html`
-                <button @click="${this.onMicrophoneClick}">
-                  <md-icon
-                    >${this.state.isMicrophoneOn ? 'mic' : 'mic_off'}</md-icon
-                  >
-                  <span>${this.state.isMicrophoneOn ? 'Mute' : 'Unmute'}</span>
-                </button>
-              `
-            : ''}
+          <button @click="${this.onMicrophoneClick}">
+            <md-icon>${this.state.isMicrophoneOn ? 'mic' : 'mic_off'}</md-icon>
+            <span>
+              ${this.state.isMicrophoneOn ? msg('Mute') : msg('Unmute')}
+            </span>
+          </button>
 
           <hr />
           <button

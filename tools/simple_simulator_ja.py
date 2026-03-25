@@ -19,7 +19,7 @@ It can be run in two modes:
 1. Interactive Mode: For quick, informal tests.
    Processes sentences entered one by one and prints a detailed summary to the console.
    Runs with the following default setting:
-     model-id: 'gemini-2.0-flash-001'
+     model-id: 'gemini-2.5-flash'
      sentence-macro-id: 'SentenceJapaneseLong20250424'
      word-macro-id: 'WordGeneric20240628'
    Usage:
@@ -35,7 +35,7 @@ It can be run in two modes:
      $ python3 simple_simulator_ja.py \
       --input <input.txt> \
       --output <results.csv> \
-      --model-id 'gemini-2.0-flash-001' \
+      --model-id 'gemini-2.5-flash' \
       --sentence-macro-id 'SentenceJapaneseLong20241002'
 """
 from collections import Counter
@@ -849,7 +849,7 @@ Usage examples:
 
   2. Batch mode (for experiments, appends to CSV):
      $ python3 simple_simulator_ja.py --input sentences.txt --output results.csv \
-       --model-id 'gemini-2.0-flash-001' \
+       --model-id 'gemini-2.5-flash' \
        --sentence-macro-id 'SentenceJapaneseLong20250424'
 """)
   # Input/Output arguments
@@ -862,7 +862,7 @@ Usage examples:
   parser.add_argument(
       '--model-id',
       type=str,
-      default='gemini-2.0-flash-001',
+      default='gemini-2.5-flash',
       help='Gemini model ID to use.')
   parser.add_argument(
       '--sentence-macro-id',

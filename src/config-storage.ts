@@ -18,6 +18,8 @@ export interface Config {
   aiConfig: string;
   checkedLanguages: string[];
   enableEarcons: boolean;
+  // TODO: Rename this field to more appropriate name as it just opens
+  // conversation history window.
   enableConversationMode: boolean;
   expandAtOrigin: boolean;
   // This is kept for backward compatibility, especially for Japanese UXR users.
@@ -30,6 +32,7 @@ export interface Config {
   ttsVoice: string;
   voicePitch: number;
   voiceSpeakingRate: number;
+  voicePrompt: string;
 }
 
 /** Provides methods to read and write configurations to local storage. */

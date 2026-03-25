@@ -20,6 +20,7 @@ import './pv-button.js';
 import './pv-character-input.js';
 import './pv-conversation-history.js';
 import './pv-functions-bar.js';
+import './pv-handle-button.js';
 import './pv-setting-panel.js';
 import './pv-snackbar.js';
 import './pv-suggestion-stripe.js';
@@ -40,7 +41,10 @@ import {customElement, property, query, queryAll} from 'lit/decorators.js';
 
 import {AudioManager} from './audio-manager.js';
 import {ConfigStorage} from './config-storage.js';
-import {CONFIG_DEFAULT, LARGE_MARGIN_LINE_LIMIT} from './constants.js';
+import {
+  CONFIG_DEFAULT,
+  LARGE_MARGIN_LINE_LIMIT,
+} from './constants.js';
 import {InputSource, InputSourceKind} from './input-history.js';
 import {
   SMALL_KANA_TRIGGER,
@@ -65,12 +69,18 @@ import {
 import type {PvTextareaWrapper} from './pv-textarea-wrapper.js';
 import {State} from './state.js';
 
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof webkitSpeechRecognition;
+  }
+}
+
 const URL_PARAMS = {
   SENTENCE_MACRO_ID: 'sentenceMacroId',
   WORD_MACRO_ID: 'wordMacroId',
 } as const;
 
-const MIN_MESSAGE_LENGTH = 0;
 const MAX_EDIT_DIFF_LENGTH = 10;
 const MESSAGE_HISTORY_LIMIT = 1024;
 const MIN_SUGGESTION_LENGTH = 3;
@@ -93,6 +103,10 @@ const {setLocale} = configureLocalization({
     });
   },
 });
+
+// TODO: Consider more appropriately evaluated threshold.
+const CONVERSATION_HISTORY_MAX_AGE_MS = 21600000; // 6 hours
+const CONVERSATION_HISTORY_MAX_TURNS = 20;
 
 /**
  * Gets the shared prefix among the given strings.
@@ -264,6 +278,27 @@ function playClickSound() {
   };
 }
 
+/**
+ * Format conversationHistory for prompt, stripping old messages.
+ *
+ * @param conversationHistory The conversation history to format.
+ * @param minEpochMs The minimum timestamp (in milliseconds) for messages to be
+ *   included.
+ * @param maxTurns The maximum number of recent turns to include.
+ * @returns The formatted conversationHistory in a string.
+ */
+function formatConversationHistory(
+  conversationHistory: [number, string][],
+  minEpochMs: number,
+  maxTurns: number,
+) {
+  return conversationHistory
+    .filter(([timeStamp]) => timeStamp >= minEpochMs)
+    .slice(-maxTurns)
+    .map(([, message]) => message)
+    .join('\n');
+}
+
 @customElement('pv-app')
 @localized()
 export class PvAppElement extends SignalWatcher(LitElement) {
@@ -389,11 +424,10 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     this.emotions = this.stateInternal.lang.emotions;
   }
 
-  updated(changedProps: Map<string, any>) {
+  updated(changedProps: Map<string, unknown>) {
     super.updated?.(changedProps);
     // Always-on speech recognition effect
     if (
-      this.state.enableConversationMode &&
       this.state.features.featureEnableSpeechInput &&
       this.state.isMicrophoneOn
     ) {
@@ -411,8 +445,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   private startSpeechRecognition() {
     if (this.isSpeechRecognitionActive) return;
     const SpeechRecognitionCtor =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognitionCtor) return;
     this.speechRecognition = new SpeechRecognitionCtor();
     if (!this.speechRecognition) {
@@ -443,7 +476,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       // For robustness, try to restart on recoverable errors
       this.stopSpeechRecognition();
       if (
-        this.state.enableConversationMode &&
         this.state.features.featureEnableSpeechInput &&
         this.state.isMicrophoneOn
       ) {
@@ -457,7 +489,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       // This allows the app to continuously listen for speech input, until the user
       // explicitly turns off the microphone or disables conversation mode.
       if (
-        this.state.enableConversationMode &&
         this.state.features.featureEnableSpeechInput &&
         this.state.isMicrophoneOn
       ) {
@@ -491,11 +522,17 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     ];
   }
 
+  private prevSentenceCount = 0;
+
   private updateMessageHistory(sources: InputSource[]) {
-    const [, currentSentence] = splitLastSentence(this.state.text);
-    if (sources.length === 0 || currentSentence.length <= MIN_MESSAGE_LENGTH) {
+    if (sources.length === 0) {
       return;
     }
+    const sentences = splitToSentences(this.state.text);
+    const sentenceCountChanged = this.prevSentenceCount !== sentences.length;
+    this.prevSentenceCount = sentences.length;
+    const currentSentence =
+      sentences.length === 0 ? '' : sentences[sentences.length - 1].trimEnd();
     const now = Date.now();
     let newMessageHistory = [...this.state.messageHistory];
     if (newMessageHistory.length === 0) {
@@ -512,18 +549,28 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     const currentPrefix = getUserInputPrefix(currentSentence);
     let prefix = '';
     if (
-      sources[0].kind === InputSourceKind.SENTENCE_HISTORY ||
-      sources[0].kind === InputSourceKind.SUGGESTED_SENTENCE ||
-      sources[0].kind === InputSourceKind.SUGGESTED_WORD ||
-      lastSentence.startsWith(currentSentence) ||
-      (currentSentence.startsWith(lastSentence) &&
-        lastSentence.length - currentSentence.length < MAX_EDIT_DIFF_LENGTH)
+      !sentenceCountChanged &&
+      (sources[0].kind === InputSourceKind.SENTENCE_HISTORY ||
+        sources[0].kind === InputSourceKind.SUGGESTED_SENTENCE ||
+        sources[0].kind === InputSourceKind.SUGGESTED_WORD ||
+        // Note: Converting "おちや" to "おちゃ" doesn't satisfy the following
+        // conditions. So the new history entry is created.
+        (currentSentence.length > 0 &&
+          (lastSentence.startsWith(currentSentence) ||
+            (currentSentence.startsWith(lastSentence) &&
+              lastSentence.length - currentSentence.length <
+                MAX_EDIT_DIFF_LENGTH))))
     ) {
       // Update the last sentence in history because the user is still editing
       // it.
       newMessageHistory.pop();
+      // When "おちゃ" is converted to "お茶", the prefix remains "おちゃ".
+      // When "おちゃ" is edited to "おち", the prefix is updated to "おち".
       prefix =
-        currentPrefix.length > lastPrefix.length ? currentPrefix : lastPrefix;
+        currentPrefix.length < lastPrefix.length &&
+        !lastPrefix.startsWith(currentSentence)
+          ? lastPrefix
+          : currentPrefix;
     } else {
       prefix = currentPrefix;
     }
@@ -613,22 +660,37 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       const [firstHalf, secondHalf] = splitLastFewSentencesForLLM(
         this.stateInternal.text,
       );
+
+      const sentenceMacroId =
+        this.state.features.sentenceMacroId ??
+        this.stateInternal.sentenceMacroId;
+      const wordMacroId =
+        this.state.features.wordMacroId ?? this.stateInternal.wordMacroId;
+
+      if (!sentenceMacroId || !wordMacroId) {
+        console.error(
+          'Macro IDs are not properly configured. Please check src/constants.ts or src/language.ts.',
+          this.state.aiConfig,
+          sentenceMacroId,
+          wordMacroId,
+        );
+      }
+
       const result = await this.apiClient.fetchSuggestions(
         secondHalf,
         this.stateInternal.lang.promptName,
         this.stateInternal.model,
         {
-          sentenceMacroId:
-            this.state.features.sentenceMacroId ??
-            this.stateInternal.sentenceMacroId,
-          wordMacroId:
-            this.state.features.wordMacroId ?? this.stateInternal.wordMacroId,
+          sentenceMacroId,
+          wordMacroId,
           persona: this.stateInternal.persona,
           lastInputSpeech: this.state.lastInputSpeech,
           lastOutputSpeech: this.state.lastOutputSpeech,
-          conversationHistory: this.conversationHistory
-            .map(([, s]) => s)
-            .join('\n'),
+          conversationHistory: formatConversationHistory(
+            this.conversationHistory,
+            Date.now() - CONVERSATION_HISTORY_MAX_AGE_MS,
+            CONVERSATION_HISTORY_MAX_TURNS,
+          ),
           sentenceEmotion: this.state.emotion,
         },
       );
@@ -782,12 +844,37 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   private onKeypadHandlerClick() {}
 
   onSnackbarClose() {
-    // Do not clear textfield or set placeholder. Instead, add current value to inputHistory.
-    if (this.textField) {
-      this.textField.addToInputHistory(this.textField.value, [
-        InputSource.SNACK_BAR,
-      ]);
+    // Do not clear textfield when the user input anything.
+    if (this.state.text !== '') {
+      return;
     }
+    this.textField?.setTextFieldValue('', [InputSource.SNACK_BAR]);
+    this.textField?.setPlaceholder(this.state.lastInputSpeech);
+  }
+
+  onTtsEnd() {
+    if (!this.state.features.featureEnableSpeechInput) {
+      return;
+    }
+    this.state.lastInputSpeech = '';
+    const recognition = new (window.SpeechRecognition ||
+      webkitSpeechRecognition)();
+    recognition.lang = this.state.lang.code;
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      this.state.lastInputSpeech = event.results[0][0].transcript;
+      if (this.conversationHistory.length === 0) return;
+      const lastTurn = this.conversationHistory.slice(-1)[0];
+      this.conversationHistory = [
+        ...this.conversationHistory.slice(0, -1),
+        [
+          lastTurn[0],
+          `${lastTurn[1]}, PartnerInput: ${this.state.lastInputSpeech}`,
+        ],
+      ];
+      this.snackbar!.labelText = this.state.lastInputSpeech;
+      this.snackbar!.show();
+    };
+    recognition.start();
   }
 
   // TODO: Call this event handler whenever the dialog is closed.
@@ -842,12 +929,14 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           @undo-click=${this.onUndoClick}
           @backspace-click=${this.onBackspaceClick}
           @delete-click=${this.onDeleteClick}
+
           @language-change-click=${this.onLanguageChangeClick}
           @keyboard-change-click=${this.onKeyboardChangeClick}
           @content-copy-click=${this.onContentCopyClick}
           @setting-click=${this.onSettingClick}
           @snackbar-close=${this.onSnackbarClose}
           @output-speech-click=${this.updateConversationHistory}
+          @tts-end=${this.onTtsEnd}
 
         ></pv-functions-bar>
         <div class="main">
@@ -860,11 +949,14 @@ export class PvAppElement extends SignalWatcher(LitElement) {
               `
             : ''}
           <div class="keypad">
-            <pv-character-input
-              .state=${this.stateInternal}
-              @character-select=${this.onCharacterSelect}
-              @keypad-handler-click=${this.onKeypadHandlerClick}
-            ></pv-character-input>
+            <div class="input-row">
+              <pv-character-input
+                .state=${this.stateInternal}
+                @character-select=${this.onCharacterSelect}
+                @keypad-handler-click=${this.onKeypadHandlerClick}
+              ></pv-character-input>
+
+            </div>
             <div class="suggestions">
               <ul class="word-suggestions">
                 ${bodyOfWordSuggestions}
@@ -872,6 +964,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
               <ul class="sentence-suggestions">
                 ${bodyOfSentenceSuggestions}
               </ul>
+
               <div class="loader ${this.isLoading ? 'loading' : ''}">
                 <md-circular-progress indeterminate></md-circular-progress>
               </div>
@@ -887,13 +980,24 @@ export class PvAppElement extends SignalWatcher(LitElement) {
             ></pv-textarea-wrapper>
           </div>
           <div class="language-name">${this.stateInternal.lang.render()}</div>
-
         </div>
+        ${this.state.features.featureEnableSpeechInput
+          ? html`<pv-handle-button
+              class="conversation-history-opener"
+              aria-label="${msg(str`Open and close conversation`)}"
+              .closed=${!this.state.enableConversationMode}
+              @click=${() => {
+                this.state.enableConversationMode =
+                  !this.state.enableConversationMode;
+              }}
+            ></pv-handle-button>`
+          : ''}
         ${this.state.features.featureEnableSpeechInput &&
         this.state.enableConversationMode
           ? html`<div class="conversation-history-container">
               <pv-conversation-history
                 .history=${this.conversationHistory}
+                @close=${() => (this.state.enableConversationMode = false)}
               ></pv-conversation-history>
             </div>`
           : ''}
@@ -909,6 +1013,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 }
 
 export const TEST_ONLY = {
+  formatConversationHistory,
   getSharedPrefix,
   getUserInputPrefix,
   ignoreUnnecessaryDiffs,

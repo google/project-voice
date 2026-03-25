@@ -17,7 +17,7 @@
 import {Config, ConfigStorage} from '../config-storage.js';
 
 export const TEST_CONFIG: Config = {
-  aiConfig: 'smart',
+  aiConfig: 'gemini_2_5_flash',
   checkedLanguages: ['japaneseWithSingleRowKeyboard'],
   enableConversationMode: false,
   enableEarcons: false,
@@ -30,6 +30,7 @@ export const TEST_CONFIG: Config = {
   ttsVoice: 'ja-JP-ExampleVoice-X',
   voicePitch: 5,
   voiceSpeakingRate: 3,
+  voicePrompt: 'Please speak slowly',
 };
 
 describe('UsaStorage', () => {
@@ -48,6 +49,7 @@ describe('UsaStorage', () => {
       expect(storage.read('expandAtOrigin')).toEqual(true);
       expect(storage.read('voiceSpeakingRate')).toEqual(3);
       expect(storage.read('initialPhrases')).toEqual(['Yes', 'No']);
+      expect(storage.read('voicePrompt')).toEqual('Please speak slowly');
     });
 
     it('should return the written value when something is written.', () => {
@@ -55,10 +57,12 @@ describe('UsaStorage', () => {
       storage.write('sentenceSmallMargin', true);
       storage.write('voicePitch', 0);
       storage.write('initialPhrases', ['I', 'You', 'They']);
+      storage.write('voicePrompt', 'Whisper');
 
       expect(storage.read('sentenceSmallMargin')).toEqual(true);
       expect(storage.read('voicePitch')).toEqual(0);
       expect(storage.read('initialPhrases')).toEqual(['I', 'You', 'They']);
+      expect(storage.read('voicePrompt')).toEqual('Whisper');
     });
   });
 });

@@ -93,6 +93,10 @@ export class PvScalableTextareaElement extends LitElement {
       (boundingRect.height / nRows) * fontSizeFactor,
     )}px`;
     this.textArea.value = this.value;
+    // In normal VOICE usage, string is added to the end of the input. So
+    // scroll to buttom to show the added characters in case the input
+    // overflows the text area.
+    this.textArea.scrollTop = this.textArea.scrollHeight;
   }
 
   protected firstUpdated() {

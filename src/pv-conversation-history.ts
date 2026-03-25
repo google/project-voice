@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+import '@material/web/icon/icon.js';
+import '@material/web/iconbutton/icon-button.js';
+
 import {msg} from '@lit/localize';
 import {css, html, LitElement} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
+import {customElement, property, query} from 'lit/decorators.js';
 
 @customElement('pv-conversation-history')
 export class PvConversationHistory extends LitElement {
@@ -25,10 +28,11 @@ export class PvConversationHistory extends LitElement {
 
   static styles = css`
     :host {
+      --md-sys-color-on-surface-variant: var(--color-on-secondary);
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      overflow-y: scroll;
+      max-height: 100%;
       padding-left: 0.5rem;
     }
 
@@ -67,38 +71,71 @@ export class PvConversationHistory extends LitElement {
     }
 
     header {
+      --md-icon-size: 3rem;
       align-items: center;
       display: flex;
       font-size: 1.2rem;
       font-weight: 500;
       gap: 0.5rem;
+      justify-content: space-between;
     }
 
-    .icon {
-      font-family: 'Material Symbols Outlined';
+    header .heading {
+      align-items: center;
+      display: flex;
+      gap: 0.5rem;
     }
 
-    header .icon {
-      font-size: 2rem;
+    .turns-container {
+      overflow-y: scroll;
     }
   `;
+
+  @query('.turns-container')
+  turnsContainer!: HTMLDivElement;
+
+  private scrolledToButtom = true;
+
+  protected willUpdate() {
+    this.scrolledToButtom =
+      this.turnsContainer &&
+      this.turnsContainer.scrollTop + this.turnsContainer.clientHeight + 20 >
+        this.turnsContainer.scrollHeight;
+  }
+
+  protected updated() {
+    // If the view is scrolled to buttom, keep scrolled to buttom after a new
+    // conversation turn is added.
+    if (this.scrolledToButtom) {
+      this.turnsContainer.scrollTo({top: this.turnsContainer.scrollHeight});
+    }
+  }
 
   // TODO(beketa): Use more robust way to split conversation history items.
   protected render() {
     return html`<header>
-        <span class="icon">communication</span>${msg('Conversation')}
+        <div class="heading">
+          <md-icon>communication</md-icon>${msg('Conversation')}
+        </div>
+        <md-icon-button @click=${() => this.dispatchEvent(new Event('close'))}>
+          <md-icon>close</md-icon>
+        </md-icon-button>
       </header>
-      ${this.history.map(
-        turn =>
-          html`<div class="turn">
-            ${turn[1].split(', PartnerInput').map(item => {
-              const [speakerTag, content] = item.split(':');
-              const speaker = speakerTag.startsWith('UserOutput')
-                ? 'user'
-                : 'partner';
-              return html`<p class=${speaker}>${content}</p>`;
-            })}
-          </div>`,
-      )}`;
+      <div class="turns-container">
+        <div class="turns-scroll-container">
+          ${this.history.map(
+            turn =>
+              html`<div class="turn">
+                ${turn[1].split(', PartnerInput').map(item => {
+                  const [speakerTag, content] = item.split(':');
+                  const speaker = speakerTag.startsWith('UserOutput')
+                    ? 'user'
+                    : 'partner';
+                  return html`<p class=${speaker}>${content}</p>`;
+                })}
+              </div>`,
+          )}
+        </div>
+      </div>`;
   }
 }
