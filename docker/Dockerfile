@@ -19,6 +19,9 @@ COPY . /app
 # Install uv for Python dependency management
 RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="/usr/local/bin" sh
 
+# Allow pip to install packages system-wide (bypasses PEP 668 externally managed environment error)
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
 # Install Node.js dependencies and run build script
 RUN npm install && npm run build
 
