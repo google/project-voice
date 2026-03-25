@@ -20,6 +20,9 @@ COPY . /app
 RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
+# Install uv for Python dependency management
+RUN pip install uv
+
 # Install Node.js dependencies and run build script
 RUN npm install && npm run build
 
