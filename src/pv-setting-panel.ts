@@ -75,6 +75,14 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
       margin: 1rem 0;
     }
 
+    .form-section-columns {
+      display: flex;
+    }
+
+    .form-section-column {
+      flex: 1;
+    }
+
     .language-select {
       border: 1px solid var(--md-sys-color-outline, #79747e);
       border-radius: var(--md-sys-shape-corner-extra-small, 4px);
@@ -103,6 +111,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
     .pv-initial-phrase-text-field {
       width: 100%;
     }
+
   `;
 
   @property({type: Number, reflect: true})
@@ -177,22 +186,10 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
           }}
         >
           <md-select-option
-            ?selected="${this.state.aiConfig === 'fast'}"
-            value="fast"
+            ?selected="${this.state.aiConfig === 'gemini_2_5_flash_lite'}"
+            value="gemini_2_5_flash_lite"
           >
-            <div slot="headline">${msg('Fast')}</div>
-          </md-select-option>
-          <md-select-option
-            ?selected="${this.state.aiConfig === 'smart'}"
-            value="smart"
-          >
-            <div slot="headline">${msg('Smart')}</div>
-          </md-select-option>
-          <md-select-option
-            ?selected="${this.state.aiConfig === 'classic'}"
-            value="classic"
-          >
-            <div slot="headline">${msg('Classic')}</div>
+            <div slot="headline">Gemini 2.5 Flash Lite</div>
           </md-select-option>
           <md-select-option
             ?selected="${this.state.aiConfig === 'gemini_2_5_flash'}"
@@ -202,55 +199,47 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
           </md-select-option>
         </md-outlined-select>
       </div>
-      <div class="form-section">
-        <label>
-          ${msg('Always expand at origin')}
-          <md-switch
-            ?selected=${this.state.expandAtOrigin}
-            @change=${() => {
-              this.state.expandAtOrigin = !this.state.expandAtOrigin;
-            }}
-          ></md-switch>
-        </label>
+      <div class="form-section-columns">
+        <div class="form-section-column">
+          <div class="form-section">
+            <label>
+              ${msg('Always expand at origin')}
+              <md-switch
+                ?selected=${this.state.expandAtOrigin}
+                @change=${() => {
+                  this.state.expandAtOrigin = !this.state.expandAtOrigin;
+                }}
+              ></md-switch>
+            </label>
+          </div>
+          <div class="form-section">
+            <label>
+              ${msg('Use smaller sentence margin')}
+              <md-switch
+                ?selected=${this.state.sentenceSmallMargin}
+                @change=${() => {
+                  this.state.sentenceSmallMargin =
+                    !this.state.sentenceSmallMargin;
+                }}
+              ></md-switch>
+            </label>
+          </div>
+          <div class="form-section">
+            <label>
+              ${msg('Enable earcons')}
+              <md-switch
+                ?selected=${this.state.enableEarcons}
+                @change=${() => {
+                  this.state.enableEarcons = !this.state.enableEarcons;
+                }}
+              ></md-switch>
+            </label>
+          </div>
+        </div>
+        <div class="form-section-column">
+
+        </div>
       </div>
-      <div class="form-section">
-        <label>
-          ${msg('Use smaller sentence margin')}
-          <md-switch
-            ?selected=${this.state.sentenceSmallMargin}
-            @change=${() => {
-              this.state.sentenceSmallMargin = !this.state.sentenceSmallMargin;
-            }}
-          ></md-switch>
-        </label>
-      </div>
-      <div class="form-section">
-        <label>
-          ${msg('Enable earcons')}
-          <md-switch
-            ?selected=${this.state.enableEarcons}
-            @change=${() => {
-              this.state.enableEarcons = !this.state.enableEarcons;
-            }}
-          ></md-switch>
-        </label>
-      </div>
-      ${this.state.features.featureEnableSpeechInput
-        ? html`
-            <div class="form-section">
-              <label>
-                ${msg('Enable conversation mode')}
-                <md-switch
-                  ?selected=${this.state.enableConversationMode}
-                  @change=${() => {
-                    this.state.enableConversationMode =
-                      !this.state.enableConversationMode;
-                  }}
-                ></md-switch>
-              </label>
-            </div>
-          `
-        : ''}
       <div class="form-section">
         <div>
           <label>${msg('Language')}</label>
@@ -297,6 +286,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
           @change=${(e: Event) => {
             const selected = e.target;
             this.state.voiceName = (selected as HTMLSelectElement).value;
+            this.requestUpdate();
           }}
         >
           <md-select-option
@@ -320,6 +310,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
 
         </md-outlined-select>
       </div>
+
       <div class="form-section">
         <label>
           ${msg('Speaking rate')}
@@ -381,6 +372,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
             <md-primary-tab ?active="${this.activeSettingsTabIndex === 2}">
               ${msg('VOICE')}
             </md-primary-tab>
+
 
           </md-tabs>
           ${settingsPanels[this.activeSettingsTabIndex]}

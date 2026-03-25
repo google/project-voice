@@ -10,3 +10,7 @@ static/locales/
 
 *storybook.log
 /storybook-static
+uv.lock
+requirements.txt
+.python-version
+

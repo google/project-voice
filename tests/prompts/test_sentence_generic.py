@@ -9,7 +9,7 @@ import textwrap
 class TestSentenceGenericTemplate(unittest.TestCase):
   """ Test class for the SentenceGeneric Jinja2 template."""
 
-  TEMPLATE_FILE = 'SentenceGeneric20250311.jinja2'
+  TEMPLATE_FILE = 'SentenceGeneric20260130.jinja2'
 
   TEXT = "how about"
   NUM = 5
@@ -140,7 +140,7 @@ class TestSentenceGenericTemplate(unittest.TestCase):
     self.assertEqual(expected_output, self.template.render(user_inputs))
 
   def test_all_fields_present(self):
-    """Test when all inputs are provided (no None values)."""
+    """Test when all inputs are provided."""
     user_inputs = {
       "text": self.TEXT,
       "num": self.NUM,

@@ -48,6 +48,13 @@ Project VOICE is a web application built on Gemini API, and it’s designed to b
     ```
 1. Run the local development server by running `npm run dev`. This will start a local demo at http://localhost:5000/.
 
+## Localization
+
+This project uses [`lit-localize`](https://lit.dev/docs/localization/overview/) for internationalization.
+
+- To extract messages for localization, run `npm run localize:extract`.
+- To build localized modules, run `npm run localize:build`.
+
 ## Deployment
 
 This app is designed to be deployed to Google App Engine primarily.

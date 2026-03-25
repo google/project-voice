@@ -1,6 +1,0 @@
-ipadic
-mecab-python3
-pytest
-retry
-tinysegmenter
-yapf

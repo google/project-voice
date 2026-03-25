@@ -88,15 +88,28 @@ class State {
     this.textSignal.set(newText);
   }
 
-  private aiConfigInternal = 'smart';
+  private aiConfigInternal = 'gemini_2_5_flash';
 
   get aiConfig() {
     return this.aiConfigInternal;
   }
 
   set aiConfig(newAiConfig: string) {
+    newAiConfig = this.getValidAiConfig(newAiConfig);
     this.storage.write('aiConfig', newAiConfig);
     this.aiConfigInternal = newAiConfig;
+  }
+
+  private getValidAiConfig(configName: string): string {
+    if (this.lang && this.lang.aiConfigs && !this.lang.aiConfigs[configName]) {
+      const fallbackConfig =
+        Object.keys(this.lang.aiConfigs)[0] || 'gemini_2_5_flash';
+      console.warn(
+        `Invalid aiConfig: ${configName}. Falling back to: ${fallbackConfig}`,
+      );
+      return fallbackConfig;
+    }
+    return configName;
   }
 
   get model() {
@@ -227,6 +240,7 @@ class State {
   private voiceSpeakingRateInternal!: number;
   private voicePitchInternal!: number;
   private voiceNameInternal!: string;
+  private voicePromptInternal!: string;
 
   get voiceSpeakingRate() {
     return this.voiceSpeakingRateInternal;
@@ -253,6 +267,15 @@ class State {
   set voiceName(newVoiceName: string) {
     this.voiceNameInternal = newVoiceName;
     this.storage.write('ttsVoice', newVoiceName);
+  }
+
+  get voicePrompt() {
+    return this.voicePromptInternal;
+  }
+
+  set voicePrompt(newVoicePrompt: string) {
+    this.voicePromptInternal = newVoicePrompt;
+    this.storage.write('voicePrompt', newVoicePrompt);
   }
 
   private enableEarconsInternal = false;
@@ -301,6 +324,20 @@ class State {
     this.storage.write('messageHistoryWithPrefix', newMessageHistory);
   }
 
+  private enableSuggestionFromHistoryInternal = false;
+
+  get enableSuggestionFromHistory() {
+    return this.enableSuggestionFromHistoryInternal;
+  }
+
+  set enableSuggestionFromHistory(newEnableSuggestionFromHistory: boolean) {
+    this.storage.write(
+      'enableSuggestionFromHistory',
+      newEnableSuggestionFromHistory,
+    );
+    this.enableSuggestionFromHistoryInternal = newEnableSuggestionFromHistory;
+  }
+
   // TODO: This is a little hacky... Consider a better way.
   features: Features = {
     languages: [],
@@ -313,7 +350,10 @@ class State {
   private storage: ConfigStorage;
 
   loadState() {
-    this.aiConfigInternal = this.storage.read('aiConfig');
+    this.aiConfigInternal = this.getValidAiConfig(
+      this.storage.read('aiConfig'),
+    );
+
     this.checkedLanguages = this.storage.read('checkedLanguages');
     this.enableConversationMode = this.storage.read('enableConversationMode');
     this.enableEarconsInternal = this.storage.read('enableEarcons');
@@ -344,6 +384,7 @@ class State {
     this.voiceNameInternal = this.storage.read('ttsVoice');
     this.voicePitchInternal = this.storage.read('voicePitch');
     this.voiceSpeakingRateInternal = this.storage.read('voiceSpeakingRate');
+    this.voicePromptInternal = this.storage.read('voicePrompt') || '';
   }
 
   /**

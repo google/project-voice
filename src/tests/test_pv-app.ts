@@ -334,4 +334,53 @@ describe('PvAppElement', () => {
       expect(element.state.lang.code).toBe('ja-JP');
     });
   });
+
+  describe('formatConversationHistory', () => {
+    const now = Date.now();
+    const history: [number, string][] = [
+      [now - 7 * 3600 * 1000, 'message 1'], // 7 hours ago
+      [now - 6 * 3600 * 1000, 'message 2'], // 6 hours ago
+      [now - 5 * 3600 * 1000, 'message 3'], // 5 hours ago
+      [now - 4 * 3600 * 1000, 'message 4'], // 4 hours ago
+      [now - 3 * 3600 * 1000, 'message 5'], // 3 hours ago
+      [now - 2 * 3600 * 1000, 'message 6'], // 2 hours ago
+      [now - 1 * 3600 * 1000, 'message 7'], // 1 hour ago
+    ];
+
+    it('should return an empty string for an empty history', () => {
+      const result = TEST_ONLY.formatConversationHistory(
+        [],
+        now - 6 * 3600 * 1000,
+        5,
+      );
+
+      expect(result).toEqual('');
+    });
+
+    it('should filter out messages older than minEpochMs', () => {
+      const result = TEST_ONLY.formatConversationHistory(
+        history,
+        now - 5.5 * 3600 * 1000, // 5.5 hours ago
+        10,
+      );
+
+      expect(result).toEqual(
+        ['message 3', 'message 4', 'message 5', 'message 6', 'message 7'].join(
+          '\n',
+        ),
+      );
+    });
+
+    it('should limit the number of messages to maxCount', () => {
+      const result = TEST_ONLY.formatConversationHistory(
+        history,
+        now - 8 * 3600 * 1000, // 8 hours ago
+        3,
+      );
+
+      expect(result).toEqual(
+        ['message 5', 'message 6', 'message 7'].join('\n'),
+      );
+    });
+  });
 });

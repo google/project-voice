@@ -92,5 +92,13 @@ describe('Macro API Client', () => {
       );
       expect(result).toEqual(['a', 'b', 'c', 'd', 'e']);
     });
+
+    it('should remove duplicates preserving order', () => {
+      const result = TEST_ONLY.parseResponse(
+        '1. Apple\n2. Banana\n3. Cherry\n4. Apple\n5. Cherry',
+        5,
+      );
+      expect(result).toEqual(['Apple', 'Banana', 'Cherry']);
+    });
   });
 });

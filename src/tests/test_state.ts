@@ -50,6 +50,7 @@ describe('State', () => {
     expect(state.voiceSpeakingRate).toEqual(TEST_CONFIG.voiceSpeakingRate);
     expect(state.voicePitch).toEqual(TEST_CONFIG.voicePitch);
     expect(state.voiceName).toEqual(TEST_CONFIG.ttsVoice);
+    expect(state.voicePrompt).toEqual(TEST_CONFIG.voicePrompt);
   });
 
   it('updates language correctly', () => {
@@ -65,7 +66,7 @@ describe('State', () => {
   });
 
   it('handles AI config changes', () => {
-    const newConfig = 'fast';
+    const newConfig = 'gemini_2_5_flash_lite';
     state.aiConfig = newConfig;
     const aiConfigs = state.lang.aiConfigs;
     expect(state.aiConfig).toEqual(newConfig);
@@ -171,16 +172,20 @@ describe('State', () => {
     const newVoice = 'TestVoice';
     const newPitch = 1.5;
     const newRate = 1.2;
+    const newPrompt = 'Test Prompt';
 
     state.voiceName = newVoice;
     state.voicePitch = newPitch;
     state.voiceSpeakingRate = newRate;
+    state.voicePrompt = newPrompt;
 
     expect(state.voiceName).toEqual(newVoice);
     expect(state.voicePitch).toEqual(newPitch);
     expect(state.voiceSpeakingRate).toEqual(newRate);
+    expect(state.voicePrompt).toEqual(newPrompt);
     expect(storage.read('ttsVoice')).toEqual(newVoice);
     expect(storage.read('voicePitch')).toEqual(newPitch);
     expect(storage.read('voiceSpeakingRate')).toEqual(newRate);
+    expect(storage.read('voicePrompt')).toEqual(newPrompt);
   });
 });

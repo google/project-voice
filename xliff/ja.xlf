@@ -62,18 +62,6 @@
   <source>AI</source>
   <target>AI設定</target>
 </trans-unit>
-<trans-unit id="s19e84b851836664f">
-  <source>Fast</source>
-  <target>高速</target>
-</trans-unit>
-<trans-unit id="s3ceed4d952789f32">
-  <source>Smart</source>
-  <target>賢い</target>
-</trans-unit>
-<trans-unit id="s98aa8b9481114f33">
-  <source>Classic</source>
-  <target>旧バージョン</target>
-</trans-unit>
 <trans-unit id="sb46606bea7e65177">
   <source>Speaking rate</source>
   <target>読む速さ</target>
@@ -114,9 +102,20 @@
   <source>Conversation</source>
   <target>会話</target>
 </trans-unit>
-<trans-unit id="sba8b78a7337ff2f4">
-  <source>Enable conversation mode</source>
+
+
+<trans-unit id="se0f67eae944f8f94">
+  <source>Mute</source>
+  <target>ミュートする</target>
+</trans-unit>
+<trans-unit id="sc07837c309cc699b">
+  <source>Unmute</source>
   <target>会話モード</target>
+</trans-unit>
+
+<trans-unit id="s494227fc6909956f">
+  <source>Open and close conversation</source>
+  <target>会話パネルを開く/閉じる</target>
 </trans-unit>
 
 </body>

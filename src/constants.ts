@@ -19,7 +19,7 @@ import {Config} from './config-storage.js';
 export const RUN_MACRO_ENDPOINT_URL = '/run-macro';
 
 export const CONFIG_DEFAULT: Config = {
-  aiConfig: 'smart',
+  aiConfig: 'gemini_2_5_flash',
   checkedLanguages: [],
   enableConversationMode: false,
   enableEarcons: false,
@@ -32,6 +32,7 @@ export const CONFIG_DEFAULT: Config = {
   ttsVoice: '',
   voicePitch: 0.0,
   voiceSpeakingRate: 0.0,
+  voicePrompt: '',
 };
 
 export const LARGE_MARGIN_LINE_LIMIT = 4;
