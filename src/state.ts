@@ -88,22 +88,22 @@ class State {
     this.textSignal.set(newText);
   }
 
-  private aiConfigInternal = 'gemini_2_5_flash';
+  private aiConfigSignal = signal('gemini_3_flash');
 
   get aiConfig() {
-    return this.aiConfigInternal;
+    return this.aiConfigSignal.get();
   }
 
   set aiConfig(newAiConfig: string) {
     newAiConfig = this.getValidAiConfig(newAiConfig);
     this.storage.write('aiConfig', newAiConfig);
-    this.aiConfigInternal = newAiConfig;
+    this.aiConfigSignal.set(newAiConfig);
   }
 
   private getValidAiConfig(configName: string): string {
     if (this.lang && this.lang.aiConfigs && !this.lang.aiConfigs[configName]) {
       const fallbackConfig =
-        Object.keys(this.lang.aiConfigs)[0] || 'gemini_2_5_flash';
+        Object.keys(this.lang.aiConfigs)[0] || 'gemini_3_flash';
       console.warn(
         `Invalid aiConfig: ${configName}. Falling back to: ${fallbackConfig}`,
       );
@@ -324,20 +324,6 @@ class State {
     this.storage.write('messageHistoryWithPrefix', newMessageHistory);
   }
 
-  private enableSuggestionFromHistoryInternal = false;
-
-  get enableSuggestionFromHistory() {
-    return this.enableSuggestionFromHistoryInternal;
-  }
-
-  set enableSuggestionFromHistory(newEnableSuggestionFromHistory: boolean) {
-    this.storage.write(
-      'enableSuggestionFromHistory',
-      newEnableSuggestionFromHistory,
-    );
-    this.enableSuggestionFromHistoryInternal = newEnableSuggestionFromHistory;
-  }
-
   // TODO: This is a little hacky... Consider a better way.
   features: Features = {
     languages: [],
@@ -350,9 +336,7 @@ class State {
   private storage: ConfigStorage;
 
   loadState() {
-    this.aiConfigInternal = this.getValidAiConfig(
-      this.storage.read('aiConfig'),
-    );
+    this.aiConfig = this.getValidAiConfig(this.storage.read('aiConfig'));
 
     this.checkedLanguages = this.storage.read('checkedLanguages');
     this.enableConversationMode = this.storage.read('enableConversationMode');

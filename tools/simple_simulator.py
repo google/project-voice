@@ -26,7 +26,7 @@ import macro
 
 SENTENCE_MACRO_ID = 'SentenceEnglish20240703'
 WORD_MACRO_ID = 'WordGeneric20240628'
-MODEL_ID = 'gemini-2.5-flash'
+MODEL_ID = 'gemini-3-flash-preview'
 
 NUM_SENTENCE_SUGGESTIONS = 2
 

@@ -328,6 +328,15 @@ export class PvAppElement extends SignalWatcher(LitElement) {
   @property({type: Array})
   words: string[] = [];
 
+  private cachedInitialSuggestionsByLanguage: Map<
+    string,
+    {
+      suggestions: SentenceSuggestion[];
+      historyKey: string;
+      memoryKey: string;
+    }
+  > = new Map();
+
   @property()
   isLoading = false;
 
@@ -646,12 +655,38 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     this.prevCallsMs.push(now);
     this.prevCallsMs = this.prevCallsMs.filter(item => item > now - 1000);
 
-    if (this.isBlank()) {
-      this.apiClient.abortFetch();
-      this.isLoading = false;
-      this.suggestions = [];
-      this.words = [];
-      return;
+    const historyKey = formatConversationHistory(
+      this.conversationHistory,
+      Date.now() - CONVERSATION_HISTORY_MAX_AGE_MS,
+      CONVERSATION_HISTORY_MAX_TURNS,
+    );
+    let memoryKey = '';
+    const hasHistoryOrMemory = historyKey.length > 0 || memoryKey.length > 0;
+    const isBlankAtCall = this.isBlank();
+    const languageKey = this.stateInternal.lang.promptName;
+
+    if (isBlankAtCall) {
+      if (!hasHistoryOrMemory) {
+        this.apiClient.abortFetch();
+        this.isLoading = false;
+        this.suggestions = [];
+        this.words = [];
+        return;
+      }
+
+      // Check cache
+      const cacheEntry =
+        this.cachedInitialSuggestionsByLanguage.get(languageKey);
+      if (
+        cacheEntry &&
+        cacheEntry.historyKey === historyKey &&
+        cacheEntry.memoryKey === memoryKey
+      ) {
+        this.suggestions = cacheEntry.suggestions;
+        this.words = [];
+        this.requestUpdate();
+        return;
+      }
     }
 
     this.timeoutId = window.setTimeout(async () => {
@@ -686,11 +721,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           persona: this.stateInternal.persona,
           lastInputSpeech: this.state.lastInputSpeech,
           lastOutputSpeech: this.state.lastOutputSpeech,
-          conversationHistory: formatConversationHistory(
-            this.conversationHistory,
-            Date.now() - CONVERSATION_HISTORY_MAX_AGE_MS,
-            CONVERSATION_HISTORY_MAX_TURNS,
-          ),
+          conversationHistory: historyKey,
           sentenceEmotion: this.state.emotion,
         },
       );
@@ -711,6 +742,15 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       );
       this.updateSentences(sentences);
       this.updateWords(words);
+
+      if (isBlankAtCall) {
+        this.cachedInitialSuggestionsByLanguage.set(languageKey, {
+          suggestions: sentences,
+          historyKey: historyKey,
+          memoryKey: memoryKey,
+        });
+      }
+
       this.requestUpdate();
     }, this.delayBeforeFetchMs());
   }
@@ -907,8 +947,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
     );
 
     const bodyOfSentenceSuggestions = this.suggestions.map(suggestion => {
-      if (!this.textField?.value) return '';
-      const text = normalize(this.textField.value);
+      const text = this.textField?.value ? normalize(this.textField.value) : '';
       const sharedOffset = getSharedPrefix([suggestion.value, text]);
       return html` <li
         class="${this.stateInternal.sentenceSmallMargin ? 'tight' : ''}"
@@ -940,14 +979,19 @@ export class PvAppElement extends SignalWatcher(LitElement) {
 
         ></pv-functions-bar>
         <div class="main">
-          ${this.state.features.featureEnableSentenceEmotion
-            ? html`
-                <pv-sentence-type-selector
-                  .sentenceTypes=${this.emotions}
-                  @select=${this.onSentenceTypeSelected}
-                ></pv-sentence-type-selector>
-              `
-            : ''}
+          ${
+            // TODO: Flash Lite uses older templates that don't support sentenceEmotion.
+            // Remove this condition once prompt templates are updated and unified.
+            this.state.features.featureEnableSentenceEmotion &&
+            this.state.aiConfig !== 'gemini_3_1_flash_lite'
+              ? html`
+                  <pv-sentence-type-selector
+                    .sentenceTypes=${this.emotions}
+                    @select=${this.onSentenceTypeSelected}
+                  ></pv-sentence-type-selector>
+                `
+              : ''
+          }
           <div class="keypad">
             <div class="input-row">
               <pv-character-input

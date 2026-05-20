@@ -17,7 +17,7 @@
 import {Config, ConfigStorage} from '../config-storage.js';
 
 export const TEST_CONFIG: Config = {
-  aiConfig: 'gemini_2_5_flash',
+  aiConfig: 'gemini_3_flash',
   checkedLanguages: ['japaneseWithSingleRowKeyboard'],
   enableConversationMode: false,
   enableEarcons: false,
