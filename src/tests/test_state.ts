@@ -66,7 +66,7 @@ describe('State', () => {
   });
 
   it('handles AI config changes', () => {
-    const newConfig = 'gemini_2_5_flash_lite';
+    const newConfig = 'gemini_3_1_flash_lite';
     state.aiConfig = newConfig;
     const aiConfigs = state.lang.aiConfigs;
     expect(state.aiConfig).toEqual(newConfig);

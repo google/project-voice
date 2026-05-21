@@ -50,9 +50,8 @@ def RunGeminiMacro(model_id, prompt, temperature, language):
   """
 
   client = genai.Client(api_key=os.environ.get('API_KEY'))
-  thinking_config = None
-  if model_id.startswith('gemini-2.5-'):
-    thinking_config = types.ThinkingConfig(thinking_budget=0)
+  # Use minimal thinking for Gemini 3.x
+  thinking_config = types.ThinkingConfig(thinking_level='minimal')
   response = client.models.generate_content(
       model=model_id,
       contents=prompt,

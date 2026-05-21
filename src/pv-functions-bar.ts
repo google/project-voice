@@ -23,7 +23,6 @@ import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 
 import {AudioManager} from './audio-manager.js';
-import {CLOUD_TTS_VOICE_NAMES, PROMPT_SUPPORTED_VOICES} from './constants.js';
 import {State} from './state.js';
 
 const EVENT_KEY = {

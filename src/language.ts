@@ -94,13 +94,13 @@ abstract class LatinScriptLanguage implements Language {
   initialPhrases: string[] = [];
   emotions: {emoji: string; prompt: string; label?: string}[] = [];
   aiConfigs = {
-    gemini_2_5_flash_lite: {
-      model: 'gemini-2.5-flash-lite',
+    gemini_3_1_flash_lite: {
+      model: 'gemini-3.1-flash-lite',
       sentence: 'SentenceGeneric20260130',
       word: 'WordGeneric20240628',
     },
-    gemini_2_5_flash: {
-      model: 'gemini-2.5-flash',
+    gemini_3_flash: {
+      model: 'gemini-3-flash-preview',
       sentence: 'SentenceGeneric20260130',
       word: 'WordGeneric20240628',
     },
@@ -193,13 +193,13 @@ abstract class Japanese implements Language {
     {emoji: '🚫', prompt: '否定', label: '否定'},
   ];
   aiConfigs = {
-    gemini_2_5_flash_lite: {
-      model: 'gemini-2.5-flash-lite',
+    gemini_3_1_flash_lite: {
+      model: 'gemini-3.1-flash-lite',
       sentence: 'SentenceJapanese20240628',
       word: 'WordGeneric20240628',
     },
-    gemini_2_5_flash: {
-      model: 'gemini-2.5-flash',
+    gemini_3_flash: {
+      model: 'gemini-3-flash-preview',
       sentence: 'SentenceJapaneseLong20251205',
       word: 'WordJapanese20250623',
     },
@@ -358,14 +358,15 @@ abstract class Mandarin implements Language {
   keyboards: StaticValue[] = [];
   separetor = '';
   initialPhrases = ['你', '我', '他', '她', '它', '好', '今天', '昨天', '明天'];
+  emotions: {emoji: string; prompt: string; label: string}[] = [];
   aiConfigs = {
-    gemini_2_5_flash_lite: {
-      model: 'gemini-2.5-flash-lite',
+    gemini_3_1_flash_lite: {
+      model: 'gemini-3.1-flash-lite',
       sentence: 'SentenceMandarin20250616',
       word: 'WordMandarin20250616',
     },
-    gemini_2_5_flash: {
-      model: 'gemini-2.5-flash',
+    gemini_3_flash: {
+      model: 'gemini-3-flash-preview',
       sentence: 'SentenceMandarin20250616',
       word: 'WordMandarin20250616',
     },

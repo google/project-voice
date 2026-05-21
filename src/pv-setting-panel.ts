@@ -186,16 +186,16 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
           }}
         >
           <md-select-option
-            ?selected="${this.state.aiConfig === 'gemini_2_5_flash_lite'}"
-            value="gemini_2_5_flash_lite"
+            ?selected="${this.state.aiConfig === 'gemini_3_1_flash_lite'}"
+            value="gemini_3_1_flash_lite"
           >
-            <div slot="headline">Gemini 2.5 Flash Lite</div>
+            <div slot="headline">Gemini 3.1 Flash Lite</div>
           </md-select-option>
           <md-select-option
-            ?selected="${this.state.aiConfig === 'gemini_2_5_flash'}"
-            value="gemini_2_5_flash"
+            ?selected="${this.state.aiConfig === 'gemini_3_flash'}"
+            value="gemini_3_flash"
           >
-            <div slot="headline">Gemini 2.5 Flash</div>
+            <div slot="headline">Gemini 3 Flash Preview</div>
           </md-select-option>
         </md-outlined-select>
       </div>
