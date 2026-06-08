@@ -35,17 +35,18 @@ Project VOICE is a web application built on Gemini API, and it’s designed to b
     ```
     gcloud auth application-default set-quota-project <YOUR_PROJECT_ID>
     ```
-1. Install Python 3.n if you haven’t.
+1. Install [uv](https://docs.astral.sh/uv/) if you haven’t.
 1. Install [Node.js](https://nodejs.org/) if you haven’t.
 
 ## Development
 
 1. Run `git clone <this repo>`.
 1. Install libraries by running `npm i`.
-1. Set the `API_KEY` environment variable for the Gemini API access.
+1. Set the environment variables for the Gemini API access:
+    ```bash
+    export GEMINI_API_KEY=YOUR_API_KEY
     ```
-    export API_KEY=YOUR_API_KEY
-    ```
+
 1. Run the local development server by running `npm run dev`. This will start a local demo at http://localhost:5000/.
 
 ## Localization
@@ -60,14 +61,19 @@ This project uses [`lit-localize`](https://lit.dev/docs/localization/overview/) 
 This app is designed to be deployed to Google App Engine primarily.
 Keep the following in mind when you deploy the app to your own Google Cloud project.
 
-1. In your `app.yaml` file, set the following environment variables.
-    - `API_KEY`: Your API key for the Gemini API.
+1. **Secrets Management**: It is recommended to use Secret Manager for storing secrets. Create secrets with the following names in your Google Cloud project:
+    - `GEMINI_API_KEY`: Your API key for the Gemini API.
     - `SECRET_KEY`: A unique, secret string used for CSRF validation.
-    ```
+
+    Ensure the App Engine default service account has the **Secret Manager Secret Accessor** role.
+
+    Alternatively, you can still set them in `app.yaml` (though not recommended for security reasons):
+    ```yaml
     env_variables:
-        API_KEY: "YOUR_API_KEY"
+        GEMINI_API_KEY: "YOUR_API_KEY"
         SECRET_KEY: "YOUR_OWN_VALUE"
     ```
+
 1. Run `npm run deploy`.
 
 ## Storybook

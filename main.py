@@ -18,6 +18,7 @@ import json
 import os
 
 import flask
+import secrets_helper
 from flask_cors import CORS
 from flask_seasurf import SeaSurf
 
@@ -26,7 +27,7 @@ import macro
 app = flask.Flask(__name__)
 CORS(app)
 csrf = SeaSurf(app)
-app.secret_key = os.environ.get('SECRET_KEY') or 'localkey'
+app.secret_key = secrets_helper.get_secret('SECRET_KEY') or 'localkey'
 
 
 @app.route('/')

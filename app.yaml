@@ -13,9 +13,6 @@
 # limitations under the License.
 
 runtime: python312
-env_variables:
-  API_KEY: "api-key"
-  SECRET_KEY: "project-voice-secret"
 
 handlers:
 - url: /static
