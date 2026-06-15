@@ -190,5 +190,4 @@ export const pvAppStyle = css`
   .input-row > pv-character-input {
     flex: 1;
   }
-
 `;

@@ -111,7 +111,6 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
     .pv-initial-phrase-text-field {
       width: 100%;
     }
-
   `;
 
   @property({type: Number, reflect: true})
@@ -236,9 +235,7 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
             </label>
           </div>
         </div>
-        <div class="form-section-column">
-
-        </div>
+        <div class="form-section-column"></div>
       </div>
       <div class="form-section">
         <div>
@@ -307,7 +304,6 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
                   <div slot="headline">${voice.name}</div>
                 </md-select-option>`,
             )}
-
         </md-outlined-select>
       </div>
 
@@ -372,8 +368,6 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
             <md-primary-tab ?active="${this.activeSettingsTabIndex === 2}">
               ${msg('VOICE')}
             </md-primary-tab>
-
-
           </md-tabs>
           ${settingsPanels[this.activeSettingsTabIndex]}
         </form>
