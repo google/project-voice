@@ -304,6 +304,7 @@ export class PvFunctionsBar extends SignalWatcher(LitElement) {
   }
 
   private startTts() {
+
     const utterance = new SpeechSynthesisUtterance(this.state.text);
     utterance.lang = this.state.lang.code;
     utterance.rate = Math.pow(2, this.state.voiceSpeakingRate / 10);
