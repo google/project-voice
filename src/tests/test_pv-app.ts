@@ -285,6 +285,59 @@ describe('USA App', () => {
       );
       expect(result).toEqual('アメリカに行きたいな、飛行機に乗って。');
     });
+
+    it('should return newText if strings are identical', () => {
+      const text = 'This is a test.';
+      const result = TEST_ONLY.ignoreUnnecessaryDiffs(text, text);
+      expect(result).toEqual(text);
+    });
+
+    it('should return newText if strings have no common parts', () => {
+      const result = TEST_ONLY.ignoreUnnecessaryDiffs('abc', 'def');
+      expect(result).toEqual('def');
+    });
+
+    it('should return newText if diffs exceed MAX_DIFFS', () => {
+      // MAX_DIFFS is 10.
+      const text = 'a b c d e f g h i j k';
+      const newText = '1 2 3 4 5 6 7 8 9 0 !';
+      const result = TEST_ONLY.ignoreUnnecessaryDiffs(text, newText);
+      expect(result).toEqual(newText);
+    });
+
+    it('should return newText if result is identical to original text', () => {
+      // text is 25 chars. MODIFIABLE_TEXT_LENGTH is 10.
+      // 25 - 10 = 15.
+      // We change the first char.
+      const text = 'abcdefghijklmnopqrstuvwxy';
+      const newText = '0bcdefghijklmnopqrstuvwxy';
+      // diffs: [[-1, "a"], [1, "0"], [0, "bcdefghijklmnopqrstuvwxy"]]
+      // i=0: op=-1, str="a". result.length=0 < 15. result="a", i becomes 1.
+      // i=2: op=0, str="bcdef...". result.length=1 < 15. result="abcdef..."
+      // result === text, so returns newText.
+      const result = TEST_ONLY.ignoreUnnecessaryDiffs(text, newText);
+      expect(result).toEqual(newText);
+    });
+
+    it('should handle a mix of unnecessary and necessary diffs', () => {
+      // text length 25. MODIFIABLE_TEXT_LENGTH 10. Threshold 15.
+      const text = 'abcdefghijklmnopqrstuvwxy';
+      // Change at index 0 (unnecessary) and index 20 (necessary)
+      const newText = '0bcdefghijklmnopqrst1vwxy';
+      // Expected: 'abcdefghijklmnopqrst1vwxy'
+      const result = TEST_ONLY.ignoreUnnecessaryDiffs(text, newText);
+      expect(result).toEqual('abcdefghijklmnopqrst1vwxy');
+    });
+
+    it('should handle empty original text', () => {
+      const result = TEST_ONLY.ignoreUnnecessaryDiffs('', 'new text');
+      expect(result).toEqual('new text');
+    });
+
+    it('should handle empty new text', () => {
+      const result = TEST_ONLY.ignoreUnnecessaryDiffs('original text', '');
+      expect(result).toEqual('');
+    });
   });
 });
 
