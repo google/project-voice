@@ -41,10 +41,7 @@ import {customElement, property, query, queryAll} from 'lit/decorators.js';
 
 import {AudioManager} from './audio-manager.js';
 import {ConfigStorage} from './config-storage.js';
-import {
-  CONFIG_DEFAULT,
-  LARGE_MARGIN_LINE_LIMIT,
-} from './constants.js';
+import {CONFIG_DEFAULT, LARGE_MARGIN_LINE_LIMIT} from './constants.js';
 import {InputSource, InputSourceKind} from './input-history.js';
 import {
   SMALL_KANA_TRIGGER,
@@ -199,10 +196,9 @@ function splitLastFewSentencesForLLM(text: string) {
   if (sentences.length === 0) {
     return ['', ''];
   }
-  const sentenceLengths = sentences.map(s => s.length);
   let totalLength = 0;
-  for (let i = sentenceLengths.length - 1; i >= 0; i--) {
-    totalLength += sentenceLengths[i];
+  for (let i = sentences.length - 1; i >= 0; i--) {
+    totalLength += sentences[i].length;
     if (totalLength >= MAX_SENTENCE_LENGTH_NICE_TO_LLM) {
       return [sentences.slice(0, i).join(''), sentences.slice(i).join('')];
     }
@@ -660,7 +656,7 @@ export class PvAppElement extends SignalWatcher(LitElement) {
       Date.now() - CONVERSATION_HISTORY_MAX_AGE_MS,
       CONVERSATION_HISTORY_MAX_TURNS,
     );
-    let memoryKey = '';
+    const memoryKey = '';
     const hasHistoryOrMemory = historyKey.length > 0 || memoryKey.length > 0;
     const isBlankAtCall = this.isBlank();
     const languageKey = this.stateInternal.lang.promptName;
@@ -968,7 +964,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           @undo-click=${this.onUndoClick}
           @backspace-click=${this.onBackspaceClick}
           @delete-click=${this.onDeleteClick}
-
           @language-change-click=${this.onLanguageChangeClick}
           @keyboard-change-click=${this.onKeyboardChangeClick}
           @content-copy-click=${this.onContentCopyClick}
@@ -976,7 +971,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
           @snackbar-close=${this.onSnackbarClose}
           @output-speech-click=${this.updateConversationHistory}
           @tts-end=${this.onTtsEnd}
-
         ></pv-functions-bar>
         <div class="main">
           ${
@@ -999,7 +993,6 @@ export class PvAppElement extends SignalWatcher(LitElement) {
                 @character-select=${this.onCharacterSelect}
                 @keypad-handler-click=${this.onKeypadHandlerClick}
               ></pv-character-input>
-
             </div>
             <div class="suggestions">
               <ul class="word-suggestions">
