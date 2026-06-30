@@ -206,6 +206,36 @@ describe('USA App', () => {
       const result = TEST_ONLY.getUserInputPrefix('wazai');
       expect(result).toEqual('wazai');
     });
+
+    it('should return an empty string if an empty string is given', () => {
+      const result = TEST_ONLY.getUserInputPrefix('');
+      expect(result).toEqual('');
+    });
+
+    it('should return the prefix including spaces and long vowel marks', () => {
+      const result = TEST_ONLY.getUserInputPrefix('あーる ぴーじー');
+      expect(result).toEqual('あーる ぴーじー');
+    });
+
+    it('should stop at the first disallowed character (number)', () => {
+      const result = TEST_ONLY.getUserInputPrefix('hello123world');
+      expect(result).toEqual('hello');
+    });
+
+    it('should stop at the first disallowed character (Katakana)', () => {
+      const result = TEST_ONLY.getUserInputPrefix('あいうエオ');
+      expect(result).toEqual('あいう');
+    });
+
+    it('should stop at the first disallowed character (symbol)', () => {
+      const result = TEST_ONLY.getUserInputPrefix('hello!world');
+      expect(result).toEqual('hello');
+    });
+
+    it('should handle mixed allowed characters', () => {
+      const result = TEST_ONLY.getUserInputPrefix('ABC あいう');
+      expect(result).toEqual('ABC あいう');
+    });
   });
 
   describe('ignoreUnnecessaryDiffs', () => {
