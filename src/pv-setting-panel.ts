@@ -308,8 +308,10 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
                 </md-select-option>`,
             )}
 
+
         </md-outlined-select>
       </div>
+
 
       <div class="form-section">
         <label>
@@ -347,10 +349,19 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
       </div>
     `;
 
-    const settingsPanels = [
-      generalSettingsPanelTemplate,
-      profileSettingsPanelTemplate,
-      ttsSettingsPanelTemplate,
+    const tabs = [
+      {
+        label: msg('General'),
+        template: generalSettingsPanelTemplate,
+      },
+      {
+        label: msg('Profile'),
+        template: profileSettingsPanelTemplate,
+      },
+      {
+        label: msg('VOICE'),
+        template: ttsSettingsPanelTemplate,
+      },
     ];
 
     return html`
@@ -363,19 +374,17 @@ export class PvSettingPanel extends SignalWatcher(LitElement) {
               }
             }}"
           >
-            <md-primary-tab ?active="${this.activeSettingsTabIndex === 0}">
-              ${msg('General')}
-            </md-primary-tab>
-            <md-primary-tab ?active="${this.activeSettingsTabIndex === 1}">
-              ${msg('Profile')}
-            </md-primary-tab>
-            <md-primary-tab ?active="${this.activeSettingsTabIndex === 2}">
-              ${msg('VOICE')}
-            </md-primary-tab>
-
-
+            ${tabs.map(
+              (tab, index) => html`
+                <md-primary-tab
+                  ?active="${this.activeSettingsTabIndex === index}"
+                >
+                  ${tab.label}
+                </md-primary-tab>
+              `,
+            )}
           </md-tabs>
-          ${settingsPanels[this.activeSettingsTabIndex]}
+          ${tabs[this.activeSettingsTabIndex]?.template}
         </form>
         <div slot="actions">
           <md-text-button
