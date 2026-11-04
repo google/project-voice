@@ -99,14 +99,23 @@ This project exists thanks to all the people who have contributed.
 - Atsushi Yamashita
 - Ayush Agarwal
 - Daisuke Chijiwa
+- Darwin Cheng
+- Ghi Le
+- Haoyue Tong
 - Jason Zhang
 - Johnny Huang
 - Kevin Chang
+- Luke Mizuhashi
+- Mayuri Gupta
+- Pierre Marchal
+- Ruihao Huang
 - Satoru Arao
 - Shuhei Iitsuka
 - Subhashini Venugopalan
 - Tomoki Oinuma
+- Yaka Chang
 - Yasuaki Takebe
 - Yu-Sheng Li
+- Yuwei Liu
 
 <!--- TODO: Revisit this section. -->
